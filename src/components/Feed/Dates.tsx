@@ -6,8 +6,8 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
 
-import { useActiveSection } from "./useActiveSection";
-import { useActiveDateScroll } from "./useActiveDateScroll";
+import { useActiveSection } from "./hooks/useActiveSection";
+import { useActiveDateScroll } from "./hooks/useActiveDateScroll";
 
 export const Dates = ({ entries }: { entries: MeduzaArticles[] }) => {
   const { activeSectionId } = useActiveSection();
