@@ -1,7 +1,7 @@
-import { MeduzaArticles } from "@prisma/client";
 import dayjs from "dayjs";
+import { PostsSchemaType } from "./zod-schema";
 
-export const separateDatesByMonth = (dates: MeduzaArticles[]) => {
+export const separateDatesByMonth = (dates: PostsSchemaType) => {
   if (!dates) {
     throw new Error("Dates are not defined");
   }
@@ -11,7 +11,7 @@ export const separateDatesByMonth = (dates: MeduzaArticles[]) => {
   }
 
   const datesByMonth: {
-    [key: string]: MeduzaArticles[];
+    [key: string]: PostsSchemaType;
   } = {};
 
   dates.forEach((entry) => {

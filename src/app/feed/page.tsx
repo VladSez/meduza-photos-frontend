@@ -1,13 +1,14 @@
 import { Feed } from "@/components/Feed";
-import { prisma } from "@/lib/prisma";
+import { fetchPosts } from "@/utils/fetch-posts";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Feed",
+  description: "Photo chronicles of war in Ukraine",
+};
 
 export default async function FeedList() {
-  const entries = await prisma.meduzaArticles.findMany({
-    orderBy: {
-      date: "desc",
-    },
-    take: 10,
-  });
+  const entries = await fetchPosts({ count: 5 });
 
   return (
     <>

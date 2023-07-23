@@ -1,30 +1,29 @@
 "use client";
 
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
-import { MeduzaArticles } from "@prisma/client";
+import { PostsSchemaType } from "@/utils/zod-schema";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 /**
- * `useActiveDateScroll()` is used to animate the 'active date' while scrolling
- * @param activeSectionId
- * @param entries
- * @returns y - the y offset of the 'active date' element
- *
+ * `useActiveDateScroll()` is a custom hook that animates the 'active date' while scrolling.
+ * @param activeSectionId - the id of the currently active section
+ * @param entries - an array of posts
+ * @returns an object containing the y offset of the 'active date' element
  */
 export const useActiveDateScroll = ({
   activeSectionId,
   entries,
 }: {
   activeSectionId: string;
-  entries: MeduzaArticles[];
+  entries: PostsSchemaType;
 }) => {
   const [y, setY] = useState(0);
 
-  const datesByMonth = separateDatesByMonth(entries);
-
   useEffect(() => {
     if (!activeSectionId) return;
+
+    const datesByMonth = separateDatesByMonth(entries);
 
     const currentActiveDate = entries.find(
       (entry) => entry.id === Number(activeSectionId)
@@ -48,7 +47,7 @@ export const useActiveDateScroll = ({
     const startOfMonth = index === 0;
 
     setY(startOfMonth ? 0 : -scrollOffset);
-  }, [activeSectionId, datesByMonth, entries]);
+  }, [activeSectionId, entries]);
 
   return { y };
 };

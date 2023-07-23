@@ -1,27 +1,89 @@
-import { MeduzaArticles } from "@prisma/client";
+"use client";
 
+import { PostsSchema, PostsSchemaType } from "@/utils/zod-schema";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Article } from "../Article";
 import { Dates } from "./Dates";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
-export function Feed({ entries }: { entries: MeduzaArticles[] }) {
+export function Feed({ entries }: { entries: PostsSchemaType }) {
+  const [page, setPage] = useState(1);
+
+  const { ref, inView } = useInView({
+    threshold: 0,
+    rootMargin: "4000px",
+  });
+
+  const { data, fetchNextPage } = useInfiniteQuery(
+    ["posts"],
+    async ({ pageParam = 1 }: { pageParam?: number }) => {
+      //* this function runs only on **CLIENT SIDE**
+
+      setPage(pageParam);
+
+      const data = await fetch(`/api/feed?page=${pageParam}`).then((res) =>
+        res.json()
+      );
+
+      const validatedData = PostsSchema.parse(data);
+
+      return validatedData;
+    },
+    {
+      getNextPageParam: (_, pages) => {
+        return pages.length + 1;
+      },
+      initialData: {
+        pages: [entries],
+        pageParams: [1],
+      },
+      // we dont want to refetch this often
+      refetchOnMount: false,
+      refetchInterval: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      staleTime: Infinity,
+    }
+  );
+
+  const _entries = data?.pages.flat() ?? [];
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, inView]);
+
   return (
     <>
       <div className="md:col-span-2"></div>
       <div className="col-span-12 md:col-span-8">
-        {entries.map((entry) => {
+        {_entries.map((post, index) => {
+          if (index === _entries.length - 3) {
+            return (
+              <div className="my-20" key={post.id} ref={ref}>
+                <div id={String(post.id)} data-section>
+                  <Article article={post} />
+                </div>
+                <hr className="w-full h-px bg-gray-200 my-12"></hr>
+              </div>
+            );
+          }
           return (
-            <div className="my-20" key={entry.id}>
-              <div id={String(entry.id)} data-section>
-                <Article article={entry} />
+            <div className="my-20" key={post.id}>
+              <div id={String(post.id)} data-section>
+                <Article article={post} />
               </div>
               <hr className="w-full h-px bg-gray-200 my-12"></hr>
             </div>
           );
         })}
+        <button onClick={() => fetchNextPage()}>Fetch next page</button>
       </div>
       <div className="hidden md:col-span-2 md:flex justify-center relative">
         <div className="fixed top-20">
-          <Dates entries={entries} />
+          <Dates entries={_entries} page={page} />
         </div>
       </div>
     </>

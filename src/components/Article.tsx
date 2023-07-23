@@ -1,16 +1,10 @@
-import { MeduzaArticles } from "@prisma/client";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { Banner } from "./Banner";
+import { PostPhotosSchema, PostsSchemaType } from "@/utils/zod-schema";
 
-export function Article({ article }: { article: MeduzaArticles }) {
-  const meta = article?.photosWithMeta as unknown as {
-    img: string;
-    title: string[];
-    subTitle: string[];
-    captionText: string | null;
-    credit: string | null;
-  }[];
+export function Article({ article }: { article: PostsSchemaType[0] }) {
+  const photos = PostPhotosSchema.parse(article?.photosWithMeta);
 
   return (
     <div>
@@ -49,7 +43,7 @@ export function Article({ article }: { article: MeduzaArticles }) {
           </div>
         </>
       ) : null}
-      {meta?.map((photo, index) => {
+      {photos?.map((photo, index) => {
         if (!photo?.img) {
           return <p key={photo?.img}>no image</p>;
         }
