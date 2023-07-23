@@ -24,11 +24,13 @@ export function Feed({ entries }: { entries: PostsSchemaType }) {
 
       setPage(pageParam);
 
-      const data = await fetch(`/api/feed?page=${pageParam}`).then((res) =>
-        res.json()
-      );
+      const response = await fetch(`/api/feed?page=${pageParam}`);
 
-      const validatedData = PostsSchema.parse(data);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const validatedData = PostsSchema.parse(await response.json());
 
       return validatedData;
     },
@@ -53,7 +55,7 @@ export function Feed({ entries }: { entries: PostsSchemaType }) {
 
   useEffect(() => {
     if (inView) {
-      fetchNextPage();
+      void fetchNextPage();
     }
   }, [fetchNextPage, inView]);
 

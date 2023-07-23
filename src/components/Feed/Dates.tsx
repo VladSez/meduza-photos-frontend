@@ -1,6 +1,5 @@
 "use client";
 
-import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
@@ -13,12 +12,7 @@ import { useActiveDateScroll } from "./hooks/useActiveDateScroll";
 import { useActiveSection } from "./hooks/useActiveSection";
 
 export const Dates = memo(
-  ({
-    entries, // page,
-  }: {
-    entries: PostsSchemaType;
-    fetchNextPage: UseInfiniteQueryResult["fetchNextPage"];
-  }) => {
+  ({ entries, page }: { entries: PostsSchemaType; page: number }) => {
     const { activeSectionId } = useActiveSection({ entries });
     const { y } = useActiveDateScroll({
       activeSectionId,
@@ -59,7 +53,7 @@ export const Dates = memo(
                       date={date}
                       isActiveDate={isActiveDate}
                       y={y}
-                      // page={page}
+                      page={page}
                     />
                   );
                 })}
@@ -84,6 +78,7 @@ const Date = memo(
     date: PostsSchemaType[0]["date"];
     isActiveDate: boolean;
     y: number;
+    page: number;
   }) => {
     return (
       <motion.div
