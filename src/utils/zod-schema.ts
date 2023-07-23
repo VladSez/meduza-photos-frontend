@@ -10,7 +10,7 @@ export const PostPhotosSchema = z
         captionText: z.string().nullable(),
         credit: z.string().nullable(),
       })
-      .strict(),
+      .strict()
   )
   .nonempty();
 

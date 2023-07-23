@@ -27,14 +27,14 @@ export const useActiveDateScroll = ({
     const datesByMonth = separateDatesByMonth(entries);
 
     const currentActiveDate = entries.find(
-      (entry) => entry.id === Number(activeSectionId),
+      (entry) => entry.id === Number(activeSectionId)
     )?.date;
 
     const currentActiveMonth = dayjs(currentActiveDate).format("MMMM YYYY");
 
     // find index of current active date
     const index = datesByMonth?.[currentActiveMonth]?.findIndex(
-      (entry) => entry.id === Number(activeSectionId),
+      (entry) => entry.id === Number(activeSectionId)
     );
 
     if (typeof index !== "number" || index === -1) {

@@ -6,7 +6,7 @@ const config = {
   singleQuote: false,
   jsxSingleQuote: false,
   semi: true,
-  trailingComma: "all",
+  trailingComma: "es5",
   tabWidth: 2,
   // https://github.com/IanVS/prettier-plugin-sort-imports
   importOrder: [

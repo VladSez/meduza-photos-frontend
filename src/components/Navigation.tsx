@@ -34,7 +34,7 @@ export function Navigation() {
             key={href}
             className={clsx(
               `text-xl hover:underline`,
-              isActive ? `font-semibold text-blue-600` : `text-gray-900`,
+              isActive ? `font-semibold text-blue-600` : `text-gray-900`
             )}
           >
             {label}

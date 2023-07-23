@@ -31,7 +31,7 @@ export const Dates = memo(
       <>
         {Object.entries(datesByMonth).map(([month, entries]) => {
           const isActiveMonth = entries.some(
-            ({ id }) => id === Number(activeSectionId),
+            ({ id }) => id === Number(activeSectionId)
           );
 
           // show only months with 'active' dates
@@ -69,7 +69,7 @@ export const Dates = memo(
         })}
       </>
     );
-  },
+  }
 );
 
 Dates.displayName = "Dates";
@@ -92,13 +92,13 @@ const Date = memo(
         transition={{ type: "spring", mass: 0.5 }}
         className={clsx(
           "my-4",
-          isActiveDate ? "font-semibold text-black" : "text-slate-300",
+          isActiveDate ? "font-semibold text-black" : "text-slate-300"
         )}
       >
         {dayjs(date).format("DD MMMM")}
       </motion.div>
     );
-  },
+  }
 );
 
 Date.displayName = "Date";

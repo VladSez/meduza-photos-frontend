@@ -25,7 +25,7 @@ export function Feed({ entries }: { entries: PostsSchemaType }) {
       setPage(pageParam);
 
       const data = await fetch(`/api/feed?page=${pageParam}`).then((res) =>
-        res.json(),
+        res.json()
       );
 
       const validatedData = PostsSchema.parse(data);
@@ -46,7 +46,7 @@ export function Feed({ entries }: { entries: PostsSchemaType }) {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       staleTime: Infinity,
-    },
+    }
   );
 
   const _entries = data?.pages.flat() ?? [];
