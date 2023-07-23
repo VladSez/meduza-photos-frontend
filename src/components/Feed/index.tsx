@@ -1,11 +1,13 @@
 "use client";
 
-import { PostsSchema, PostsSchemaType } from "@/utils/zod-schema";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Article } from "../Article";
-import { Dates } from "./Dates";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+
+import { PostsSchema, PostsSchemaType } from "@/utils/zod-schema";
+
+import { Article } from "../Article";
+import { Dates } from "./Dates";
 
 export function Feed({ entries }: { entries: PostsSchemaType }) {
   const [page, setPage] = useState(1);
@@ -23,7 +25,7 @@ export function Feed({ entries }: { entries: PostsSchemaType }) {
       setPage(pageParam);
 
       const data = await fetch(`/api/feed?page=${pageParam}`).then((res) =>
-        res.json()
+        res.json(),
       );
 
       const validatedData = PostsSchema.parse(data);
@@ -44,7 +46,7 @@ export function Feed({ entries }: { entries: PostsSchemaType }) {
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       staleTime: Infinity,
-    }
+    },
   );
 
   const _entries = data?.pages.flat() ?? [];
@@ -66,7 +68,7 @@ export function Feed({ entries }: { entries: PostsSchemaType }) {
                 <div id={String(post.id)} data-section>
                   <Article article={post} />
                 </div>
-                <hr className="w-full h-px bg-gray-200 my-12"></hr>
+                <hr className="my-12 h-px w-full bg-gray-200"></hr>
               </div>
             );
           }
@@ -75,13 +77,13 @@ export function Feed({ entries }: { entries: PostsSchemaType }) {
               <div id={String(post.id)} data-section>
                 <Article article={post} />
               </div>
-              <hr className="w-full h-px bg-gray-200 my-12"></hr>
+              <hr className="my-12 h-px w-full bg-gray-200"></hr>
             </div>
           );
         })}
         <button onClick={() => fetchNextPage()}>Fetch next page</button>
       </div>
-      <div className="hidden md:col-span-2 md:flex justify-center relative">
+      <div className="relative hidden justify-center md:col-span-2 md:flex">
         <div className="fixed top-20">
           <Dates entries={_entries} page={page} />
         </div>

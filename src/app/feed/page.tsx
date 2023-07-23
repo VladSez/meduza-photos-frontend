@@ -1,6 +1,8 @@
-import { Feed } from "@/components/Feed";
-import { fetchPosts } from "@/utils/fetch-posts";
 import { Metadata } from "next";
+
+import { Feed } from "@/components/Feed";
+
+import { fetchPosts } from "@/utils/fetch-posts";
 
 export const metadata: Metadata = {
   title: "Feed",
@@ -12,7 +14,7 @@ export default async function FeedList() {
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-2 my-5">
+      <div className="my-5 grid grid-cols-12 gap-2">
         <Feed entries={entries} />
       </div>
     </>

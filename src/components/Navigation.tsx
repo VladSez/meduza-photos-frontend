@@ -1,9 +1,9 @@
 "use client";
 
 import clsx from "clsx";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 
 const NAV_LINKS = [
   {
@@ -21,7 +21,7 @@ export function Navigation() {
 
   return (
     <motion.nav
-      className="space-x-3 m-7 fixed top-2 z-10"
+      className="fixed top-2 z-10 m-7 space-x-3"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
@@ -34,7 +34,7 @@ export function Navigation() {
             key={href}
             className={clsx(
               `text-xl hover:underline`,
-              isActive ? `text-blue-600 font-semibold` : `text-gray-900`
+              isActive ? `font-semibold text-blue-600` : `text-gray-900`,
             )}
           >
             {label}

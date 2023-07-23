@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+
 import { PostsSchema } from "./zod-schema";
 
 export async function fetchPosts({ count = 5 }: { count: number }) {

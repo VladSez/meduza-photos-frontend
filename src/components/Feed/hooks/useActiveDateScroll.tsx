@@ -1,9 +1,10 @@
 "use client";
 
-import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
-import { PostsSchemaType } from "@/utils/zod-schema";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+
+import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
+import { PostsSchemaType } from "@/utils/zod-schema";
 
 /**
  * `useActiveDateScroll()` is a custom hook that animates the 'active date' while scrolling.
@@ -26,14 +27,14 @@ export const useActiveDateScroll = ({
     const datesByMonth = separateDatesByMonth(entries);
 
     const currentActiveDate = entries.find(
-      (entry) => entry.id === Number(activeSectionId)
+      (entry) => entry.id === Number(activeSectionId),
     )?.date;
 
     const currentActiveMonth = dayjs(currentActiveDate).format("MMMM YYYY");
 
     // find index of current active date
     const index = datesByMonth?.[currentActiveMonth]?.findIndex(
-      (entry) => entry.id === Number(activeSectionId)
+      (entry) => entry.id === Number(activeSectionId),
     );
 
     if (typeof index !== "number" || index === -1) {

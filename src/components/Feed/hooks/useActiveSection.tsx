@@ -1,8 +1,9 @@
 "use client";
 
-import { PostsSchemaType } from "@/utils/zod-schema";
 import throttle from "lodash.throttle";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+import { PostsSchemaType } from "@/utils/zod-schema";
 
 /**
  * returns the `active section` id

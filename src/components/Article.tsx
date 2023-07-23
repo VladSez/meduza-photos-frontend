@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
 import Image from "next/image";
-import { Banner } from "./Banner";
+
 import { PostPhotosSchema, PostsSchemaType } from "@/utils/zod-schema";
+
+import { Banner } from "./Banner";
 
 export function Article({ article }: { article: PostsSchemaType[0] }) {
   const photos = PostPhotosSchema.parse(article?.photosWithMeta);
@@ -11,7 +13,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
       {article?.header ? (
         <div className="flex justify-center">
           <div
-            className={`text-gray-900 mt-7 my-4 px-3 md:px-5 font-semibold text-3xl md:text-4xl md:text-center md:max-w-5xl [&>span]:font-light`}
+            className={`my-4 mt-7 px-3 text-3xl font-semibold  text-gray-900 md:max-w-5xl md:px-5 md:text-center md:text-4xl [&>span]:font-light`}
             dangerouslySetInnerHTML={{ __html: article?.header }}
           />
         </div>
@@ -20,7 +22,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
       {article?.date ? (
         <>
           <div
-            className={`flex flex-col justify-center md:flex-row text-gray-600 my-5 min-w-full px-3 md:px-5 md:max-w-lg md:text-center`}
+            className={`my-5 flex min-w-full flex-col justify-center px-3 text-gray-600 md:max-w-lg md:flex-row md:px-5 md:text-center`}
           >
             <a
               href={article?.currentLink ?? undefined}
@@ -36,7 +38,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               href="https://meduza.io"
               target="_blank"
               rel="noopener"
-              className="md:ml-2 hover:underline"
+              className="hover:underline md:ml-2"
             >
               Источник: Meduza
             </a>
@@ -53,7 +55,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               return (
                 <div key={title} className="flex justify-center">
                   <div
-                    className={`text-gray-900 mt-16 my-2 px-3 md:px-5 min-w-full font-semibold text-3xl md:text-4xl md:min-w-[672px] md:max-w-2xl`}
+                    className={`my-2 mt-16 min-w-full px-3 text-3xl font-semibold text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 md:text-4xl`}
                     dangerouslySetInnerHTML={{ __html: title }}
                   />
                 </div>
@@ -70,7 +72,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               return (
                 <div key={subTitle} className="flex justify-center">
                   <div
-                    className={`text-gray-900 my-7 px-3 md:px-5 text-xl [&_a]:text-blue-600 [&_a]:underline md:min-w-[672px] md:max-w-2xl`}
+                    className={`my-7 px-3 text-xl text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
                     dangerouslySetInnerHTML={{ __html: subTitle }}
                   />
                 </div>
@@ -86,7 +88,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
                 </p>
               </Banner>
             ) : null}
-            <div className="relative w-full h-[500px] md:h-[900px] mt-10 mb-4 bg-gray-200">
+            <div className="relative mb-4 mt-10 h-[500px] w-full bg-gray-200 md:h-[900px]">
               <a
                 href={photo?.img}
                 target="_blank"
@@ -106,7 +108,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
             {photo?.captionText ? (
               <div className="flex justify-center">
                 <div
-                  className={`text-gray-900 px-3 md:px-5 min-w-full md:min-w-[672px] md:max-w-2xl [&_a]:text-blue-600 [&_a]:underline`}
+                  className={`min-w-full px-3 text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
                   dangerouslySetInnerHTML={{ __html: photo?.captionText }}
                 />
               </div>
@@ -114,7 +116,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
             {photo?.credit ? (
               <div className="flex justify-center">
                 <div
-                  className={`text-gray-500 mb-2 mt-1.5 px-3 md:px-5 min-w-full md:min-w-[672px] md:max-w-2xl`}
+                  className={`mb-2 mt-1.5 min-w-full px-3 text-gray-500 md:min-w-[672px] md:max-w-2xl md:px-5`}
                   dangerouslySetInnerHTML={{ __html: photo?.credit }}
                 />
               </div>

@@ -1,10 +1,13 @@
-import { Article } from "@/components/Article";
-import { Banner } from "@/components/Banner";
-import { prisma } from "@/lib/prisma";
-import { PostSchema } from "@/utils/zod-schema";
 import { decode } from "html-entities";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+import { prisma } from "@/lib/prisma";
+
+import { Article } from "@/components/Article";
+import { Banner } from "@/components/Banner";
+
+import { PostSchema } from "@/utils/zod-schema";
 
 interface PageProps {
   params: {
@@ -59,7 +62,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className={`text-gray-900 my-[100px]`}>
+    <div className={`my-[100px] text-gray-900`}>
       <Article article={_article} />
 
       {nextArticleId?.id ? (

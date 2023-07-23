@@ -1,20 +1,20 @@
 "use client";
 
-import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
+import { UseInfiniteQueryResult } from "@tanstack/react-query";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
-
-import { useActiveSection } from "./hooks/useActiveSection";
-import { useActiveDateScroll } from "./hooks/useActiveDateScroll";
-import { PostsSchemaType } from "@/utils/zod-schema";
 import { memo } from "react";
-import { UseInfiniteQueryResult } from "@tanstack/react-query";
+
+import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
+import { PostsSchemaType } from "@/utils/zod-schema";
+
+import { useActiveDateScroll } from "./hooks/useActiveDateScroll";
+import { useActiveSection } from "./hooks/useActiveSection";
 
 export const Dates = memo(
   ({
-    entries,
-    page,
+    entries, // page,
   }: {
     entries: PostsSchemaType;
     fetchNextPage: UseInfiniteQueryResult["fetchNextPage"];
@@ -31,7 +31,7 @@ export const Dates = memo(
       <>
         {Object.entries(datesByMonth).map(([month, entries]) => {
           const isActiveMonth = entries.some(
-            ({ id }) => id === Number(activeSectionId)
+            ({ id }) => id === Number(activeSectionId),
           );
 
           // show only months with 'active' dates
@@ -44,12 +44,12 @@ export const Dates = memo(
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="font-semibold text-lg text-gray-600"
+                className="text-lg font-semibold text-gray-600"
               >
                 {month}
               </motion.p>
               {JSON.stringify({ page })}
-              <div className="overflow-hidden h-44">
+              <div className="h-44 overflow-hidden">
                 {entries.map(({ id, date }) => {
                   const isActiveDate = id === Number(activeSectionId);
 
@@ -59,7 +59,7 @@ export const Dates = memo(
                       date={date}
                       isActiveDate={isActiveDate}
                       y={y}
-                      page={page}
+                      // page={page}
                     />
                   );
                 })}
@@ -69,7 +69,7 @@ export const Dates = memo(
         })}
       </>
     );
-  }
+  },
 );
 
 Dates.displayName = "Dates";
@@ -92,13 +92,13 @@ const Date = memo(
         transition={{ type: "spring", mass: 0.5 }}
         className={clsx(
           "my-4",
-          isActiveDate ? "text-black font-semibold" : "text-slate-300"
+          isActiveDate ? "font-semibold text-black" : "text-slate-300",
         )}
       >
         {dayjs(date).format("DD MMMM")}
       </motion.div>
     );
-  }
+  },
 );
 
 Date.displayName = "Date";
