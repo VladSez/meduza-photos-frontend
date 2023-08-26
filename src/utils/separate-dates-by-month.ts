@@ -1,8 +1,18 @@
 import dayjs from "dayjs";
 
-import { PostsSchemaType } from "./zod-schema";
+import type { TimelineType } from "@/app/feed/page";
+import type { PostsSchemaType } from "./zod-schema";
 
-export const separateDatesByMonth = (dates: PostsSchemaType) => {
+/**
+ * Separates an array of dates by month and returns an object with each month as a key and an array of dates as a value.
+ * @template T - The type of the input array.
+ * @param {T} dates - The array of dates to be separated.
+ * @returns {Object} - An object with each month as a key and an array of dates as a value.
+ * @throws {Error} - If dates are not defined or not an array.
+ */
+export const separateDatesByMonth = <T extends TimelineType | PostsSchemaType>(
+  dates: T
+) => {
   if (!dates) {
     throw new Error("Dates are not defined");
   }
@@ -12,7 +22,7 @@ export const separateDatesByMonth = (dates: PostsSchemaType) => {
   }
 
   const datesByMonth: {
-    [key: string]: PostsSchemaType;
+    [key: string]: (T extends Array<infer U> ? U : never)[];
   } = {};
 
   dates.forEach((entry) => {
@@ -22,7 +32,7 @@ export const separateDatesByMonth = (dates: PostsSchemaType) => {
       datesByMonth[month] = [];
     }
 
-    datesByMonth?.[month]?.push(entry);
+    datesByMonth?.[month]?.push(entry as T extends Array<infer U> ? U : never);
   });
 
   return datesByMonth;

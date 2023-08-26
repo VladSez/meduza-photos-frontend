@@ -14,7 +14,7 @@ const config: KnipConfig = {
   ],
 
   ignore: [],
-  ignoreDependencies: ["sharp"],
+  ignoreDependencies: ["sharp", "eslint-config-next"],
 };
 
 export default config;

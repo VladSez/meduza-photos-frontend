@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+
   async redirects() {
     return [
       {
         source: "/",
-        destination: "/calendar",
+        destination: "/feed",
         permanent: true,
       },
     ];
@@ -20,4 +22,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

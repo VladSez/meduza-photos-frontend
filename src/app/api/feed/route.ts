@@ -6,9 +6,11 @@ import { PostsSchema } from "@/utils/zod-schema";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const page = Number(searchParams.get("page")) ?? 1;
+  const _page = searchParams.get("page") ?? 1;
+  const _pageSize = searchParams.get("pageSize") ?? 5;
 
-  const pageSize = 5; // Number of results per page
+  const page = Number(_page);
+  const pageSize = Number(_pageSize);
 
   const skip = (page - 1) * pageSize; // Calculate the number of items to skip
 

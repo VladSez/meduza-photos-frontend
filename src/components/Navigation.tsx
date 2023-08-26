@@ -8,11 +8,11 @@ import { usePathname } from "next/navigation";
 const NAV_LINKS = [
   {
     href: "/feed",
-    label: "Feed",
+    label: "Лента",
   },
   {
     href: "/calendar",
-    label: "Calendar",
+    label: "Календарь",
   },
 ] as const;
 
@@ -21,7 +21,7 @@ export function Navigation() {
 
   return (
     <motion.nav
-      className="fixed top-2 z-10 m-7 space-x-3"
+      className="fixed top-2 z-10 mx-3 my-7 space-x-3 md:mx-7"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >

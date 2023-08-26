@@ -1,9 +1,11 @@
 import dayjs from "dayjs";
 import Image from "next/image";
 
-import { PostPhotosSchema, PostsSchemaType } from "@/utils/zod-schema";
+import { PostPhotosSchema } from "@/utils/zod-schema";
 
 import { Banner } from "./Banner";
+
+import type { PostsSchemaType } from "@/utils/zod-schema";
 
 export function Article({ article }: { article: PostsSchemaType[0] }) {
   const photos = PostPhotosSchema.parse(article?.photosWithMeta);
@@ -22,7 +24,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
       {article?.date ? (
         <>
           <div
-            className={`my-5 flex min-w-full flex-col justify-center px-3 text-gray-600 md:max-w-lg md:flex-row md:px-5 md:text-center`}
+            className={`my-5 flex min-w-full flex-col justify-center gap-1 px-3 text-gray-600 md:max-w-lg md:flex-row md:px-5 md:text-center`}
           >
             <a
               href={article?.currentLink ?? undefined}
@@ -31,14 +33,16 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               className="hover:underline"
             >
               <time dateTime={new Date(article?.date).toISOString()}>
-                {dayjs(article?.date).format("MMMM DD, YYYY")}
+                {dayjs(article?.date).format("DD MMMM YYYY")}
               </time>
             </a>
+            <span className="hidden md:block">·</span>
+
             <a
               href="https://meduza.io"
               target="_blank"
               rel="noopener"
-              className="hover:underline md:ml-2"
+              className="hover:underline"
             >
               Источник: Meduza
             </a>
@@ -55,7 +59,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               return (
                 <div key={title} className="flex justify-center">
                   <div
-                    className={`my-2 mt-16 min-w-full px-3 text-3xl font-semibold text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 md:text-4xl`}
+                    className={`my-2 mt-16 min-w-full px-3 text-3xl !font-semibold text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 md:text-4xl`}
                     dangerouslySetInnerHTML={{ __html: title }}
                   />
                 </div>

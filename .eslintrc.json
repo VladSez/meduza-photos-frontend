@@ -21,6 +21,7 @@
       {
         "checksVoidReturn": false
       }
-    ]
+    ],
+    "@typescript-eslint/consistent-type-imports": "error"
   }
 }
