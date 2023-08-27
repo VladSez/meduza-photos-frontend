@@ -97,7 +97,7 @@ export function Feed({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <Item
+                <ArticleContainerItem
                   post={post}
                   setArticleInViewport={setArticleInViewport}
                   articleInViewport={articleInViewport}
@@ -139,7 +139,7 @@ export function Feed({
   );
 }
 
-const Item = memo(function Item({
+const ArticleContainerItem = memo(function ArticleContainerItem({
   post,
   setArticleInViewport,
   articleInViewport,

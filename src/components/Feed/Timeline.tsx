@@ -5,9 +5,8 @@ import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { memo } from "react";
 
+import { useActiveDateAnimation } from "@/hooks/useActiveDateAnimation";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
-
-import { useActiveDateAnimation } from "./hooks/useActiveDateAnimation";
 
 import type { TimelineType } from "@/app/feed/page";
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -38,7 +37,6 @@ export const Timeline = memo(function Timeline({
           <div key={month} className="min-w-[200px]">
             <div className="mx-8 md:my-10">
               <motion.p
-                // initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-lg font-semibold capitalize text-gray-600"
               >
