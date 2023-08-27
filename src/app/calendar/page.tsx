@@ -1,5 +1,4 @@
 import { CalendarList } from "@/components/Calendar";
-
 import { fetchPosts } from "@/utils/fetch-posts";
 
 import type { Metadata } from "next";

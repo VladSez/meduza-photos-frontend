@@ -1,9 +1,7 @@
 import { z } from "zod";
 
-import { prisma } from "@/lib/prisma";
-
 import { Feed } from "@/components/Feed";
-
+import { prisma } from "@/lib/prisma";
 import { fetchPosts } from "@/utils/fetch-posts";
 
 import type { Metadata } from "next";
