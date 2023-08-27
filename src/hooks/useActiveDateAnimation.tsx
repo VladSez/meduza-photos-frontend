@@ -10,33 +10,33 @@ const ZERO = 0;
 
 /**
  * `useActiveDateAnimation()` is a custom hook that 'animates'(returns `y` value, for framer motion) the 'active date', while scrolling.
- * @param activeSectionId - the id of the currently active section
+ * @param articleInViewportId - the id of the currently active section
  * @param entries - an array of posts
  * @returns an object containing the y offset of the 'active date' element
  */
 export const useActiveDateAnimation = ({
-  activeSectionId,
+  articleInViewportId,
   timeline,
 }: {
-  activeSectionId: number;
+  articleInViewportId: number;
   timeline: TimelineType;
 }) => {
   const [y, setY] = useState(ZERO);
 
   useEffect(() => {
-    if (!activeSectionId) return;
+    if (!articleInViewportId) return;
 
     const datesByMonth = separateDatesByMonth(timeline);
 
     const currentActiveDate = timeline.find(
-      (entry) => entry.id === activeSectionId
+      (entry) => entry.id === articleInViewportId
     )?.date;
 
     const currentActiveMonth = dayjs(currentActiveDate).format("MMMM YYYY");
 
-    // find index of current active date
+    // find index of the current active date in 'active' month
     const index = datesByMonth?.[currentActiveMonth]?.findIndex(
-      (entry) => entry.id === activeSectionId
+      (entry) => entry.id === articleInViewportId
     );
 
     if (typeof index !== "number" || index === -1) {
@@ -46,7 +46,7 @@ export const useActiveDateAnimation = ({
     const scrollOffset = index * OFFSET;
 
     setY(-scrollOffset);
-  }, [activeSectionId, timeline, y]);
+  }, [articleInViewportId, timeline, y]);
 
   return { y };
 };

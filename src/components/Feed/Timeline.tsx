@@ -12,20 +12,21 @@ import type { TimelineType } from "@/app/feed/page";
 import type { PostsSchemaType } from "@/utils/zod-schema";
 
 export const Timeline = memo(function Timeline({
-  activeSectionId,
+  articleInViewportId,
   timeline,
 }: {
   page: number;
-  activeSectionId: number;
+  articleInViewportId: number;
   timeline: TimelineType;
 }) {
   const datesByMonth = Object.entries(separateDatesByMonth(timeline));
 
   return (
     <>
-      {datesByMonth.map(([month, entries]) => {
-        const isActiveMonth = entries.some(
-          ({ id }) => id === Number(activeSectionId)
+      {datesByMonth.map(([month, days]) => {
+        // check if there are any 'active' dates in this month
+        const isActiveMonth = days.some(
+          ({ id }) => id === Number(articleInViewportId)
         );
 
         // show only months with 'active' dates
@@ -45,8 +46,8 @@ export const Timeline = memo(function Timeline({
 
               <div className="relative h-44 overflow-hidden">
                 <MonthDays
-                  timeline={entries}
-                  activeSectionId={activeSectionId}
+                  days={days}
+                  articleInViewportId={articleInViewportId}
                 />
               </div>
             </div>
@@ -58,21 +59,21 @@ export const Timeline = memo(function Timeline({
 });
 
 const MonthDays = memo(function MonthDays({
-  timeline,
-  activeSectionId,
+  days,
+  articleInViewportId,
 }: {
-  timeline: TimelineType;
-  activeSectionId: number;
+  days: TimelineType;
+  articleInViewportId: number;
 }) {
   const { y } = useActiveDateAnimation({
-    activeSectionId,
-    timeline,
+    articleInViewportId,
+    timeline: days,
   });
 
   return (
     <>
-      {timeline.map(({ id, date }) => {
-        const isActiveDate = id === Number(activeSectionId);
+      {days.map(({ id, date }) => {
+        const isActiveDate = id === Number(articleInViewportId);
 
         return <Date key={id} date={date} isActiveDate={isActiveDate} y={y} />;
       })}

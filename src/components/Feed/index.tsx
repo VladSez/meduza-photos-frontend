@@ -1,10 +1,13 @@
 "use client";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { memo, useRef, useState } from "react";
+import dayjs from "dayjs";
+import { motion } from "framer-motion";
+import { memo, useState } from "react";
 import { Virtuoso } from "react-virtuoso";
 
+import { useArticleInViewport } from "@/hooks/useArticleInViewport";
+import { useGetArticleInViewport } from "@/hooks/useGetArticleInViewport";
 import { PostsSchema } from "@/utils/zod-schema";
 
 import { Article } from "../Article";
@@ -13,8 +16,6 @@ import { Timeline } from "./Timeline";
 
 import type { TimelineType } from "@/app/feed/page";
 import type { PostsSchemaType } from "@/utils/zod-schema";
-import type { MotionValue } from "framer-motion";
-import type { Dispatch, SetStateAction } from "react";
 
 export function Feed({
   entries,
@@ -24,9 +25,9 @@ export function Feed({
   timeline: TimelineType;
 }) {
   const [page, setPage] = useState(1);
-  const [articleInViewport, setArticleInViewport] = useState("");
 
-  const { scrollY } = useScroll();
+  const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
+    useArticleInViewport();
 
   const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
     ["feed"],
@@ -84,9 +85,12 @@ export function Feed({
             if (range?.length === 1) {
               // take last id from range
               const articleId = String(range?.[0]?.data?.id) ?? "";
+              const articleDate =
+                String(dayjs(range?.[0]?.data?.date).toISOString()) ?? "";
 
               if (articleInViewport !== articleId) {
                 setArticleInViewport(articleId);
+                setArticleDateInViewport(articleDate);
               }
             }
           }}
@@ -97,12 +101,7 @@ export function Feed({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <ArticleContainerItem
-                  post={post}
-                  setArticleInViewport={setArticleInViewport}
-                  articleInViewport={articleInViewport}
-                  scrollY={scrollY}
-                />
+                <ArticleContainerItem post={post} />
               </motion.div>
             );
           }}
@@ -130,7 +129,7 @@ export function Feed({
         <div className="fixed top-20">
           <Timeline
             page={page}
-            activeSectionId={Number(articleInViewport)}
+            articleInViewportId={Number(articleInViewport)}
             timeline={timeline}
           />
         </div>
@@ -141,49 +140,17 @@ export function Feed({
 
 const ArticleContainerItem = memo(function ArticleContainerItem({
   post,
-  setArticleInViewport,
-  articleInViewport,
-  scrollY,
 }: {
   post: PostsSchemaType[0];
-  setArticleInViewport: Dispatch<SetStateAction<string>>;
-  articleInViewport: string;
-  scrollY: MotionValue<number>;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  // calculate the article (articleId), that is currently in viewport
-  useMotionValueEvent(scrollY, "change", (windowY) => {
-    let newAriticleInViewportId: string | null = null;
-
-    if (
-      typeof ref?.current?.offsetTop !== "number" ||
-      typeof ref?.current?.offsetHeight !== "number"
-    ) {
-      return;
-    }
-
-    const sectionOffsetTop = ref?.current?.offsetTop - 200;
-    const sectionHeight = ref?.current?.offsetHeight;
-
-    if (
-      windowY >= sectionOffsetTop &&
-      windowY < sectionOffsetTop + sectionHeight
-    ) {
-      // get the article (id) that is currently in viewport
-      newAriticleInViewportId = ref?.current?.id ?? "";
-    }
-
-    if (
-      newAriticleInViewportId &&
-      newAriticleInViewportId !== articleInViewport
-    ) {
-      setArticleInViewport(newAriticleInViewportId);
-    }
-  });
+  const { ref } = useGetArticleInViewport();
 
   return (
-    <div id={String(post.id)} ref={ref}>
+    <div
+      id={String(post.id)}
+      data-article-date={dayjs(post.date).toISOString()}
+      ref={ref}
+    >
       <div>
         <Article article={post} />
       </div>
