@@ -15,7 +15,6 @@ export const Timeline = memo(function Timeline({
   articleInViewportId,
   timeline,
 }: {
-  page: number;
   articleInViewportId: number;
   timeline: TimelineType;
 }) {

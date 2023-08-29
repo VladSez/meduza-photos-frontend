@@ -3,11 +3,11 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { Virtuoso } from "react-virtuoso";
 
 import { useArticleInViewport } from "@/hooks/useArticleInViewport";
-import { useGetArticleInViewport } from "@/hooks/useGetArticleInViewport";
+import { useCalculateArticleInViewport } from "@/hooks/useCalculateArticleInViewport";
 import { PostsSchema } from "@/utils/zod-schema";
 
 import { Article } from "../Article";
@@ -24,8 +24,6 @@ export function Feed({
   entries: PostsSchemaType;
   timeline: TimelineType;
 }) {
-  const [page, setPage] = useState(1);
-
   const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
     useArticleInViewport();
 
@@ -33,8 +31,6 @@ export function Feed({
     ["feed"],
     async ({ pageParam = 1 }: { pageParam?: number }) => {
       //* this function runs only on **CLIENT SIDE**
-
-      setPage(pageParam);
 
       const response = await fetch(`/api/feed?page=${pageParam}`);
 
@@ -128,7 +124,6 @@ export function Feed({
       <div className="relative hidden justify-center lg:col-span-2 lg:flex">
         <div className="fixed top-20">
           <Timeline
-            page={page}
             articleInViewportId={Number(articleInViewport)}
             timeline={timeline}
           />
@@ -143,7 +138,7 @@ const ArticleContainerItem = memo(function ArticleContainerItem({
 }: {
   post: PostsSchemaType[0];
 }) {
-  const { ref } = useGetArticleInViewport();
+  const { ref } = useCalculateArticleInViewport();
 
   return (
     <div

@@ -12,5 +12,5 @@ module.exports = {
     `pnpm run knip`,
     `pnpm run prettify`,
   ],
-  "**/*.(json|yaml)": () => "pnpm run knip",
+  "**/package.json": () => ["pnpm run lint", "pnpm run knip"],
 };

@@ -6,7 +6,7 @@ import { useArticleInViewport } from "./useArticleInViewport";
 /**
  * A hook that calculates the article (articleId), that is currently in viewport.
  */
-export const useGetArticleInViewport = () => {
+export const useCalculateArticleInViewport = () => {
   const { scrollY } = useScroll();
 
   const ref = useRef<HTMLDivElement & { "data-article-date": string }>(null);
