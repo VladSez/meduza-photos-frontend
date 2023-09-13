@@ -1,3 +1,5 @@
+"use client";
+
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
@@ -21,7 +23,7 @@ export const useActiveDateAnimation = ({
   articleInViewportId: number;
   timeline: TimelineType;
 }) => {
-  const [y, setY] = useState(ZERO);
+  const [y, setY] = useState(-ZERO);
 
   useEffect(() => {
     if (!articleInViewportId) return;
@@ -35,13 +37,10 @@ export const useActiveDateAnimation = ({
     const currentActiveMonth = dayjs(currentActiveDate).format("MMMM YYYY");
 
     // find index of the current active date in 'active' month
-    const index = datesByMonth?.[currentActiveMonth]?.findIndex(
-      (entry) => entry.id === articleInViewportId
-    );
-
-    if (typeof index !== "number" || index === -1) {
-      throw new Error("active date index not found");
-    }
+    const index =
+      datesByMonth?.[currentActiveMonth]?.findIndex(
+        (entry) => entry.id === articleInViewportId
+      ) ?? 0;
 
     const scrollOffset = index * OFFSET;
 

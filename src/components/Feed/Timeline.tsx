@@ -6,18 +6,20 @@ import { motion } from "framer-motion";
 import { memo } from "react";
 
 import { useActiveDateAnimation } from "@/hooks/useActiveDateAnimation";
+import { useArticleInViewport } from "@/hooks/useArticleInViewport";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
 import type { TimelineType } from "@/app/feed/page";
 import type { PostsSchemaType } from "@/utils/zod-schema";
 
 export const Timeline = memo(function Timeline({
-  articleInViewportId,
   timeline,
 }: {
-  articleInViewportId: number;
   timeline: TimelineType;
 }) {
+  const { articleInViewport } = useArticleInViewport();
+  const articleInViewportId = Number(articleInViewport);
+
   const datesByMonth = Object.entries(separateDatesByMonth(timeline));
 
   return (
@@ -34,30 +36,48 @@ export const Timeline = memo(function Timeline({
         }
 
         return (
-          <div key={month} className="min-w-[200px]">
-            <div className="mx-8 md:my-10">
-              <motion.p
-                animate={{ opacity: 1 }}
-                className="text-lg font-semibold capitalize text-gray-600"
-              >
-                {month}
-              </motion.p>
-
-              <div className="relative h-44 overflow-hidden">
-                <MonthDays
-                  days={days}
-                  articleInViewportId={articleInViewportId}
-                />
-              </div>
-            </div>
-          </div>
+          <MonthWithDays
+            key={month}
+            month={month}
+            days={days}
+            articleInViewportId={articleInViewportId}
+          />
         );
       })}
     </>
   );
 });
 
-const MonthDays = memo(function MonthDays({
+const MonthWithDays = ({
+  month,
+  days,
+  articleInViewportId,
+}: {
+  days: TimelineType;
+  articleInViewportId: number;
+  month: string;
+}) => {
+  return (
+    <motion.div
+      key={month}
+      className="min-w-[200px]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <div className="mx-8 md:my-10">
+        <motion.p className="text-lg font-semibold capitalize text-gray-600">
+          {month}
+        </motion.p>
+
+        <div className="relative h-44 overflow-hidden">
+          <Days days={days} articleInViewportId={articleInViewportId} />
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const Days = memo(function Days({
   days,
   articleInViewportId,
 }: {
@@ -74,13 +94,13 @@ const MonthDays = memo(function MonthDays({
       {days.map(({ id, date }) => {
         const isActiveDate = id === Number(articleInViewportId);
 
-        return <Date key={id} date={date} isActiveDate={isActiveDate} y={y} />;
+        return <Day key={id} date={date} isActiveDate={isActiveDate} y={y} />;
       })}
     </>
   );
 });
 
-const Date = memo(function Date({
+const Day = memo(function Day({
   date,
   isActiveDate = false,
   y,

@@ -2,7 +2,8 @@ import { z } from "zod";
 
 import { Feed } from "@/components/Feed";
 import { prisma } from "@/lib/prisma";
-import { fetchPosts } from "@/utils/fetch-posts";
+
+import { fetchPosts } from "../actions/fetch-posts";
 
 import type { Metadata } from "next";
 
@@ -23,10 +24,8 @@ export const metadata: Metadata = {
 };
 
 export default async function FeedList() {
-  const entries = await fetchPosts({ count: 5 });
-
-  // we fetch all the available dates here, we need them for the timeline
-  const _data = await prisma.meduzaArticles.findMany({
+  // we fetch all available dates here, we need them for the timeline
+  const _timeline = await prisma.meduzaArticles.findMany({
     orderBy: {
       date: "desc",
     },
@@ -37,12 +36,14 @@ export default async function FeedList() {
     },
   });
 
-  const timeline = TimelineSchema.parse(_data);
+  const timeline = TimelineSchema.parse(_timeline);
+
+  const { posts, total } = await fetchPosts({ skip: 0, take: 3 });
 
   return (
     <>
       <div className="my-5 grid grid-cols-12 gap-2">
-        <Feed entries={entries} timeline={timeline} />
+        <Feed entries={posts} timeline={timeline} totalPosts={total} />
       </div>
     </>
   );

@@ -37,8 +37,8 @@ export function Navigation() {
   return (
     <motion.nav
       className="fixed top-2 z-10 mx-3 my-7 md:mx-7"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      // initial={{ opacity: 0 }}
+      // animate={{ opacity: 1 }}
     >
       <div className="space-x-3">
         {NAV_LINKS.map(({ href, label }) => {
@@ -61,8 +61,8 @@ export function Navigation() {
 
       {pathname === PATHS.feed && articleDateInViewport ? (
         <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          // initial={{ opacity: 0 }}
+          // animate={{ opacity: 1, transition: { delay: 0.1 } }}
           className="ml-0 block lg:hidden"
         >
           {dayjs(articleDateInViewport).format("D MMMM")}

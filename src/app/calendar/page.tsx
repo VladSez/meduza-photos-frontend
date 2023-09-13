@@ -1,5 +1,6 @@
 import { CalendarList } from "@/components/Calendar";
-import { fetchPosts } from "@/utils/fetch-posts";
+
+import { fetchPosts } from "../actions/fetch-posts";
 
 import type { Metadata } from "next";
 
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Calendar() {
-  const posts = await fetchPosts({ count: 40 });
+  const { posts, total } = await fetchPosts({ skip: 0, take: 10 });
 
   return (
     <article>
@@ -30,7 +31,7 @@ export default async function Calendar() {
         </a>
       </p>
       <main className="md:justify-items-center">
-        <CalendarList entries={posts} />
+        <CalendarList entries={posts} totalPosts={total} />
       </main>
     </article>
   );

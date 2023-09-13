@@ -48,7 +48,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const nextArticleId = await prisma.meduzaArticles.findFirst({
     where: {
-      currentLink: article?.nextLink,
+      currentLink: article?.nextLink ?? "",
     },
     select: {
       id: true,
