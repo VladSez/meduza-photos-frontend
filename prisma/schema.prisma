@@ -7,7 +7,10 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
+  // Connection URL to your database 
   url       = env("DATABASE_URL")
+  // Direct connection URL to the database used for migrations
+  // https://www.prisma.io/docs/guides/performance-and-optimization/connection-management#external-connection-poolers
   directUrl = env("DIRECT_URL")
 }
 
