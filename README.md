@@ -1,5 +1,8 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Vercel dashboard
+- https://vercel.com/vladsazon27/meduza-photos-frontend
+  
 ## BE
 - https://github.com/VladSez/meduza-photos-project
 
