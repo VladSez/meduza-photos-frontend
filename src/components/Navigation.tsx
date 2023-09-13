@@ -1,41 +1,73 @@
 "use client";
 
 import clsx from "clsx";
+import dayjs from "dayjs";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useArticleInViewport } from "@/hooks/useArticleInViewport";
+
+const PATHS = {
+  feed: "/feed",
+  calendar: "/calendar",
+} as const;
+
+type NAVIGATION = {
+  href: string;
+  label: string;
+};
+
 const NAV_LINKS = [
   {
-    href: "/feed",
-    label: "Feed",
+    href: PATHS.feed,
+    label: "Лента",
   },
   {
-    href: "/calendar",
-    label: "Calendar",
+    href: PATHS.calendar,
+    label: "Календарь",
   },
-] as const;
+] as const satisfies Readonly<NAVIGATION[]>;
 
 export function Navigation() {
   const pathname = usePathname();
 
-  return (
-    <nav className="space-x-3 m-7 fixed top-2 z-10">
-      {NAV_LINKS.map(({ href, label }) => {
-        const isActive = pathname.startsWith(href);
+  const { articleDateInViewport } = useArticleInViewport();
 
-        return (
-          <Link
-            href={href}
-            key={href}
-            className={clsx(
-              `text-xl hover:underline`,
-              isActive ? `text-blue-600 font-semibold` : `text-gray-900`
-            )}
-          >
-            {label}
-          </Link>
-        );
-      })}
-    </nav>
+  return (
+    <motion.nav
+      className="fixed top-2 z-10 mx-3 my-7 md:mx-7"
+      // initial={{ opacity: 0 }}
+      // animate={{ opacity: 1 }}
+    >
+      <div className="space-x-3">
+        {NAV_LINKS.map(({ href, label }) => {
+          const isActive = pathname.startsWith(href);
+
+          return (
+            <Link
+              href={href}
+              key={href}
+              className={clsx(
+                `text-xl hover:underline`,
+                isActive ? `font-semibold text-blue-600` : `text-gray-900`
+              )}
+            >
+              {label}
+            </Link>
+          );
+        })}
+      </div>
+
+      {pathname === PATHS.feed && articleDateInViewport ? (
+        <motion.span
+          // initial={{ opacity: 0 }}
+          // animate={{ opacity: 1, transition: { delay: 0.1 } }}
+          className="ml-0 block lg:hidden"
+        >
+          {dayjs(articleDateInViewport).format("D MMMM")}
+        </motion.span>
+      ) : null}
+    </motion.nav>
   );
 }

@@ -1,7 +1,14 @@
-import { MeduzaArticles } from "@prisma/client";
 import dayjs from "dayjs";
 
-export const separateDatesByMonth = (dates: MeduzaArticles[]) => {
+import type { TimelineType } from "@/app/feed/page";
+import type { PostsSchemaType } from "./zod-schema";
+
+/**
+ * Separates an array of dates by month and returns an object with each month as a key and an array of dates as a value.
+ */
+export const separateDatesByMonth = <T extends TimelineType | PostsSchemaType>(
+  dates: T
+) => {
   if (!dates) {
     throw new Error("Dates are not defined");
   }
@@ -11,7 +18,7 @@ export const separateDatesByMonth = (dates: MeduzaArticles[]) => {
   }
 
   const datesByMonth: {
-    [key: string]: MeduzaArticles[];
+    [key: string]: (T extends Array<infer U> ? U : never)[];
   } = {};
 
   dates.forEach((entry) => {
@@ -21,7 +28,7 @@ export const separateDatesByMonth = (dates: MeduzaArticles[]) => {
       datesByMonth[month] = [];
     }
 
-    datesByMonth?.[month]?.push(entry);
+    datesByMonth?.[month]?.push(entry as T extends Array<infer U> ? U : never);
   });
 
   return datesByMonth;

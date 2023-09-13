@@ -1,8 +1,29 @@
+import { decode } from "html-entities";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
 import { Article } from "@/components/Article";
 import { Banner } from "@/components/Banner";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { PostSchema } from "@/utils/zod-schema";
+
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const article = await prisma.meduzaArticles.findUnique({
+    where: {
+      id: Number(params.id),
+    },
+  });
+
+  return {
+    title: article?.header ? decode(article.header) : "Post",
+  };
+}
 
 export async function generateStaticParams() {
   const ids = await prisma.meduzaArticles.findMany({
@@ -23,9 +44,11 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
   });
 
+  const _article = PostSchema.parse(article);
+
   const nextArticleId = await prisma.meduzaArticles.findFirst({
     where: {
-      currentLink: article?.nextLink,
+      currentLink: article?.nextLink ?? "",
     },
     select: {
       id: true,
@@ -37,8 +60,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className={`text-gray-900 my-10`}>
-      <Article article={article} />
+    <div className={`my-[100px] text-gray-900`}>
+      <Article article={_article} />
 
       {nextArticleId?.id ? (
         <Banner>

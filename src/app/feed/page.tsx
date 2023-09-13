@@ -1,18 +1,49 @@
+import { z } from "zod";
+
 import { Feed } from "@/components/Feed";
 import { prisma } from "@/lib/prisma";
 
+import { fetchPosts } from "../actions/fetch-posts";
+
+import type { Metadata } from "next";
+
+const TimelineSchema = z.array(
+  z
+    .object({
+      id: z.number(),
+      date: z.date(),
+    })
+    .strict()
+);
+
+export type TimelineType = z.infer<typeof TimelineSchema>;
+
+export const metadata: Metadata = {
+  title: "Feed",
+  description: "Photo chronicles of war in Ukraine",
+};
+
 export default async function FeedList() {
-  const entries = await prisma.meduzaArticles.findMany({
+  // we fetch all available dates here, we need them for the timeline
+  const _timeline = await prisma.meduzaArticles.findMany({
     orderBy: {
       date: "desc",
     },
-    take: 10,
+    take: 5000,
+    select: {
+      id: true,
+      date: true,
+    },
   });
+
+  const timeline = TimelineSchema.parse(_timeline);
+
+  const { posts, total } = await fetchPosts({ skip: 0, take: 3 });
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-2 my-5">
-        <Feed entries={entries} />
+      <div className="my-5 grid grid-cols-12 gap-2">
+        <Feed entries={posts} timeline={timeline} totalPosts={total} />
       </div>
     </>
   );
