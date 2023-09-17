@@ -4,11 +4,9 @@ import { fetchPosts } from "../actions/fetch-posts";
 
 import type { Metadata } from "next";
 
-export const revalidate = 3600; // 1 hour
-
 export const metadata: Metadata = {
-  title: "Calendar",
-  description: "Photo chronicles of war in Ukraine",
+  title: "Календарь",
+  description: "Фото хроники войны в Украине",
 };
 
 export default async function Calendar() {
