@@ -9,7 +9,7 @@
     "update-deps": "pnpm upgrade --interactive --latest",
     "type-check": "tsc --noEmit",
     "knip": "knip --include-entry-exports",
-    "prettify": "prettier --write '**/*.{ts?(x),json}'",
+    "prettify": "prettier --write '**/*.{ts?(x),json,js,mjs}'",
     "lint": "eslint . --ext .ts,.tsx",
     "lint-stage": "npx lint-staged -v",
     "prisma:generate": "npx prisma generate",

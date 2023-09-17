@@ -26,7 +26,7 @@ export function Feed({ entries, timeline, totalPosts }: IFeed) {
   return (
     <>
       <div className="md:col-span-2"></div>
-      <div className="col-span-12 my-10 md:col-span-8">
+      <div className="col-span-12 my-14 md:col-span-8">
         <VirtualizedFeed entries={entries} totalPosts={totalPosts} />
       </div>
       <div className="relative hidden justify-center lg:col-span-2 lg:flex">
@@ -48,7 +48,7 @@ const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
     isFetchingNextPage,
     isFetching,
     hasNextPage,
-  } = useMeduzaPosts({ entries, totalPosts, take: 5 });
+  } = useMeduzaPosts({ entries, totalPosts, take: 2 });
 
   const flattenedData = feedData?.pages.flatMap((page) => page.posts) ?? [];
 
@@ -61,10 +61,11 @@ const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
         useWindowScroll
         endReached={() => {
           if (!isFetching && hasNextPage) {
+            // TODO: it's called on first page load (even if we don't scroll), investigate why
             void fetchNextPage();
           }
         }}
-        style={{ height: "100vh" }}
+        // style={{ height: "100vh" }}
         data={flattenedData}
         itemsRendered={(range) => {
           // the range has to be exactly 1, to be able to use to calculate the active section
