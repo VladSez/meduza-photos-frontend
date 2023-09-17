@@ -56,8 +56,8 @@ const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
     <>
       <Virtuoso
         initialItemCount={flattenedData.length}
-        increaseViewportBy={1500}
-        overscan={1500}
+        increaseViewportBy={1000}
+        overscan={1000}
         useWindowScroll
         endReached={() => {
           if (!isFetching && hasNextPage) {
