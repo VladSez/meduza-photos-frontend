@@ -56,8 +56,8 @@ const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
     <>
       <Virtuoso
         initialItemCount={flattenedData.length}
-        increaseViewportBy={1000}
-        overscan={1000}
+        increaseViewportBy={1500}
+        overscan={1500}
         useWindowScroll
         endReached={() => {
           if (!isFetching && hasNextPage) {
@@ -83,9 +83,9 @@ const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
         }}
         itemContent={(_, post) => {
           return (
-            <motion.div key={post.id}>
+            <div key={post.id}>
               <ArticleContainerItem post={post} />
-            </motion.div>
+            </div>
           );
         }}
       />
