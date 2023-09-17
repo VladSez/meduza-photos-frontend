@@ -82,12 +82,13 @@ export function CalendarList({
 const Card = ({ post }: { post: PostsSchemaType[0] }) => {
   const banner = post?.photosWithMeta[0];
 
+  // we extract the date from the header html
   const headerDateContent = post?.header?.match(/<span>(.*?)<\/span>/)?.[0];
 
   return (
     <Link href={`/calendar/${post.id}`} className="relative" key={post?.id}>
       <div
-        className={`h-[530px] max-h-[530px] w-[350px] max-w-full rounded-lg border text-xl text-gray-900 transition-all hover:bg-slate-100`}
+        className={`h-[530px] max-h-[530px] w-full max-w-full rounded-lg border text-xl text-gray-900 transition-all hover:bg-slate-100 md:w-[350px]`}
       >
         <div className="relative h-[280px] w-full rounded-lg bg-gray-200 ">
           <Image

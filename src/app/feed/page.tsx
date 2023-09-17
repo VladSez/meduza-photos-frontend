@@ -38,7 +38,7 @@ export default async function FeedList() {
 
   const timeline = TimelineSchema.parse(_timeline);
 
-  const { posts, total } = await fetchPosts({ skip: 0, take: 3 });
+  const { posts, total } = await fetchPosts({ skip: 0, take: 1 });
 
   return (
     <>
