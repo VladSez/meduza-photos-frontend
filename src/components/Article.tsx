@@ -102,7 +102,6 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
                 <Image
                   src={photo?.img}
                   fill
-                  priority={index < 5}
                   quality={85}
                   alt={photo?.captionText ?? ""}
                   style={{ objectFit: "cover", objectPosition: "center" }}

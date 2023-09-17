@@ -32,6 +32,8 @@ const NAV_LINKS = [
 export function Navigation() {
   const pathname = usePathname();
 
+  const isFeedPage = pathname === PATHS.feed;
+
   const { articleDateInViewport } = useArticleInViewport();
 
   return (
@@ -55,7 +57,7 @@ export function Navigation() {
         })}
       </div>
 
-      {pathname === PATHS.feed && articleDateInViewport ? (
+      {isFeedPage && articleDateInViewport ? (
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
