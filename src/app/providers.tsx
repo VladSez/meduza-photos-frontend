@@ -1,12 +1,18 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { createContext, useCallback, useMemo, useState } from "react";
 
 import type { ReactNode } from "react";
 
 import "dayjs/locale/ru";
+
+import { useToast } from "@/components/ui/use-toast";
 
 dayjs.locale("ru");
 
@@ -19,20 +25,68 @@ type ArticleInViewportContext = {
   setArticleDateInViewport: setStateCallback;
 };
 
+/**
+ * We use this to save the article id that is currently in viewport (to highlight the date)
+ */
 export const ArticleInViewportContext = createContext<ArticleInViewportContext>(
   {
     articleInViewport: "",
-    setArticleInViewport: () => {}, // noop default callback,
+    setArticleInViewport: () => {},
     articleDateInViewport: "",
-    setArticleDateInViewport: () => {}, // noop default callback,
+    setArticleDateInViewport: () => {},
   }
 );
 
+/**
+ * We use this to save the date that the user has selected in the date picker (to navigate to article by date)
+ */
+export const FilterDateContext = createContext<{
+  filterDate: Date | undefined;
+  setFilterDate: (arg: Date | undefined) => void;
+}>({
+  filterDate: undefined,
+  setFilterDate: () => {}, // noop default callback,
+});
+
 export default function Providers({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const { toast } = useToast();
+
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        queryCache: new QueryCache({
+          onError: (error) => {
+            if (error instanceof Error) {
+              toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: `Something went wrong: ${
+                  error?.message ?? "Unknown error"
+                }`,
+              });
+            }
+          },
+        }),
+      })
+  );
 
   const [articleInViewport, setArticleInViewport] = useState("");
   const [articleDateInViewport, setArticleDateInViewport] = useState("");
+  const [filterDate, setFilterDate] = useState<Date>();
+
+  const setFilterDateHandler = useCallback((filterDate: Date | undefined) => {
+    if (filterDate) {
+      setFilterDate(filterDate);
+    }
+  }, []);
+
+  const filterDateContextValue = useMemo(
+    () => ({
+      filterDate,
+      setFilterDate: setFilterDateHandler,
+    }),
+    [filterDate, setFilterDateHandler]
+  );
 
   const setArticleInViewportHandler = useCallback(
     (articleId: string | undefined) => {
@@ -52,7 +106,7 @@ export default function Providers({ children }: { children: ReactNode }) {
     []
   );
 
-  const contextValue = useMemo(
+  const articleContextValue = useMemo(
     () => ({
       articleInViewport,
       setArticleInViewport: setArticleInViewportHandler,
@@ -69,8 +123,10 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ArticleInViewportContext.Provider value={contextValue}>
-        {children}
+      <ArticleInViewportContext.Provider value={articleContextValue}>
+        <FilterDateContext.Provider value={filterDateContextValue}>
+          {children}
+        </FilterDateContext.Provider>
       </ArticleInViewportContext.Provider>
     </QueryClientProvider>
   );

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { Feed } from "@/components/Feed";
+import { Feed } from "@/components/feed";
+
 import { prisma } from "@/lib/prisma";
 
 import { fetchPosts } from "../actions/fetch-posts";
@@ -19,8 +20,8 @@ const TimelineSchema = z.array(
 export type TimelineType = z.infer<typeof TimelineSchema>;
 
 export const metadata: Metadata = {
-  title: "Feed",
-  description: "Photo chronicles of war in Ukraine",
+  title: "Лента",
+  description: "Фото хроники войны в Украине",
 };
 
 export default async function FeedList() {

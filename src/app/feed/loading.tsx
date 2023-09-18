@@ -1,5 +1,5 @@
-import { ArticleLoading } from "@/components/ArticleLoading";
+import { ArticleLoadingPlaceholder } from "@/components/article-loading-placeholder";
 
 export default function Loading() {
-  return <ArticleLoading />;
+  return <ArticleLoadingPlaceholder />;
 }

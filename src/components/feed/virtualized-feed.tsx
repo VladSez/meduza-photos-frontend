@@ -9,36 +9,16 @@ import { useArticleInViewport } from "@/hooks/useArticleInViewport";
 import { useCalculateArticleInViewport } from "@/hooks/useCalculateArticleInViewport";
 import { useMeduzaPosts } from "@/hooks/useMeduzaPosts";
 
-import { Article } from "../Article";
-import { Loading } from "../Loading";
-import { Timeline } from "./Timeline";
+import { Article } from "../article";
+import { LoadingNextPage } from "../ui/loading-next-page";
 
-import type { TimelineType } from "@/app/feed/page";
 import type { PostsSchemaType } from "@/utils/zod-schema";
+import type { FeedProps } from ".";
 
-export interface IFeed {
-  entries: PostsSchemaType;
-  timeline: TimelineType;
-  totalPosts: number;
-}
-
-export function Feed({ entries, timeline, totalPosts }: IFeed) {
-  return (
-    <>
-      <div className="md:col-span-2"></div>
-      <div className="col-span-12 my-14 md:col-span-8">
-        <VirtualizedFeed entries={entries} totalPosts={totalPosts} />
-      </div>
-      <div className="relative hidden justify-center lg:col-span-2 lg:flex">
-        <div className="fixed top-20">
-          <Timeline timeline={timeline} />
-        </div>
-      </div>
-    </>
-  );
-}
-
-const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
+export const VirtualizedFeed = ({
+  entries,
+  totalPosts,
+}: Omit<FeedProps, "timeline">) => {
   const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
     useArticleInViewport();
 
@@ -56,8 +36,8 @@ const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
     <>
       <Virtuoso
         initialItemCount={flattenedData.length}
-        increaseViewportBy={2000}
-        overscan={2000}
+        increaseViewportBy={1000}
+        overscan={1000}
         useWindowScroll
         endReached={() => {
           if (!isFetching && hasNextPage) {
@@ -83,9 +63,9 @@ const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
         }}
         itemContent={(_, post) => {
           return (
-            <motion.div key={post.id}>
+            <div key={post.id}>
               <ArticleContainerItem post={post} />
-            </motion.div>
+            </div>
           );
         }}
       />
@@ -96,7 +76,7 @@ const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <Loading />
+          <LoadingNextPage />
         </motion.div>
       ) : null}
     </>

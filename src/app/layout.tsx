@@ -1,4 +1,4 @@
-import { Navigation } from "../components/Navigation";
+import { Navigation } from "../components/navigation";
 import Providers from "./providers";
 
 import "dayjs/locale/ru";
@@ -6,6 +6,8 @@ import "./globals.css";
 
 import dayjs from "dayjs";
 import localFont from "next/font/local";
+
+import { Toaster } from "@/components/ui/toaster";
 
 dayjs.locale("ru");
 
@@ -51,6 +53,7 @@ export default function RootLayout({
         <Providers>
           <Navigation />
           {children}
+          <Toaster />
         </Providers>
       </body>
     </html>

@@ -10,7 +10,8 @@ import { useInView } from "react-intersection-observer";
 import { useMeduzaPosts } from "@/hooks/useMeduzaPosts";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
-import { Loading } from "./Loading";
+import { LoadingNextPage } from "../ui/loading-next-page";
+import { DatePicker } from "./calendar-date-picker";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
 
@@ -41,6 +42,9 @@ export function CalendarList({
 
   return (
     <>
+      <div className="flex justify-center">
+        <DatePicker />
+      </div>
       <div className="mb-10">
         {Object.entries(postsByMonth).map(([month, posts]) => {
           return (
@@ -72,7 +76,7 @@ export function CalendarList({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <Loading />
+          <LoadingNextPage />
         </motion.div>
       ) : null}
     </>

@@ -1,4 +1,4 @@
-export const Loading = () => {
+export const LoadingNextPage = () => {
   return (
     <div className="flex justify-center">
       <svg

@@ -2,8 +2,9 @@ import { decode } from "html-entities";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { Article } from "@/components/Article";
-import { Banner } from "@/components/Banner";
+import { Article } from "@/components/article";
+import { Banner } from "@/components/ui/banner";
+
 import { prisma } from "@/lib/prisma";
 import { PostSchema } from "@/utils/zod-schema";
 
