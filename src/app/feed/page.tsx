@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { Feed } from "@/components/Feed";
+import { Feed } from "@/components/feed";
 
 import { prisma } from "@/lib/prisma";
 

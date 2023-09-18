@@ -18,7 +18,7 @@ import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
 import { useFilterDate } from "@/hooks/useFilterDate";
 import { cn } from "@/lib/utils";
 
-import { useToast } from "./use-toast";
+import { useToast } from "../ui/use-toast";
 
 const today = dayjs().toDate();
 

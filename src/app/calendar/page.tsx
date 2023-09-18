@@ -1,4 +1,4 @@
-import { CalendarList } from "@/components/calendar";
+import { CalendarList } from "@/components/calendar/calendar-list";
 
 import { fetchPosts } from "../actions/fetch-posts";
 

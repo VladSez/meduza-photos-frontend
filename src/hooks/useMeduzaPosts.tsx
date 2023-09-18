@@ -4,7 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { fetchPosts } from "@/app/actions/fetch-posts";
 
-import type { IFeed } from "@/components/Feed";
+import type { IFeed } from "@/components/feed";
 
 interface IUseMeduzaPosts {
   entries: IFeed["entries"];

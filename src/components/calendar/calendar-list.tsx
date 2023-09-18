@@ -10,8 +10,8 @@ import { useInView } from "react-intersection-observer";
 import { useMeduzaPosts } from "@/hooks/useMeduzaPosts";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
-import { DatePicker } from "./ui/date-picker";
-import { LoadingNextPage } from "./ui/loading-next-page";
+import { LoadingNextPage } from "../ui/loading-next-page";
+import { DatePicker } from "./calendar-date-picker";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
 
