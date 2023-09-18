@@ -21,7 +21,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
         </div>
       ) : null}
 
-      {article?.date ? (
+      {article?.dateString ? (
         <>
           <div
             className={`my-5 flex min-w-full flex-col justify-center gap-1 px-3 text-gray-600 md:max-w-lg md:flex-row md:px-5 md:text-center`}
@@ -32,10 +32,8 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               rel="noopener"
               className="hover:underline"
             >
-              <time dateTime={new Date(article?.date).toISOString()}>
-                {dayjs(article?.date)
-                  .utc(true)
-                  .format("DD MMMM YYYY")}
+              <time dateTime={new Date(article?.dateString).toISOString()}>
+                {dayjs(article?.dateString).format("DD MMMM YYYY")}
               </time>
             </a>
             <span className="hidden md:block">·</span>

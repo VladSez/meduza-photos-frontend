@@ -6,7 +6,6 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import { createContext, useCallback, useMemo, useState } from "react";
 
 import type { ReactNode } from "react";
@@ -16,7 +15,6 @@ import "dayjs/locale/ru";
 import { useToast } from "@/components/ui/use-toast";
 
 dayjs.locale("ru");
-dayjs.extend(utc);
 
 type setStateCallback = (arg: string) => void;
 

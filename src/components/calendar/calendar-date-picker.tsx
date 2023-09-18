@@ -2,7 +2,6 @@
 
 import { ru } from "date-fns/locale";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import { Calendar as CalendarIcon, Loader as LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -20,8 +19,6 @@ import { useFilterDate } from "@/hooks/useFilterDate";
 import { cn } from "@/lib/utils";
 
 import { useToast } from "../ui/use-toast";
-
-dayjs.extend(utc);
 
 const today = dayjs().toDate();
 
@@ -65,7 +62,7 @@ export function DatePicker() {
             if (date) {
               startTransition(async () => {
                 const { article } = await fetchPostByDate({
-                  date: dayjs(date).utc(true).format("YYYY/MM/DD"),
+                  date: dayjs(date).format("YYYY/MM/DD"),
                 });
 
                 if (article?.id) {
