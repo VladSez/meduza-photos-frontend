@@ -62,7 +62,7 @@ export function DatePicker() {
             if (date) {
               startTransition(async () => {
                 const { article } = await fetchPostByDate({
-                  date: dayjs(date).format("YYYY/MM/DD"),
+                  date,
                 });
 
                 if (article?.id) {
