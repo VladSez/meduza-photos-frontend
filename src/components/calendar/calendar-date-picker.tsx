@@ -62,8 +62,6 @@ export function DatePicker() {
           onSelect={(date) => {
             setFilterDate(date);
 
-            console.log("client", { date });
-
             if (date) {
               startTransition(async () => {
                 const { article } = await fetchPostByDate({

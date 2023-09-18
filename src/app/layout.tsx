@@ -5,11 +5,13 @@ import "dayjs/locale/ru";
 import "./globals.css";
 
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import localFont from "next/font/local";
 
 import { Toaster } from "@/components/ui/toaster";
 
 dayjs.locale("ru");
+dayjs.extend(utc);
 
 const interLocal = localFont({
   src: [

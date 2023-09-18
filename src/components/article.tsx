@@ -33,7 +33,9 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               className="hover:underline"
             >
               <time dateTime={new Date(article?.date).toISOString()}>
-                {dayjs(article?.date).format("DD MMMM YYYY")}
+                {dayjs(article?.date)
+                  .utc(true)
+                  .format("DD MMMM YYYY")}
               </time>
             </a>
             <span className="hidden md:block">·</span>
