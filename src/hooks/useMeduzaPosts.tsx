@@ -4,11 +4,11 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { fetchPosts } from "@/app/actions/fetch-posts";
 
-import type { IFeed } from "@/components/feed";
+import type { FeedProps } from "@/components/feed";
 
-interface IUseMeduzaPosts {
-  entries: IFeed["entries"];
-  totalPosts: IFeed["totalPosts"];
+interface useMeduzaPostsProps {
+  entries: FeedProps["entries"];
+  totalPosts: FeedProps["totalPosts"];
   take: number;
 }
 
@@ -16,7 +16,7 @@ export const useMeduzaPosts = ({
   entries,
   totalPosts,
   take = 5,
-}: IUseMeduzaPosts) => {
+}: useMeduzaPostsProps) => {
   return useInfiniteQuery(
     ["feed"],
     async ({ pageParam = 0 }: { pageParam?: number }) => {
