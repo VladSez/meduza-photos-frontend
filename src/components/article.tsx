@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { PostPhotosSchema } from "@/utils/zod-schema";
 
-import { Banner } from "./Banner";
+import { Banner } from "./ui/banner";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
 

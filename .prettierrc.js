@@ -14,7 +14,10 @@ const config = {
     "", // use empty strings to separate groups with empty lines
     "<THIRD_PARTY_MODULES>",
     "",
-    "^@/(.*)$", // our imports from src folder (check tsconfig.json)
+    "^@/components/(.*)$",
+    "",
+    "",
+    "^@/(.*)$", // our imports from 'src' folder (check tsconfig.json)
     "",
     "^[./]", // our imports
     "",

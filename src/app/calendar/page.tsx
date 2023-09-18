@@ -1,8 +1,10 @@
-import { CalendarList } from "@/components/Calendar";
+import { CalendarList } from "@/components/calendar";
 
 import { fetchPosts } from "../actions/fetch-posts";
 
 import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Календарь",

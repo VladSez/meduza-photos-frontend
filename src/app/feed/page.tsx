@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { Feed } from "@/components/Feed";
+
 import { prisma } from "@/lib/prisma";
 
 import { fetchPosts } from "../actions/fetch-posts";

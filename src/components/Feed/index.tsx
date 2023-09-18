@@ -9,9 +9,9 @@ import { useArticleInViewport } from "@/hooks/useArticleInViewport";
 import { useCalculateArticleInViewport } from "@/hooks/useCalculateArticleInViewport";
 import { useMeduzaPosts } from "@/hooks/useMeduzaPosts";
 
-import { Article } from "../Article";
-import { Loading } from "../Loading";
-import { Timeline } from "./Timeline";
+import { Article } from "../article";
+import { LoadingNextPage } from "../ui/loading-next-page";
+import { Timeline } from "./timeline";
 
 import type { TimelineType } from "@/app/feed/page";
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -96,7 +96,7 @@ const VirtualizedFeed = ({ entries, totalPosts }: Omit<IFeed, "timeline">) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <Loading />
+          <LoadingNextPage />
         </motion.div>
       ) : null}
     </>
