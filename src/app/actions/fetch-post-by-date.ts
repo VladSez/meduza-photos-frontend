@@ -10,10 +10,10 @@ dayjs.extend(utc);
 /**
  * Fetch meduza post by date from db (server-action)
  */
-export async function fetchPostByDate({ date }: { date: Date }) {
+export async function fetchPostByDate({ date }: { date: string }) {
   console.log({
     inputDate: date,
-    dayjs: dayjs(date).utc(true).format("YYYY/MM/DD"),
+    // dayjs: dayjs(date).utc(true).format("YYYY/MM/DD"),
 
     inputFormat: dayjs(date).toISOString(),
     inputUTCFormat: dayjs(date).utc(true).toISOString(),
@@ -22,7 +22,7 @@ export async function fetchPostByDate({ date }: { date: Date }) {
 
   const article = await prisma.meduzaArticles.findFirst({
     where: {
-      dateString: dayjs(date).utc(true).format("YYYY/MM/DD"),
+      dateString: date,
     },
     select: {
       id: true,
