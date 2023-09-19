@@ -2,6 +2,7 @@
 
 import { ru } from "date-fns/locale";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { Calendar as CalendarIcon, Loader as LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -20,7 +21,23 @@ import { cn } from "@/lib/utils";
 
 import { useToast } from "../ui/use-toast";
 
-const today = dayjs().toDate();
+dayjs.extend(utc);
+
+const now = dayjs().utc();
+
+const timeWhenWeFetchNewPostsinBE = dayjs()
+  .utc()
+  .set("hour", 12)
+  .set("minute", 30);
+
+// all time in utc
+const canUseTodayDate = now.isAfter(timeWhenWeFetchNewPostsinBE);
+
+const today = canUseTodayDate
+  ? dayjs().toDate() // today after 14:30
+  : dayjs().subtract(1, "day").toDate(); // previous day
+
+const endDate = dayjs("2022-02-24").toDate();
 
 export function DatePicker() {
   const router = useRouter();
@@ -64,7 +81,6 @@ export function DatePicker() {
                 const { article } = await fetchPostByDate({
                   date: dayjs(date).format("YYYY/MM/DD"),
                 });
-
                 if (article?.id) {
                   router.push(`/calendar/${article?.id}`);
                 } else {
@@ -79,12 +95,9 @@ export function DatePicker() {
           }}
           initialFocus
           weekStartsOn={1}
-          disabled={{ after: today, before: dayjs("2022-02-24").toDate() }}
+          disabled={{ after: today, before: endDate }}
           locale={ru}
-          styles={{
-            caption: { textTransform: "capitalize" },
-          }}
-          fromDate={dayjs("2022-02-24").toDate()}
+          fromDate={endDate}
           toDate={today}
         />
       </PopoverContent>

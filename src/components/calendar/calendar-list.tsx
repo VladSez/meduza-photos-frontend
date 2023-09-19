@@ -14,21 +14,16 @@ import { LoadingNextPage } from "../ui/loading-next-page";
 import { DatePicker } from "./calendar-date-picker";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
+import type { FeedProps } from "../feed";
 
-export function CalendarList({
-  entries,
-  totalPosts,
-}: {
-  entries: PostsSchemaType;
-  totalPosts: number;
-}) {
+export function CalendarList({ initialPosts, totalPosts }: FeedProps) {
   const { ref, inView } = useInView({
     threshold: 0,
     rootMargin: "400px",
   });
 
   const { data, fetchNextPage, isFetchingNextPage, isFetching, hasNextPage } =
-    useMeduzaPosts({ entries, totalPosts, take: 10 });
+    useMeduzaPosts({ initialPosts, totalPosts, take: 10 });
 
   useEffect(() => {
     if (inView && !isFetching && hasNextPage) {

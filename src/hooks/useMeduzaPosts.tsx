@@ -7,13 +7,13 @@ import { fetchPosts } from "@/app/actions/fetch-posts";
 import type { FeedProps } from "@/components/feed";
 
 interface useMeduzaPostsProps {
-  entries: FeedProps["entries"];
+  initialPosts: FeedProps["initialPosts"];
   totalPosts: FeedProps["totalPosts"];
   take: number;
 }
 
 export const useMeduzaPosts = ({
-  entries,
+  initialPosts,
   totalPosts,
   take = 5,
 }: useMeduzaPostsProps) => {
@@ -39,7 +39,7 @@ export const useMeduzaPosts = ({
         return lastPage?.hasMore ? skipParam : undefined;
       },
       initialData: {
-        pages: [{ posts: entries, total: totalPosts, hasMore: true }],
+        pages: [{ posts: initialPosts, total: totalPosts, hasMore: true }],
         pageParams: [0], // initial skip param
       },
       // we dont want to refetch this often

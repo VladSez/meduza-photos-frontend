@@ -4,7 +4,7 @@ import { fetchPosts } from "../actions/fetch-posts";
 
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // 1 hour
 
 export const metadata: Metadata = {
   title: "Календарь",
@@ -31,7 +31,7 @@ export default async function Calendar() {
         </a>
       </p>
       <main className="md:justify-items-center">
-        <CalendarList entries={posts} totalPosts={total} />
+        <CalendarList initialPosts={posts} totalPosts={total} />
       </main>
     </article>
   );
