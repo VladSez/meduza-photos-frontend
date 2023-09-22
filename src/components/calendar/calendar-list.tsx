@@ -23,7 +23,7 @@ export function CalendarList({ initialPosts, totalPosts }: FeedProps) {
   });
 
   const { data, fetchNextPage, isFetchingNextPage, isFetching, hasNextPage } =
-    useMeduzaPosts({ initialPosts, totalPosts, take: 10 });
+    useMeduzaPosts({ initialPosts, totalPosts, take: 10, key: "calendar" });
 
   useEffect(() => {
     if (inView && !isFetching && hasNextPage) {

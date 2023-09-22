@@ -28,7 +28,7 @@ export const VirtualizedFeed = ({
     isFetchingNextPage,
     isFetching,
     hasNextPage,
-  } = useMeduzaPosts({ initialPosts, totalPosts, take: 2 });
+  } = useMeduzaPosts({ initialPosts, totalPosts, take: 2, key: "feed" });
 
   const flattenedData = feedData?.pages.flatMap((page) => page.posts) ?? [];
 

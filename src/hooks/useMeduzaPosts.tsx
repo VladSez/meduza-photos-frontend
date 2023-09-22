@@ -10,15 +10,19 @@ interface useMeduzaPostsProps {
   initialPosts: FeedProps["initialPosts"];
   totalPosts: FeedProps["totalPosts"];
   take: number;
+  key: string;
 }
 
 export const useMeduzaPosts = ({
   initialPosts,
   totalPosts,
   take = 5,
+  key = "",
 }: useMeduzaPostsProps) => {
+  if (!key) throw new Error("key is required");
+
   return useInfiniteQuery(
-    ["feed"],
+    [key],
     async ({ pageParam = 0 }: { pageParam?: number }) => {
       const response = await fetchPosts({ take, skip: pageParam });
 
