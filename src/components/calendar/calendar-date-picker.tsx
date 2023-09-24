@@ -62,13 +62,13 @@ export function DatePicker() {
   const [isPending, startTransition] = React.useTransition();
 
   const { filterDate, setFilterDate } = useFilterDate();
-  const [openSharePopover, setopenSharePopoverPopover] = React.useState(false);
+  const [openPopover, setOpenPopover] = React.useState(false);
 
   return (
     <>
       <Popover
-        openPopover={openSharePopover}
-        setOpenPopover={setopenSharePopoverPopover}
+        openPopover={openPopover}
+        setOpenPopover={setOpenPopover}
         trigger={
           <Button
             variant={"outline"}
@@ -76,7 +76,7 @@ export function DatePicker() {
               "w-[280px] justify-start text-left font-normal",
               !filterDate && "text-muted-foreground"
             )}
-            onClick={() => setopenSharePopoverPopover(!openSharePopover)}
+            onClick={() => setOpenPopover(!openPopover)}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {filterDate ? (
@@ -106,18 +106,24 @@ export function DatePicker() {
 
               if (date) {
                 startTransition(async () => {
-                  const { article } = await fetchPostByDate({
-                    date: dayjs(date).format("YYYY/MM/DD"),
-                  });
-
-                  if (article?.id) {
-                    router.push(`/calendar/${article?.id}`);
-                  } else {
-                    toast({
-                      variant: "destructive",
-                      title: "Uh oh! Something went wrong.",
-                      description: "There was a problem with your request.",
+                  try {
+                    const { article } = await fetchPostByDate({
+                      date: dayjs(date).format("YYYY/MM/DD"),
                     });
+
+                    if (article?.id) {
+                      router.push(`/calendar/${article?.id}`);
+                    }
+                  } catch (e) {
+                    if (e instanceof Error) {
+                      toast({
+                        variant: "destructive",
+                        title: e.message ?? "Uh oh! Something went wrong.",
+                        description: "There was a problem with your request.",
+                      });
+                    }
+                  } finally {
+                    setOpenPopover(false);
                   }
                 });
               }
