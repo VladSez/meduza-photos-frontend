@@ -12,6 +12,13 @@ import { DayContent } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover } from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
 import { useFilterDate } from "@/hooks/useFilterDate";
@@ -41,7 +48,8 @@ const canUseTodayDate =
   timeNowInUTC.isAfter(timeInUTCWhenWeFetchNewPostsInBE) &&
   isLocalDayTheSameAsUTCDay;
 
-const today = canUseTodayDate
+// if data for a new day (in UTC) is not available yet, we need to use previous day
+const lastAvailableDate = canUseTodayDate
   ? timeNowInUTC.toDate() // today, after 14:30 (GMT+2)
   : timeNowInUTC.subtract(1, "day").toDate(); // previous day
 
@@ -86,12 +94,13 @@ export function DatePicker() {
                   {...props}
                   isPending={isPending}
                   filterDate={filterDate}
+                  lastAvailableDate={lastAvailableDate}
                 />
               ),
             }}
             mode="single"
             selected={filterDate}
-            defaultMonth={filterDate ?? today}
+            defaultMonth={filterDate ?? lastAvailableDate}
             onSelect={(date) => {
               setFilterDate(date);
 
@@ -115,10 +124,10 @@ export function DatePicker() {
             }}
             initialFocus
             weekStartsOn={1}
-            disabled={{ after: today, before: endDate }}
+            disabled={{ after: lastAvailableDate, before: endDate }}
             locale={ru}
             fromDate={endDate}
-            toDate={today}
+            toDate={lastAvailableDate}
           />
         }
       />
@@ -127,14 +136,61 @@ export function DatePicker() {
 }
 
 function DateTime(
-  props: DayContentProps & { isPending: boolean; filterDate: Date | undefined }
+  props: DayContentProps & {
+    isPending: boolean;
+    filterDate: Date | undefined;
+    lastAvailableDate: Date;
+  }
 ) {
   const dateTime = format(props.date, "yyyy-MM-dd");
 
-  const isActiveDay = dayjs(props.date).isSame(props.filterDate, "day");
+  const isSelectedDay = dayjs(props.date).isSame(props.filterDate, "day");
 
-  if (props.isPending && isActiveDay) {
+  const now = dayjs();
+  // calendar date can differ from our 'lastAvailableDate' (we use previous day, when data for today is not available yet, we fetch new data at 12:30 UTC)
+  const calendarTodayDate = dayjs(props.date).isSame(now, "day");
+
+  const lastEnabledDayIsToday = dayjs(props.date).isSame(
+    props.lastAvailableDate,
+    "day"
+  );
+
+  // we set time to 12:30 UTC, because we fetch new data at 12:30 UTC
+  // and then convert to local time (for user convenience)
+  const convertUTCtoLocalTime = dayjs()
+    .utc()
+    .set("hour", 12)
+    .set("minute", 30)
+    .local();
+
+  // show loader only for selected day (when user clicks on it)
+  if (props.isPending && isSelectedDay) {
     return <LoaderIcon className="h-4 w-4 animate-spin" />;
+  }
+
+  // show tooltip, when data for today is not available yet
+  if (calendarTodayDate && !lastEnabledDayIsToday) {
+    return (
+      <time dateTime={dateTime}>
+        <TooltipProvider>
+          <Tooltip delayDuration={300}>
+            <TooltipTrigger asChild>
+              <div>
+                <DayContent {...props} />
+              </div>
+            </TooltipTrigger>
+            <TooltipPortal>
+              <TooltipContent>
+                <p>
+                  Новые фото будут доступны сегодня после{" "}
+                  {convertUTCtoLocalTime.format("HH:mm")} (12:30 UTC)
+                </p>
+              </TooltipContent>
+            </TooltipPortal>
+          </Tooltip>
+        </TooltipProvider>
+      </time>
+    );
   }
 
   return (
