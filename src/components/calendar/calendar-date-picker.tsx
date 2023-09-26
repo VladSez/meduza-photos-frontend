@@ -179,7 +179,7 @@ function DateTime(
     return (
       <time dateTime={dateTime}>
         <TooltipProvider>
-          <Tooltip delayDuration={300}>
+          <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
               <div>
                 <DayContent {...props} />
