@@ -15,7 +15,9 @@ async function minDelay<T>(promise: Promise<T>, ms: number) {
   return p;
 }
 
-export const TimelineSchema = z.array(
+export type TimelineType = z.infer<typeof TimelineSchema>;
+
+const TimelineSchema = z.array(
   z
     .object({
       id: z.number(),

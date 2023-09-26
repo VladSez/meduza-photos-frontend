@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
-import type { TimelineType } from "@/app/feed/page";
+import type { TimelineType } from "@/components/feed/timeline-async";
 
 const OFFSET = 40;
 const ZERO = 0;

@@ -1,14 +1,8 @@
 import { Feed } from "@/components/feed";
 
-// import { prisma } from "@/lib/prisma";
-
 import { fetchPosts } from "../actions/fetch-posts";
 
-import type { TimelineSchema } from "@/components/feed/timeline-async";
 import type { Metadata } from "next";
-import type { z } from "zod";
-
-export type TimelineType = z.infer<typeof TimelineSchema>;
 
 export const metadata: Metadata = {
   title: "Лента",
