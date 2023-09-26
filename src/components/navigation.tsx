@@ -37,7 +37,7 @@ export function Navigation() {
   const { articleDateInViewport } = useArticleInViewport();
 
   return (
-    <motion.nav className="fixed z-10 mx-3 md:mx-7 md:mt-4">
+    <motion.nav className="fixed top-3 z-10 mx-3 md:top-9 md:mx-7">
       <div className="space-x-3">
         {NAV_LINKS.map(({ href, label }) => {
           const isActive = pathname.startsWith(href);

@@ -20,7 +20,7 @@ export default async function FeedList() {
 
   return (
     <>
-      <div className="my-5 grid grid-cols-12 gap-2">
+      <div className="mb-2 grid grid-cols-12 gap-2 md:my-5">
         <Feed initialPosts={posts} totalPosts={total} />
       </div>
     </>
