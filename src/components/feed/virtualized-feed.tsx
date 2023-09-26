@@ -16,7 +16,7 @@ import type { PostsSchemaType } from "@/utils/zod-schema";
 import type { FeedProps } from ".";
 
 export const VirtualizedFeed = ({
-  entries,
+  initialPosts,
   totalPosts,
 }: Omit<FeedProps, "timeline">) => {
   const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
@@ -28,7 +28,7 @@ export const VirtualizedFeed = ({
     isFetchingNextPage,
     isFetching,
     hasNextPage,
-  } = useMeduzaPosts({ entries, totalPosts, take: 2 });
+  } = useMeduzaPosts({ initialPosts, totalPosts, take: 2, key: "feed" });
 
   const flattenedData = feedData?.pages.flatMap((page) => page.posts) ?? [];
 

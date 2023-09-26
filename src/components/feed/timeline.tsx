@@ -9,8 +9,8 @@ import { useActiveDateAnimation } from "@/hooks/useActiveDateAnimation";
 import { useArticleInViewport } from "@/hooks/useArticleInViewport";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
-import type { TimelineType } from "@/app/feed/page";
 import type { PostsSchemaType } from "@/utils/zod-schema";
+import type { TimelineType } from "./timeline-async";
 
 export const Timeline = memo(function Timeline({
   timeline,

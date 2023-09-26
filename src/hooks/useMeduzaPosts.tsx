@@ -7,18 +7,22 @@ import { fetchPosts } from "@/app/actions/fetch-posts";
 import type { FeedProps } from "@/components/feed";
 
 interface useMeduzaPostsProps {
-  entries: FeedProps["entries"];
+  initialPosts: FeedProps["initialPosts"];
   totalPosts: FeedProps["totalPosts"];
   take: number;
+  key: string;
 }
 
 export const useMeduzaPosts = ({
-  entries,
+  initialPosts,
   totalPosts,
   take = 5,
+  key = "",
 }: useMeduzaPostsProps) => {
+  if (!key) throw new Error("key is required");
+
   return useInfiniteQuery(
-    ["feed"],
+    [key],
     async ({ pageParam = 0 }: { pageParam?: number }) => {
       const response = await fetchPosts({ take, skip: pageParam });
 
@@ -39,7 +43,7 @@ export const useMeduzaPosts = ({
         return lastPage?.hasMore ? skipParam : undefined;
       },
       initialData: {
-        pages: [{ posts: entries, total: totalPosts, hasMore: true }],
+        pages: [{ posts: initialPosts, total: totalPosts, hasMore: true }],
         pageParams: [0], // initial skip param
       },
       // we dont want to refetch this often

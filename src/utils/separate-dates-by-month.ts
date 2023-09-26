@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import type { TimelineType } from "@/app/feed/page";
+import type { TimelineType } from "@/components/feed/timeline-async";
 import type { PostsSchemaType } from "./zod-schema";
 
 /**
