@@ -6,7 +6,9 @@ import { PostsSchema } from "@/utils/zod-schema";
 /**
  * Fetch meduza posts from db (server-action)
  */
-export async function fetchPosts({ skip = 0, take = 5 }) {
+export async function fetchPosts({ page = 1, take = 5 }) {
+  const skip = page * take;
+
   const _posts = await prisma.meduzaArticles.findMany({
     orderBy: {
       date: "desc",
@@ -23,7 +25,7 @@ export async function fetchPosts({ skip = 0, take = 5 }) {
 
   return {
     posts,
-    total,
     hasMore,
+    nextPage: hasMore ? page + 1 : undefined,
   };
 }

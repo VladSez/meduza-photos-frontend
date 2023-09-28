@@ -26,17 +26,17 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-// export async function generateStaticParams() {
-//   const ids = await prisma.meduzaArticles.findMany({
-//     select: {
-//       id: true,
-//     },
-//   });
+export async function generateStaticParams() {
+  const ids = await prisma.meduzaArticles.findMany({
+    select: {
+      id: true,
+    },
+  });
 
-//   const idToString = ids.map(({ id }) => String(id));
+  const idToString = ids.map(({ id }) => String(id));
 
-//   return idToString;
-// }
+  return idToString;
+}
 
 export default async function Page({ params }: { params: { id: string } }) {
   const article = await prisma.meduzaArticles.findUnique({

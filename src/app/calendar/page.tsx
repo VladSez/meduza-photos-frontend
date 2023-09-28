@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Calendar() {
-  const { posts, total } = await fetchPosts({ skip: 0, take: 10 });
+  const { posts } = await fetchPosts({ take: 10 });
 
   return (
     <article>
@@ -33,7 +33,7 @@ export default async function Calendar() {
         </a>
       </p>
       <main className="md:justify-items-center">
-        <CalendarList initialPosts={posts} totalPosts={total} />
+        <CalendarList initialPosts={posts} />
       </main>
     </article>
   );

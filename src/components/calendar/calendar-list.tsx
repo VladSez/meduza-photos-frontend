@@ -16,14 +16,14 @@ import { DatePicker } from "./calendar-date-picker";
 import type { PostsSchemaType } from "@/utils/zod-schema";
 import type { FeedProps } from "../feed";
 
-export function CalendarList({ initialPosts, totalPosts }: FeedProps) {
+export function CalendarList({ initialPosts }: FeedProps) {
   const { ref, inView } = useInView({
     threshold: 0,
     rootMargin: "400px",
   });
 
   const { data, fetchNextPage, isFetchingNextPage, isFetching, hasNextPage } =
-    useMeduzaPosts({ initialPosts, totalPosts, take: 10, key: "calendar" });
+    useMeduzaPosts({ initialPosts, take: 10, key: "calendar" });
 
   useEffect(() => {
     if (inView && !isFetching && hasNextPage) {

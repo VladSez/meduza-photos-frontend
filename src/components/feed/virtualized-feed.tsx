@@ -17,7 +17,6 @@ import type { FeedProps } from ".";
 
 export const VirtualizedFeed = ({
   initialPosts,
-  totalPosts,
 }: Omit<FeedProps, "timeline">) => {
   const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
     useArticleInViewport();
@@ -28,7 +27,7 @@ export const VirtualizedFeed = ({
     isFetchingNextPage,
     isFetching,
     hasNextPage,
-  } = useMeduzaPosts({ initialPosts, totalPosts, take: 2, key: "feed" });
+  } = useMeduzaPosts({ initialPosts, take: 2, key: "feed" });
 
   const flattenedData = feedData?.pages.flatMap((page) => page.posts) ?? [];
 
@@ -45,7 +44,6 @@ export const VirtualizedFeed = ({
             void fetchNextPage();
           }
         }}
-        // style={{ height: "100vh" }}
         data={flattenedData}
         itemsRendered={(range) => {
           // the range has to be exactly 1, to be able to use to calculate the active section
