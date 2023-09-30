@@ -7,7 +7,7 @@ import { PostsSchema } from "@/utils/zod-schema";
  * Fetch meduza posts from db (server-action)
  */
 export async function fetchPosts({ page = 1, take = 5 }) {
-  const skip = page * take;
+  const skip = (page - 1) * take; // Calculate the number of items to skip
 
   const _posts = await prisma.meduzaArticles.findMany({
     orderBy: {

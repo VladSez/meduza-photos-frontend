@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function FeedList() {
-  const { posts } = await fetchPosts({ take: 1 });
+  const { posts } = await fetchPosts({ take: 2 });
 
   return (
     <>
