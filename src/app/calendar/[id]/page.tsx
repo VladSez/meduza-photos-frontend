@@ -61,7 +61,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className={`my-[100px] text-gray-900`}>
+    <div className={`my-16 md:my-[100px]`}>
       <Article article={_article} />
 
       {nextArticleId?.id ? (

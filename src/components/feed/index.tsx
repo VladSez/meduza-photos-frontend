@@ -43,14 +43,12 @@ export function Feed({ initialPosts }: FeedProps) {
   return (
     <>
       <div className="md:col-span-2"></div>
-      <div className="col-span-12 my-14 md:col-span-8">
+      <div className="col-span-12 my-14 lg:col-span-8">
         <VirtualizedFeed initialPosts={initialPosts} />
       </div>
       <div className="relative hidden justify-center lg:col-span-2 lg:flex">
         <Suspense fallback={<TimelinePlaceholder />}>
-          <div className="fixed top-20">
-            <TimelineAsync />
-          </div>
+          <TimelineAsync />
         </Suspense>
       </div>
     </>
