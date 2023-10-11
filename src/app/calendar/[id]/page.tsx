@@ -14,6 +14,13 @@ interface PageProps {
   };
 }
 
+function stripHtmlTags(input: string) {
+  // Remove HTML tags
+  const withoutTags = input.replace(/<\/?[^>]+(>|$)/g, "");
+
+  return withoutTags;
+}
+
 export async function generateMetadata({ params }: PageProps) {
   const article = await prisma.meduzaArticles.findUnique({
     where: {
@@ -21,8 +28,12 @@ export async function generateMetadata({ params }: PageProps) {
     },
   });
 
+  const title = article?.header
+    ? stripHtmlTags(decode(article.header))
+    : "Пост";
+
   return {
-    title: article?.header ? decode(article.header) : "Post",
+    title,
   };
 }
 
