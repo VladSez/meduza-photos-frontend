@@ -22,14 +22,14 @@ export function CalendarList({ initialPosts }: FeedProps) {
     rootMargin: "400px",
   });
 
-  const { data, fetchNextPage, isFetchingNextPage, isFetching, hasNextPage } =
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useMeduzaPosts({ initialPosts, take: 10, key: "calendar" });
 
   useEffect(() => {
-    if (inView && !isFetching && hasNextPage) {
+    if (inView && !isFetchingNextPage && hasNextPage) {
       void fetchNextPage();
     }
-  }, [fetchNextPage, hasNextPage, inView, isFetching]);
+  }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
 
   const _data = data?.pages.flatMap((page) => page.posts) ?? [];
 

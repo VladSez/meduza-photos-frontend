@@ -40,7 +40,6 @@ export const VirtualizedFeed = ({
         useWindowScroll
         endReached={() => {
           if (!isFetching && hasNextPage) {
-            // TODO: it's called on first page load (even if we don't scroll), consider adding (throtte or debounce?)
             void fetchNextPage();
           }
         }}
