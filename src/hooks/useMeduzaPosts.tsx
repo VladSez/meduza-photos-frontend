@@ -47,12 +47,11 @@ export const useMeduzaPosts = ({
         ],
         pageParams: [1], // initial page param
       },
-      // we dont want to refetch often
+      // we dont want to refetch often, hence why options below are set to false
       refetchOnMount: false,
       refetchInterval: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
-      staleTime: Infinity,
     }
   );
 };
