@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 };
 
 export default async function FeedList() {
-  const { posts, total } = await fetchPosts({ skip: 0, take: 1 });
+  const { posts } = await fetchPosts({ take: 2 });
 
   return (
     <>
       <div className="mb-2 grid grid-cols-12 gap-2 md:my-5">
-        <Feed initialPosts={posts} totalPosts={total} />
+        <Feed initialPosts={posts} />
       </div>
     </>
   );

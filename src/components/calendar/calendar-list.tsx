@@ -16,20 +16,20 @@ import { DatePicker } from "./calendar-date-picker";
 import type { PostsSchemaType } from "@/utils/zod-schema";
 import type { FeedProps } from "../feed";
 
-export function CalendarList({ initialPosts, totalPosts }: FeedProps) {
+export function CalendarList({ initialPosts }: FeedProps) {
   const { ref, inView } = useInView({
     threshold: 0,
     rootMargin: "400px",
   });
 
-  const { data, fetchNextPage, isFetchingNextPage, isFetching, hasNextPage } =
-    useMeduzaPosts({ initialPosts, totalPosts, take: 10, key: "calendar" });
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
+    useMeduzaPosts({ initialPosts, take: 10, key: "calendar" });
 
   useEffect(() => {
-    if (inView && !isFetching && hasNextPage) {
+    if (inView && !isFetchingNextPage && hasNextPage) {
       void fetchNextPage();
     }
-  }, [fetchNextPage, hasNextPage, inView, isFetching]);
+  }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
 
   const _data = data?.pages.flatMap((page) => page.posts) ?? [];
 
@@ -99,6 +99,9 @@ const Card = ({ post }: { post: PostsSchemaType[0] }) => {
               objectPosition: "center",
             }}
             className="rounded-lg rounded-b-none"
+            // https://nextjs.org/docs/pages/api-reference/components/image#sizes
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            quality={70}
           />
         </div>
         <div className="mx-5 my-3">

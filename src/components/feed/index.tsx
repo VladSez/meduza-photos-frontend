@@ -7,7 +7,6 @@ import type { PostsSchemaType } from "@/utils/zod-schema";
 
 export interface FeedProps {
   initialPosts: PostsSchemaType;
-  totalPosts: number;
 }
 
 const TimelinePlaceholder = () => {
@@ -40,18 +39,16 @@ const TimelinePlaceholder = () => {
   );
 };
 
-export function Feed({ initialPosts, totalPosts }: FeedProps) {
+export function Feed({ initialPosts }: FeedProps) {
   return (
     <>
       <div className="md:col-span-2"></div>
-      <div className="col-span-12 my-14 md:col-span-8">
-        <VirtualizedFeed initialPosts={initialPosts} totalPosts={totalPosts} />
+      <div className="col-span-12 my-14 lg:col-span-8">
+        <VirtualizedFeed initialPosts={initialPosts} />
       </div>
       <div className="relative hidden justify-center lg:col-span-2 lg:flex">
         <Suspense fallback={<TimelinePlaceholder />}>
-          <div className="fixed top-20">
-            <TimelineAsync />
-          </div>
+          <TimelineAsync />
         </Suspense>
       </div>
     </>

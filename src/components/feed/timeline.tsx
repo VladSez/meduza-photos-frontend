@@ -24,26 +24,28 @@ export const Timeline = memo(function Timeline({
 
   return (
     <>
-      {datesByMonth.map(([month, days]) => {
-        // check if there are any 'active' dates in this month
-        const isActiveMonth = days.some(
-          ({ id }) => id === Number(articleInViewportId)
-        );
+      <div className="fixed top-20">
+        {datesByMonth.map(([month, days]) => {
+          // check if there are any 'active' dates in this month
+          const isActiveMonth = days.some(
+            ({ id }) => id === Number(articleInViewportId)
+          );
 
-        // show only months with 'active' dates
-        if (!isActiveMonth) {
-          return null;
-        }
+          // show only months with 'active' dates
+          if (!isActiveMonth) {
+            return null;
+          }
 
-        return (
-          <MonthWithDays
-            key={month}
-            month={month}
-            days={days}
-            articleInViewportId={articleInViewportId}
-          />
-        );
-      })}
+          return (
+            <MonthWithDays
+              key={month}
+              month={month}
+              days={days}
+              articleInViewportId={articleInViewportId}
+            />
+          );
+        })}
+      </div>
     </>
   );
 });

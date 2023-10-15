@@ -14,6 +14,13 @@ interface PageProps {
   };
 }
 
+function stripHtmlTags(input: string) {
+  // Remove HTML tags
+  const withoutTags = input.replace(/<\/?[^>]+(>|$)/g, "");
+
+  return withoutTags;
+}
+
 export async function generateMetadata({ params }: PageProps) {
   const article = await prisma.meduzaArticles.findUnique({
     where: {
@@ -21,22 +28,26 @@ export async function generateMetadata({ params }: PageProps) {
     },
   });
 
+  const title = article?.header
+    ? stripHtmlTags(decode(article.header))
+    : "Пост";
+
   return {
-    title: article?.header ? decode(article.header) : "Post",
+    title,
   };
 }
 
-// export async function generateStaticParams() {
-//   const ids = await prisma.meduzaArticles.findMany({
-//     select: {
-//       id: true,
-//     },
-//   });
+export async function generateStaticParams() {
+  const ids = await prisma.meduzaArticles.findMany({
+    select: {
+      id: true,
+    },
+  });
 
-//   const idToString = ids.map(({ id }) => String(id));
+  const idToString = ids.map(({ id }) => String(id));
 
-//   return idToString;
-// }
+  return idToString;
+}
 
 export default async function Page({ params }: { params: { id: string } }) {
   const article = await prisma.meduzaArticles.findUnique({
@@ -61,7 +72,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className={`my-[100px] text-gray-900`}>
+    <div className={`my-16 md:my-[100px]`}>
       <Article article={_article} />
 
       {nextArticleId?.id ? (

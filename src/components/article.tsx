@@ -11,11 +11,11 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
   const photos = PostPhotosSchema.parse(article?.photosWithMeta);
 
   return (
-    <div>
+    <div className="">
       {article?.header ? (
         <div className="flex justify-center">
           <div
-            className={`my-4 mt-7 px-3 text-3xl font-semibold  text-gray-900 md:max-w-5xl md:px-5 md:text-center md:text-4xl [&>span]:font-light`}
+            className={`my-4 mt-7 max-w-full break-words px-3 text-3xl font-semibold text-gray-900 md:max-w-5xl md:px-5 md:text-center md:text-4xl [&>span]:font-light`}
             dangerouslySetInnerHTML={{ __html: article?.header }}
           />
         </div>
@@ -76,7 +76,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               return (
                 <div key={subTitle} className="flex justify-center">
                   <div
-                    className={`my-7 px-3 text-xl text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
+                    className={`my-7 max-w-full break-words px-3 text-xl text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
                     dangerouslySetInnerHTML={{ __html: subTitle }}
                   />
                 </div>
@@ -97,7 +97,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
                 href={photo?.img}
                 target="_blank"
                 rel="noopener"
-                title="Click to view full image"
+                title="Нажмите, чтобы посмотреть оригинальное изображение"
               >
                 <Image
                   src={photo?.img}
@@ -111,7 +111,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
             {photo?.captionText ? (
               <div className="flex justify-center">
                 <div
-                  className={`min-w-full px-3 text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
+                  className={`min-w-full break-words px-3 text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
                   dangerouslySetInnerHTML={{ __html: photo?.captionText }}
                 />
               </div>
@@ -119,7 +119,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
             {photo?.credit ? (
               <div className="flex justify-center">
                 <div
-                  className={`mb-2 mt-1.5 min-w-full px-3 text-gray-500 md:min-w-[672px] md:max-w-2xl md:px-5`}
+                  className={`mb-2 mt-1.5 min-w-full break-words px-3 text-gray-500 md:min-w-[672px] md:max-w-2xl md:px-5`}
                   dangerouslySetInnerHTML={{ __html: photo?.credit }}
                 />
               </div>
