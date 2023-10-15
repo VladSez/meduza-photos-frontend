@@ -97,7 +97,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
                 href={photo?.img}
                 target="_blank"
                 rel="noopener"
-                title="Click to view full image"
+                title="Нажмите, чтобы посмотреть оригинальное изображение"
               >
                 <Image
                   src={photo?.img}
