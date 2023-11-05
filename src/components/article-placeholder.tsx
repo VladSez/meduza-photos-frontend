@@ -1,4 +1,4 @@
-export const ArticleLoadingPlaceholder = () => {
+export const ArticlePlaceholder = () => {
   return (
     <div className="mt-20 flex flex-col items-center justify-start gap-10">
       <div className="mx-auto w-full max-w-2xl animate-pulse p-4">

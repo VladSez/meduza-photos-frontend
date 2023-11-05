@@ -26,14 +26,9 @@ export function Popover({
       <div className="h-10 w-[280px] animate-pulse rounded bg-slate-200"></div>
     );
 
-  // Vaul package breaks deploy on vercel, probably smth is wrong with their react version
   if (isMobile) {
     return (
-      <Drawer.Root
-        open={openPopover}
-        onOpenChange={setOpenPopover}
-        key={openPopover ? "open" : "closed"}
-      >
+      <Drawer.Root open={openPopover} onOpenChange={setOpenPopover}>
         <div className="sm:hidden">{trigger}</div>
         <Drawer.Overlay className="fixed inset-0 z-40 bg-gray-100 bg-opacity-10 backdrop-blur" />
         <Drawer.Portal>

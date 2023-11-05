@@ -10,7 +10,7 @@ import { useInView } from "react-intersection-observer";
 import { useMeduzaPosts } from "@/hooks/useMeduzaPosts";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
-import { LoadingNextPage } from "../ui/loading-next-page";
+import { NextPagePlaceholder } from "../ui/next-page-placeholder";
 import { DatePicker } from "./calendar-date-picker";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -19,14 +19,21 @@ import type { FeedProps } from "../feed";
 export function CalendarList({ initialPosts }: FeedProps) {
   const { ref, inView } = useInView({
     threshold: 0,
-    rootMargin: "400px",
+    rootMargin: "100px",
   });
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useMeduzaPosts({ initialPosts, take: 10, key: "calendar" });
 
   useEffect(() => {
-    if (inView && !isFetchingNextPage && hasNextPage) {
+    // there is a bug in next.js with `isFetchingNextPage`: https://github.com/vercel/next.js/issues/56811
+    // if (inView && !isFetchingNextPage && hasNextPage) {
+    //   void fetchNextPage();
+    // }
+
+    // to make it work in "next": "13.5.1" and above we need to remove `isFetchingNextPage` check
+    // this will work, but this is not optimal
+    if (inView && hasNextPage) {
       void fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
@@ -64,14 +71,14 @@ export function CalendarList({ initialPosts }: FeedProps) {
           );
         })}
       </div>
-      {hasNextPage && isFetchingNextPage ? (
+      {hasNextPage ? (
         <motion.div
           className="my-10 flex justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <LoadingNextPage />
+          <NextPagePlaceholder />
         </motion.div>
       ) : null}
     </>

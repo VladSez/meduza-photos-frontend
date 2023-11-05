@@ -67,10 +67,8 @@ export default function Providers({ children }: { children: ReactNode }) {
             if (error instanceof Error) {
               toast({
                 variant: "destructive",
-                title: "Uh oh! Something went wrong.",
-                description: `Something went wrong: ${
-                  error?.message ?? "Unknown error"
-                }`,
+                title: "Ошибка",
+                description: `Что-то пошло не так: попробуйте позже.`,
               });
             }
           },

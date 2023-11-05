@@ -1,4 +1,7 @@
+import { AlertCircle } from "lucide-react";
+
 import { Feed } from "@/components/feed";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { fetchPosts } from "../actions/fetch-posts";
 
@@ -10,7 +13,21 @@ export const metadata: Metadata = {
 };
 
 export default async function FeedList() {
-  const { posts } = await fetchPosts({ take: 2 });
+  const { posts, hasError } = await fetchPosts({ take: 2 });
+
+  if (hasError) {
+    return (
+      <div className="mx-10 mt-24">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Ошибка</AlertTitle>
+          <AlertDescription>
+            Что-то пошло не так. Попробуйте позже.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <>
