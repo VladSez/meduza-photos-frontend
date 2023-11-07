@@ -1,4 +1,5 @@
 import { AlertCircle } from "lucide-react";
+import { unstable_noStore as noStore } from "next/cache";
 
 import { Feed } from "@/components/feed";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -13,6 +14,11 @@ export const metadata: Metadata = {
 };
 
 export default async function FeedList() {
+  // noStore() here is to prevent the response from being cached.
+  // This is equivalent to in fetch(..., {cache: 'no-store'}).
+  // https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
+  noStore();
+
   const { posts, hasError } = await fetchPosts({ take: 2 });
 
   if (hasError) {

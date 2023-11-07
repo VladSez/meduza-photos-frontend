@@ -7,8 +7,6 @@ import { fetchPosts } from "../actions/fetch-posts";
 
 import type { Metadata } from "next";
 
-// export const dynamic = "force-dynamic";
-
 export const revalidate = 3600; // 1 hour
 
 export const metadata: Metadata = {
