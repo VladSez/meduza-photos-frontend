@@ -32,7 +32,7 @@ const OpenGraphSchema = PostSchema.pick({
 });
 
 const interFont = fetch(
-  new URL("../../../fonts/Inter-SemiBold.ttf", import.meta.url)
+  new URL("../../../public/fonts/Inter-SemiBold.ttf", import.meta.url)
 ).then((res) => res.arrayBuffer());
 
 export default async function Image({ params }: { params: { id: string } }) {
