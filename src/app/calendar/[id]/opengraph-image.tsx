@@ -31,12 +31,12 @@ const OpenGraphSchema = PostSchema.pick({
   photosWithMeta: true,
 });
 
-const interFont = fetch(
-  new URL("../../../public/fonts/Inter-SemiBold.ttf", import.meta.url)
-).then((res) => res.arrayBuffer());
-
 export default async function Image({ params }: { params: { id: string } }) {
-  // TODO: handle error
+  const interFont = await fetch(
+    new URL("../../../public/fonts/Inter-SemiBold.ttf", import.meta.url)
+  ).then((res) => res.arrayBuffer());
+
+  // TODO: handle supabase error
   // we can't query prisma, because it's not available in the edge runtime
   // so we have to use supabase
   const { data } = await supabase
@@ -78,7 +78,9 @@ export default async function Image({ params }: { params: { id: string } }) {
       fonts: [
         {
           name: "Inter",
-          data: await interFont,
+          data: interFont,
+          style: "normal",
+          weight: 600,
         },
       ],
     }

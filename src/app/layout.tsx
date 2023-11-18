@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 dayjs.locale("ru");
 
+// TODO: move fonts to public folder?
 const interLocal = localFont({
   src: [
     {
