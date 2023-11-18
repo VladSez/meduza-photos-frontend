@@ -7,7 +7,7 @@ import { fetchPosts } from "../actions/fetch-posts";
 
 import type { Metadata } from "next";
 
-export const revalidate = 3600; // 1 hour
+// export const revalidate = 3600; // 1 hour
 
 export const metadata: Metadata = {
   title: "Лента",
@@ -15,11 +15,6 @@ export const metadata: Metadata = {
 };
 
 export default async function FeedList() {
-  // // noStore() here is to prevent the response from being cached.
-  // // This is equivalent to in fetch(..., {cache: 'no-store'}).
-  // // https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
-  // noStore();
-
   const { posts, hasError } = await fetchPosts({ take: 2 });
 
   if (hasError) {

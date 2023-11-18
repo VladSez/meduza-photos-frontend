@@ -6,19 +6,13 @@ import { Article } from "@/components/article";
 import { Banner } from "@/components/ui/banner";
 
 import { prisma } from "@/lib/prisma";
+import { stripHtmlTags } from "@/utils/strip-html-tags";
 import { PostSchema } from "@/utils/zod-schema";
 
 interface PageProps {
   params: {
     id: string;
   };
-}
-
-function stripHtmlTags(input: string) {
-  // Remove HTML tags
-  const withoutTags = input.replace(/<\/?[^>]+(>|$)/g, "");
-
-  return withoutTags;
 }
 
 export async function generateMetadata({ params }: PageProps) {

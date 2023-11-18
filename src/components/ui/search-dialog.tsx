@@ -70,7 +70,11 @@ export function SearchDialog() {
   );
 
   React.useEffect(() => {
-    debouncedChangeHandler(search);
+    if (search) {
+      debouncedChangeHandler(search);
+    } else {
+      debouncedChangeHandler("");
+    }
   }, [debouncedChangeHandler, search]);
 
   React.useEffect(() => {

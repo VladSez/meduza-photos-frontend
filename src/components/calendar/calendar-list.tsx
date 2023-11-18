@@ -19,7 +19,7 @@ import type { FeedProps } from "../feed";
 export function CalendarList({ initialPosts }: FeedProps) {
   const { ref, inView } = useInView({
     threshold: 0,
-    rootMargin: "100px",
+    rootMargin: "50px",
   });
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
