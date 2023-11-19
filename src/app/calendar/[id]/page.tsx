@@ -29,14 +29,18 @@ export async function generateMetadata({
   const post = PostSchema.parse(article);
 
   const title = post?.header ? stripHtmlTags(decode(post.header)) : "Пост";
+  const description = post?.subtitle ?? "";
 
   return {
     title,
+    description,
+    openGraph: {
+      title,
+      description,
+    },
     twitter: {
       title,
-      description: post?.subtitle ?? "",
-      site: "@vlad_sazon",
-      creator: "@vlad_sazon",
+      description,
       card: "summary_large_image",
     },
   };

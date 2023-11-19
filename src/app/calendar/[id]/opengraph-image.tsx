@@ -21,7 +21,7 @@ export const contentType = "image/png";
 
 export default async function Image({ params }: { params: { id: string } }) {
   const interFont = await fetch(
-    new URL("../../../public/fonts/Inter-SemiBold.ttf", import.meta.url)
+    new URL("../../../fonts/Inter-SemiBold.ttf", import.meta.url)
   ).then((res) => res.arrayBuffer());
 
   // we can't query prisma, because it's not available in the edge runtime
