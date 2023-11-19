@@ -9,25 +9,36 @@ import { prisma } from "@/lib/prisma";
 import { stripHtmlTags } from "@/utils/strip-html-tags";
 import { PostSchema } from "@/utils/zod-schema";
 
+import type { Metadata } from "next";
+
 interface PageProps {
   params: {
     id: string;
   };
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const article = await prisma.meduzaArticles.findUnique({
     where: {
       id: Number(params.id),
     },
   });
 
-  const title = article?.header
-    ? stripHtmlTags(decode(article.header))
-    : "Пост";
+  const post = PostSchema.parse(article);
+
+  const title = post?.header ? stripHtmlTags(decode(post.header)) : "Пост";
 
   return {
     title,
+    twitter: {
+      title,
+      description: post?.subtitle ?? "",
+      site: "@vlad_sazon",
+      creator: "@vlad_sazon",
+      card: "summary_large_image",
+    },
   };
 }
 
