@@ -34,7 +34,7 @@ export function ArticleOpenGraphImage({
       <div tw="flex flex-col text-neutral-50 p-16">
         {/* Title */}
         <div tw="text-5xl p-16">{stripHtmlTags(decode(post?.header))}</div>
-        <div tw="relative bottom-0 left-16">
+        <div tw="relative bottom-8 left-16">
           {dayjs(post?.dateString).format("DD MMMM YYYY")}
         </div>
       </div>
