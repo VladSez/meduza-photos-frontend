@@ -7,7 +7,7 @@ import { fetchPosts } from "../actions/fetch-posts";
 
 import type { Metadata } from "next";
 
-// export const revalidate = 3600; // 1 hour
+export const revalidate = 3600; // 1 hour
 
 export const metadata: Metadata = {
   title: "Лента",

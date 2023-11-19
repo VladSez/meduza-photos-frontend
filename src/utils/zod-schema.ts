@@ -31,4 +31,12 @@ export const PostSchema = z
 
 export const PostsSchema = z.array(PostSchema);
 
+export const OpenGraphSchema = PostSchema.pick({
+  header: true,
+  dateString: true,
+  photosWithMeta: true,
+});
+
+export type OpenGraphSchemaType = z.infer<typeof OpenGraphSchema>;
+
 export type PostsSchemaType = z.infer<typeof PostsSchema>;
