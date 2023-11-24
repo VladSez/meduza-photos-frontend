@@ -9,9 +9,20 @@ import type { Metadata } from "next";
 
 export const revalidate = 3600; // 1 hour
 
-export const metadata: Metadata = {
-  title: "Лента",
+const commonMeta = {
+  title: "Фотографии войны в Украине. Лента",
   description: "Фото хроники войны в Украине",
+} as const satisfies Metadata;
+
+export const metadata: Metadata = {
+  ...commonMeta,
+  openGraph: {
+    ...commonMeta,
+  },
+  twitter: {
+    ...commonMeta,
+    card: "summary_large_image",
+  },
 };
 
 export default async function FeedList() {

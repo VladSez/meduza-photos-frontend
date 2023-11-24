@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { ImageResponse } from "next/og";
 import { z } from "zod";
 
-import { ArticleOpenGraphImage } from "@/components/article-opengraph-image";
+import { OpenGraphImage } from "@/components/og-image";
 
 import { supabase } from "@/lib/supabase";
 import { OpenGraphSchema } from "@/utils/zod-schema";
@@ -42,7 +42,13 @@ export default async function Image({ params }: { params: { id: string } }) {
   }
 
   return new ImageResponse(
-    <ArticleOpenGraphImage heroBanner={heroBanner} post={post} />,
+    (
+      <OpenGraphImage
+        heroBanner={heroBanner}
+        title={post?.header}
+        date={post?.dateString}
+      />
+    ),
     {
       ...size,
       fonts: [

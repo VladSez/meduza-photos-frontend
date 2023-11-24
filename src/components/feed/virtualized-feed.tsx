@@ -15,9 +15,7 @@ import { NextPagePlaceholder } from "../ui/next-page-placeholder";
 import type { PostsSchemaType } from "@/utils/zod-schema";
 import type { FeedProps } from ".";
 
-export const VirtualizedFeed = ({
-  initialPosts,
-}: Omit<FeedProps, "timeline">) => {
+export const VirtualizedFeed = ({ initialPosts }: FeedProps) => {
   const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
     useArticleInViewport();
 

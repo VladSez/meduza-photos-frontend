@@ -19,9 +19,9 @@ export const size = {
 };
 export const contentType = "image/png";
 
-export default async function Image({ params }: { params: { id: string } }) {
+export default async function Image() {
   const interFont = await fetch(
-    new URL("../../../fonts/Inter-SemiBold.ttf", import.meta.url)
+    new URL("../../fonts/Inter-SemiBold.ttf", import.meta.url)
   ).then((res) => res.arrayBuffer());
 
   // we can't query prisma, because it's not available in the edge runtime
@@ -29,11 +29,14 @@ export default async function Image({ params }: { params: { id: string } }) {
   const { data, error } = await supabase
     .from("MeduzaArticles")
     .select("header, dateString, photosWithMeta")
-    .eq("id", params.id);
+    .limit(10)
+    .order("id", { ascending: false });
 
   const posts = z.array(OpenGraphSchema).parse(data);
 
-  const post = posts?.[0];
+  // take random post from posts array
+  const randomPost = Math.floor(Math.random() * posts.length);
+  const post = posts?.[randomPost];
 
   const heroBanner = post?.photosWithMeta?.[0];
 
@@ -45,8 +48,7 @@ export default async function Image({ params }: { params: { id: string } }) {
     (
       <OpenGraphImage
         heroBanner={heroBanner}
-        title={post?.header}
-        date={post?.dateString}
+        title="Фотографии войны в Украине. Календарь"
       />
     ),
     {

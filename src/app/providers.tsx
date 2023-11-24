@@ -8,11 +8,11 @@ import {
 import dayjs from "dayjs";
 import { createContext, useCallback, useMemo, useState } from "react";
 
+import { useToast } from "@/components/ui/use-toast";
+
 import type { ReactNode } from "react";
 
 import "dayjs/locale/ru";
-
-import { useToast } from "@/components/ui/use-toast";
 
 dayjs.locale("ru");
 

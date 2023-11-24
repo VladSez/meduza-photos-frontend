@@ -1,13 +1,13 @@
-import { Navigation } from "../components/navigation";
-import Providers from "./providers";
-
-import "dayjs/locale/ru";
-import "./globals.css";
-
 import dayjs from "dayjs";
 import localFont from "next/font/local";
 
 import { Toaster } from "@/components/ui/toaster";
+
+import { Navigation } from "../components/navigation";
+import Providers from "./providers";
+
+import "./globals.css";
+import "dayjs/locale/ru";
 
 dayjs.locale("ru");
 
