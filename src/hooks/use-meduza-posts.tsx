@@ -17,7 +17,9 @@ export const useMeduzaPosts = ({
   take = 5,
   key = "",
 }: useMeduzaPostsProps) => {
-  if (!key) throw new Error("key is required");
+  if (!key) {
+    throw new Error("key is required");
+  }
 
   return useInfiniteQuery({
     queryKey: [key],

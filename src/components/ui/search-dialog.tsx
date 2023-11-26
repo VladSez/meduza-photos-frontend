@@ -18,18 +18,12 @@ import {
 } from "@/components/ui/command";
 
 import { searchPosts } from "@/app/actions/search-posts";
+import { stripHtmlTags } from "@/utils/strip-html-tags";
 
 import { ArticleDate } from "./article-date";
 import { useToast } from "./use-toast";
 
 import type { MeduzaArticles } from "@prisma/client";
-
-function stripHtmlTags(input: string) {
-  // Remove HTML tags
-  const withoutTags = input.replace(/<\/?[^>]+(>|$)/g, "");
-
-  return withoutTags;
-}
 
 export function SearchDialog() {
   const [open, setOpen] = React.useState(false);

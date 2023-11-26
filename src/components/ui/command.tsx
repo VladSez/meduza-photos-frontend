@@ -88,7 +88,9 @@ const CommandEmpty = React.forwardRef<
 >(({ className, ...props }, forwardedRef) => {
   const render = useCommandState((state) => state.filtered.count === 0);
 
-  if (!render) return null;
+  if (!render) {
+    return null;
+  }
 
   return (
     <div

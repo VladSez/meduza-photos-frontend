@@ -1,7 +1,7 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Drawer } from "vaul";
 
-import useMediaQuery from "@/hooks/useMediaQuery";
+import useMediaQuery from "@/hooks/use-media-query";
 
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 
@@ -20,11 +20,12 @@ export function Popover({
 }) {
   const { device, isMobile } = useMediaQuery();
 
-  if (!device)
+  if (!device) {
     // loading placeholder, this is needed becauce 'useMediaQuery' runs on the client
     return (
       <div className="h-10 w-[280px] animate-pulse rounded bg-slate-200"></div>
     );
+  }
 
   if (isMobile) {
     return (

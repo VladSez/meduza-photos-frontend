@@ -5,9 +5,9 @@ import { motion } from "framer-motion";
 import { memo } from "react";
 import { Virtuoso } from "react-virtuoso";
 
-import { useArticleInViewport } from "@/hooks/useArticleInViewport";
-import { useCalculateArticleInViewport } from "@/hooks/useCalculateArticleInViewport";
-import { useMeduzaPosts } from "@/hooks/useMeduzaPosts";
+import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
+import { useCalculateArticleInViewport } from "@/hooks/use-calculate-article-in-viewport";
+import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 
 import { Article } from "../article";
 import { NextPagePlaceholder } from "../ui/next-page-placeholder";

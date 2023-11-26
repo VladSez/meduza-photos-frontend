@@ -1,6 +1,10 @@
+/**
+ * Removes HTML tags from a given input string.
+ * @param input - The input string containing HTML tags.
+ * @returns The input string without HTML tags.
+ */
 export function stripHtmlTags(input: string) {
-  // Remove HTML tags
-  const withoutTags = input.replace(/<\/?[^>]+(>|$)/g, "");
+  const withoutTags = input.replaceAll(/<\/?[^>]+(>|$)/g, "");
 
   return withoutTags;
 }

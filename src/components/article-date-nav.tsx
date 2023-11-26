@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 
-import { useArticleInViewport } from "@/hooks/useArticleInViewport";
+import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
 
 import { PATHS } from "./navigation";
 

@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
-import { useFilterDate } from "@/hooks/useFilterDate";
+import { useFilterDate } from "@/hooks/use-filter-date";
 import { cn } from "@/lib/utils";
 
 import { useToast } from "../ui/use-toast";
@@ -109,8 +109,8 @@ export function DatePicker() {
                   await fetchPostByDate({
                     date: dayjs(date).format("YYYY/MM/DD"),
                   });
-                } catch (e) {
-                  if (e instanceof Error) {
+                } catch (error) {
+                  if (error instanceof Error) {
                     toast({
                       variant: "destructive",
                       title: "Ошибка",

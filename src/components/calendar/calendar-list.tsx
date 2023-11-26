@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
-import { useMeduzaPosts } from "@/hooks/useMeduzaPosts";
+import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
 import { NextPagePlaceholder } from "../ui/next-page-placeholder";
