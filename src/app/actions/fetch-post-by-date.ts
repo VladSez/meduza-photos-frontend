@@ -1,5 +1,7 @@
 "use server";
 
+import { redirect } from "next/navigation";
+
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -15,11 +17,9 @@ export async function fetchPostByDate({ date }: { date: string }) {
     },
   });
 
-  if (!article) {
-    throw new Error(`Article not found for date: ${date}`);
+  if (!article?.id) {
+    throw new Error(`Пост не найден: ${date}`);
   }
 
-  return {
-    article,
-  };
+  redirect(`/calendar/${article?.id}`);
 }

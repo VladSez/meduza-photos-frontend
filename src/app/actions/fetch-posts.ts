@@ -9,23 +9,45 @@ import { PostsSchema } from "@/utils/zod-schema";
 export async function fetchPosts({ page = 1, take = 5 }) {
   const skip = (page - 1) * take; // Calculate the number of items to skip
 
-  const _posts = await prisma.meduzaArticles.findMany({
-    orderBy: {
-      date: "desc",
-    },
-    skip,
-    take,
-  });
+  try {
+    const [postsResult, totalResult] = await Promise.allSettled([
+      prisma.meduzaArticles.findMany({
+        orderBy: {
+          date: "desc",
+        },
+        skip,
+        take,
+      }),
+      prisma.meduzaArticles.count(),
+    ]);
 
-  const total = await prisma.meduzaArticles.count();
+    if (postsResult.status === "rejected") {
+      throw postsResult.reason;
+    }
 
-  const posts = PostsSchema.parse(_posts);
+    if (totalResult.status === "rejected") {
+      throw totalResult.reason;
+    }
 
-  const hasMore = total - (skip + take) > 0;
+    const posts = PostsSchema.parse(postsResult.value);
+    const total = totalResult.value;
 
-  return {
-    posts,
-    hasMore,
-    nextPage: hasMore ? page + 1 : undefined,
-  };
+    const hasMore = total - (skip + take) > 0;
+
+    return {
+      posts,
+      hasMore,
+      nextPage: hasMore ? page + 1 : undefined,
+      hasError: false,
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      posts: [],
+      hasMore: false,
+      nextPage: undefined,
+      hasError: true,
+    };
+  }
 }

@@ -6,7 +6,10 @@ import { Article } from "@/components/article";
 import { Banner } from "@/components/ui/banner";
 
 import { prisma } from "@/lib/prisma";
+import { stripHtmlTags } from "@/utils/strip-html-tags";
 import { PostSchema } from "@/utils/zod-schema";
+
+import type { Metadata } from "next";
 
 interface PageProps {
   params: {
@@ -14,27 +17,39 @@ interface PageProps {
   };
 }
 
-function stripHtmlTags(input: string) {
-  // Remove HTML tags
-  const withoutTags = input.replace(/<\/?[^>]+(>|$)/g, "");
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata | undefined> {
+  try {
+    const article = await prisma.meduzaArticles.findUnique({
+      where: {
+        id: Number(params.id),
+      },
+    });
 
-  return withoutTags;
-}
+    const post = PostSchema.parse(article);
 
-export async function generateMetadata({ params }: PageProps) {
-  const article = await prisma.meduzaArticles.findUnique({
-    where: {
-      id: Number(params.id),
-    },
-  });
+    const title = post?.header ? stripHtmlTags(decode(post.header)) : "Пост";
+    const description = post?.subtitle ?? "";
 
-  const title = article?.header
-    ? stripHtmlTags(decode(article.header))
-    : "Пост";
-
-  return {
-    title,
-  };
+    return {
+      title: {
+        absolute: title,
+      },
+      description,
+      openGraph: {
+        title,
+        description,
+      },
+      twitter: {
+        title,
+        description,
+        card: "summary_large_image",
+      },
+    };
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function generateStaticParams() {
@@ -56,8 +71,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
   });
 
-  const _article = PostSchema.parse(article);
-
   const nextArticleId = await prisma.meduzaArticles.findFirst({
     where: {
       currentLink: article?.nextLink ?? "",
@@ -70,6 +83,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!article) {
     notFound();
   }
+
+  const _article = PostSchema.parse(article);
 
   return (
     <div className={`my-16 md:my-[100px]`}>

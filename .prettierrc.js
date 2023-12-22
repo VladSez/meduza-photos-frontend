@@ -19,7 +19,7 @@ const config = {
     "",
     "^@/(.*)$", // our imports from 'src' folder (check tsconfig.json)
     "",
-    "^[./]", // our imports
+    "^[.]", // relative imports
     "",
     "<TYPES>",
     "<TYPES>^[.]",

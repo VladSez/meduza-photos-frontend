@@ -1,8 +1,8 @@
-import dayjs from "dayjs";
 import Image from "next/image";
 
 import { PostPhotosSchema } from "@/utils/zod-schema";
 
+import { ArticleDate } from "./ui/article-date";
 import { Banner } from "./ui/banner";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -32,9 +32,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               rel="noopener"
               className="hover:underline"
             >
-              <time dateTime={new Date(article?.dateString).toISOString()}>
-                {dayjs(article?.dateString).format("DD MMMM YYYY")}
-              </time>
+              <ArticleDate date={article?.dateString} />
             </a>
             <span className="hidden md:block">·</span>
 
@@ -102,7 +100,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
                 <Image
                   src={photo?.img}
                   fill
-                  quality={85}
+                  quality={80}
                   alt={photo?.captionText ?? ""}
                   style={{ objectFit: "cover", objectPosition: "center" }}
                 />

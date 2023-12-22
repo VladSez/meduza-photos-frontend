@@ -1,20 +1,35 @@
+import { AlertCircle } from "lucide-react";
+
 import { CalendarList } from "@/components/calendar/calendar-list";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { fetchPosts } from "../actions/fetch-posts";
 
 import type { Metadata } from "next";
 
-// export const dynamic = "force-dynamic";
-
 export const revalidate = 3600; // 1 hour
 
 export const metadata: Metadata = {
   title: "Календарь",
-  description: "Фото хроники войны в Украине",
+  description: "Календарь событий войны в Украине.",
 };
 
 export default async function Calendar() {
-  const { posts } = await fetchPosts({ take: 10 });
+  const { hasError, posts } = await fetchPosts({ take: 10 });
+
+  if (hasError) {
+    return (
+      <div className="mx-10 mt-24">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Ошибка</AlertTitle>
+          <AlertDescription>
+            Что-то пошло не так. Попробуйте позже.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <article>

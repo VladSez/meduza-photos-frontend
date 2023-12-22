@@ -26,7 +26,9 @@ export const useActiveDateAnimation = ({
   const [y, setY] = useState(-ZERO);
 
   useEffect(() => {
-    if (!articleInViewportId) return;
+    if (!articleInViewportId) {
+      return;
+    }
 
     const datesByMonth = separateDatesByMonth(timeline);
 

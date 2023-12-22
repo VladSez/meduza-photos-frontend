@@ -1,19 +1,21 @@
 "use client";
 
 import clsx from "clsx";
-import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useArticleInViewport } from "@/hooks/useArticleInViewport";
+import { cn } from "@/lib/utils";
 
-const PATHS = {
+import { ArticleDateNav } from "./article-date-nav";
+import { SearchDialog } from "./ui/search-dialog";
+
+export const PATHS = {
   feed: "/feed",
   calendar: "/calendar",
 } as const;
 
-type NAVIGATION = {
+type Navigation = {
   href: string;
   label: string;
 };
@@ -27,45 +29,50 @@ const NAV_LINKS = [
     href: PATHS.calendar,
     label: "Календарь",
   },
-] as const satisfies Readonly<NAVIGATION[]>;
+] as const satisfies Readonly<Navigation[]>;
 
 export function Navigation() {
   const pathname = usePathname();
-
   const isFeedPage = pathname === PATHS.feed;
 
-  const { articleDateInViewport } = useArticleInViewport();
-
   return (
-    <motion.nav className="fixed top-3 z-10 mx-3 md:top-9 md:mx-7">
-      <div className="space-x-3">
-        {NAV_LINKS.map(({ href, label }) => {
-          const isActive = pathname.startsWith(href);
-
-          return (
-            <Link
-              href={href}
-              key={href}
-              className={clsx(
-                `text-xl hover:underline`,
-                isActive ? `font-semibold text-blue-600` : `text-gray-900`
+    <>
+      <motion.nav className="fixed top-0 z-10 flex w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-14 w-full items-center">
+          <div className="flex w-full flex-col sm:w-[250px]">
+            <div
+              className={cn(
+                "relative bottom-2 space-x-3 px-3 md:px-7 lg:bottom-0",
+                // we use 'bottom-2' when <ArticleDateNav /> is shown (to create some space for date), otherwise 'bottom-0'
+                { "bottom-0": !isFeedPage }
               )}
             >
-              {label}
-            </Link>
-          );
-        })}
-      </div>
+              {NAV_LINKS.map(({ href, label }) => {
+                const isActive = pathname.startsWith(href);
 
-      {isFeedPage && articleDateInViewport ? (
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="ml-0 block lg:hidden"
-        >
-          {dayjs(articleDateInViewport).format("D MMMM")}
-        </motion.span>
-      ) : null}
-    </motion.nav>
+                return (
+                  <Link
+                    href={href}
+                    key={href}
+                    className={clsx(
+                      `text-xl hover:underline`,
+                      isActive ? `font-semibold text-blue-600` : `text-gray-900`
+                    )}
+                  >
+                    {label}
+                  </Link>
+                );
+              })}
+            </div>
+            <div>
+              <ArticleDateNav />
+            </div>
+          </div>
+          <div className="mr-5 w-3/4">
+            <SearchDialog />
+          </div>
+        </div>
+      </motion.nav>
+    </>
   );
 }

@@ -10,26 +10,28 @@ export const separateDatesByMonth = <T extends TimelineType | PostsSchemaType>(
   dates: T
 ) => {
   if (!dates) {
-    throw new Error("Dates are not defined");
+    throw new TypeError("Dates are not defined");
   }
 
   if (!Array.isArray(dates)) {
-    throw new Error("Dates are not an array");
+    throw new TypeError("Dates are not an array");
   }
 
   const datesByMonth: {
     [key: string]: (T extends Array<infer U> ? U : never)[];
   } = {};
 
-  dates.forEach((entry) => {
-    const month = dayjs(entry?.date).format("MMMM YYYY");
+  for (const dateEntry of dates) {
+    const month = dayjs(dateEntry?.date).format("MMMM YYYY");
 
     if (!datesByMonth[month]) {
       datesByMonth[month] = [];
     }
 
-    datesByMonth?.[month]?.push(entry as T extends Array<infer U> ? U : never);
-  });
+    datesByMonth?.[month]?.push(
+      dateEntry as T extends Array<infer U> ? U : never
+    );
+  }
 
   return datesByMonth;
 };

@@ -6,8 +6,9 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "prettier",
-    "next/core-web-vitals"
+    "plugin:unicorn/recommended",
+    "next/core-web-vitals",
+    "prettier"
   ],
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -22,6 +23,12 @@
         "checksVoidReturn": false
       }
     ],
-    "@typescript-eslint/consistent-type-imports": "error"
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/no-import-type-side-effects": "error",
+    "curly": "error",
+    "unicorn/no-unused-properties": "error",
+    "unicorn/prevent-abbreviations": "off",
+    "unicorn/no-null": "off",
+    "unicorn/prefer-at": "off"
   }
 }

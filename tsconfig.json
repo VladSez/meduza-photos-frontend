@@ -13,6 +13,7 @@
     "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
     "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
     // "moduleDetection": "force",
+    "verbatimModuleSyntax": true, // https://www.typescriptlang.org/tsconfig#verbatimModuleSyntax
 
     "module": "esnext",
     "moduleResolution": "node",
@@ -34,6 +35,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "src", ".next/types/**/*.ts", "**/*.ts"],
   "exclude": ["node_modules"]
 }

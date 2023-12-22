@@ -5,26 +5,23 @@ import { motion } from "framer-motion";
 import { memo } from "react";
 import { Virtuoso } from "react-virtuoso";
 
-import { useArticleInViewport } from "@/hooks/useArticleInViewport";
-import { useCalculateArticleInViewport } from "@/hooks/useCalculateArticleInViewport";
-import { useMeduzaPosts } from "@/hooks/useMeduzaPosts";
+import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
+import { useCalculateArticleInViewport } from "@/hooks/use-calculate-article-in-viewport";
+import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 
 import { Article } from "../article";
-import { LoadingNextPage } from "../ui/loading-next-page";
+import { NextPagePlaceholder } from "../ui/next-page-placeholder";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
 import type { FeedProps } from ".";
 
-export const VirtualizedFeed = ({
-  initialPosts,
-}: Omit<FeedProps, "timeline">) => {
+export const VirtualizedFeed = ({ initialPosts }: FeedProps) => {
   const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
     useArticleInViewport();
 
   const {
     data: feedData,
     fetchNextPage,
-    isFetchingNextPage,
     isFetching,
     hasNextPage,
   } = useMeduzaPosts({ initialPosts, take: 2, key: "feed" });
@@ -46,6 +43,7 @@ export const VirtualizedFeed = ({
         data={flattenedData}
         itemsRendered={(range) => {
           // the range has to be exactly 1, to be able to use to calculate the active section
+          // (not super elegant solution unfortunately...)
           if (range?.length === 1) {
             // take last id from range
             const articleId = String(range?.[0]?.data?.id) ?? "";
@@ -66,14 +64,14 @@ export const VirtualizedFeed = ({
           );
         }}
       />
-      {hasNextPage && isFetchingNextPage ? (
+      {hasNextPage ? (
         <motion.div
-          className="my-10 flex flex-col justify-center space-y-5"
+          className="mt-12 flex flex-col justify-center space-y-5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <LoadingNextPage />
+          <NextPagePlaceholder />
         </motion.div>
       ) : null}
     </>

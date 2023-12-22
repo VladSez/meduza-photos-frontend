@@ -5,7 +5,6 @@ import { ru } from "date-fns/locale";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { Calendar as CalendarIcon, Loader as LoaderIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import * as React from "react";
 import { DayContent } from "react-day-picker";
 
@@ -21,7 +20,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
-import { useFilterDate } from "@/hooks/useFilterDate";
+import { useFilterDate } from "@/hooks/use-filter-date";
 import { cn } from "@/lib/utils";
 
 import { useToast } from "../ui/use-toast";
@@ -56,13 +55,12 @@ const lastAvailableDate = canUseTodayDate
 const endDate = dayjs("2022-02-24").toDate();
 
 export function DatePicker() {
-  const router = useRouter();
   const { toast } = useToast();
-
-  const [isPending, startTransition] = React.useTransition();
 
   const { filterDate, setFilterDate } = useFilterDate();
   const [openPopover, setOpenPopover] = React.useState(false);
+
+  const [isPending, setPending] = React.useState(false);
 
   return (
     <>
@@ -101,31 +99,28 @@ export function DatePicker() {
             mode="single"
             selected={filterDate}
             defaultMonth={filterDate ?? lastAvailableDate}
-            onSelect={(date) => {
+            onSelect={async (date) => {
               setFilterDate(date);
 
               if (date) {
-                startTransition(async () => {
-                  try {
-                    const { article } = await fetchPostByDate({
-                      date: dayjs(date).format("YYYY/MM/DD"),
-                    });
+                try {
+                  setPending(true);
 
-                    if (article?.id) {
-                      router.push(`/calendar/${article?.id}`);
-                    }
-                  } catch (e) {
-                    if (e instanceof Error) {
-                      toast({
-                        variant: "destructive",
-                        title: e.message ?? "Uh oh! Something went wrong.",
-                        description: "There was a problem with your request.",
-                      });
-                    }
-                  } finally {
-                    setOpenPopover(false);
+                  await fetchPostByDate({
+                    date: dayjs(date).format("YYYY/MM/DD"),
+                  });
+                } catch (error) {
+                  if (error instanceof Error) {
+                    toast({
+                      variant: "destructive",
+                      title: "Ошибка",
+                      description: `Что-то пошло не так: попробуйте позже.`,
+                    });
                   }
-                });
+                } finally {
+                  setPending(false);
+                  setOpenPopover(false);
+                }
               }
             }}
             initialFocus

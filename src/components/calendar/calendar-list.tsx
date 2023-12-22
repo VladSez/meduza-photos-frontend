@@ -7,10 +7,10 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
-import { useMeduzaPosts } from "@/hooks/useMeduzaPosts";
+import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
-import { LoadingNextPage } from "../ui/loading-next-page";
+import { NextPagePlaceholder } from "../ui/next-page-placeholder";
 import { DatePicker } from "./calendar-date-picker";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -25,13 +25,22 @@ export function CalendarList({ initialPosts }: FeedProps) {
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useMeduzaPosts({ initialPosts, take: 10, key: "calendar" });
 
+  // scroll to the top of the page when the page is loaded
   useEffect(() => {
-    if (inView && !isFetchingNextPage && hasNextPage) {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      // wrap in debounce
       void fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
 
-  const _data = data?.pages.flatMap((page) => page.posts) ?? [];
+  const _data =
+    data?.pages.flatMap((page) => {
+      return page.posts;
+    }) ?? [];
 
   const postsByMonth = separateDatesByMonth(_data);
 
@@ -64,14 +73,14 @@ export function CalendarList({ initialPosts }: FeedProps) {
           );
         })}
       </div>
-      {hasNextPage && isFetchingNextPage ? (
+      {hasNextPage ? (
         <motion.div
           className="my-10 flex justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <LoadingNextPage />
+          <NextPagePlaceholder />
         </motion.div>
       ) : null}
     </>
