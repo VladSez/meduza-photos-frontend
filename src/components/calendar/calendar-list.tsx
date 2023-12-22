@@ -19,26 +19,28 @@ import type { FeedProps } from "../feed";
 export function CalendarList({ initialPosts }: FeedProps) {
   const { ref, inView } = useInView({
     threshold: 0,
-    rootMargin: "50px",
+    rootMargin: "400px",
   });
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useMeduzaPosts({ initialPosts, take: 10, key: "calendar" });
 
+  // scroll to the top of the page when the page is loaded
   useEffect(() => {
-    // there is a bug in next.js with `isFetchingNextPage`: https://github.com/vercel/next.js/issues/56811
-    // if (inView && !isFetchingNextPage && hasNextPage) {
-    //   void fetchNextPage();
-    // }
+    window.scrollTo(0, 0);
+  }, []);
 
-    // to make it work in "next": "13.5.1" and above we need to remove `isFetchingNextPage` check
-    // this will work, but this is not optimal
-    if (inView && hasNextPage) {
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      // wrap in debounce
       void fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
 
-  const _data = data?.pages.flatMap((page) => page.posts) ?? [];
+  const _data =
+    data?.pages.flatMap((page) => {
+      return page.posts;
+    }) ?? [];
 
   const postsByMonth = separateDatesByMonth(_data);
 
