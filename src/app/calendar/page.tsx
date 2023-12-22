@@ -9,20 +9,9 @@ import type { Metadata } from "next";
 
 export const revalidate = 3600; // 1 hour
 
-const commonMeta = {
-  title: "Фотографии войны в Украине. Календарь",
-  description: "Фото хроники войны в Украине",
-} as const satisfies Metadata;
-
 export const metadata: Metadata = {
-  ...commonMeta,
-  openGraph: {
-    ...commonMeta,
-  },
-  twitter: {
-    ...commonMeta,
-    card: "summary_large_image",
-  },
+  title: "Календарь",
+  description: "Календарь событий войны в Украине.",
 };
 
 export default async function Calendar() {

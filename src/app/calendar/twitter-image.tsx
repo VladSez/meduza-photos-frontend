@@ -18,14 +18,13 @@ export const size = {
   height: 630,
 };
 export const contentType = "image/png";
+export const alt = "Фотографии войны в Украине. Календарь событий";
 
 export default async function Image() {
   const interFont = await fetch(
     new URL("../../fonts/Inter-SemiBold.ttf", import.meta.url)
   ).then((res) => res.arrayBuffer());
 
-  // we can't query prisma, because it's not available in the edge runtime
-  // so we have to use supabase
   const { data, error } = await supabase
     .from("MeduzaArticles")
     .select("header, dateString, photosWithMeta")
@@ -48,7 +47,7 @@ export default async function Image() {
     (
       <OpenGraphImage
         heroBanner={heroBanner}
-        title="Фотографии войны в Украине. Календарь"
+        title="Фотографии войны в Украине. Календарь событий"
       />
     ),
     {

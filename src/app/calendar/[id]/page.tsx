@@ -19,31 +19,37 @@ interface PageProps {
 
 export async function generateMetadata({
   params,
-}: PageProps): Promise<Metadata> {
-  const article = await prisma.meduzaArticles.findUnique({
-    where: {
-      id: Number(params.id),
-    },
-  });
+}: PageProps): Promise<Metadata | undefined> {
+  try {
+    const article = await prisma.meduzaArticles.findUnique({
+      where: {
+        id: Number(params.id),
+      },
+    });
 
-  const post = PostSchema.parse(article);
+    const post = PostSchema.parse(article);
 
-  const title = post?.header ? stripHtmlTags(decode(post.header)) : "Пост";
-  const description = post?.subtitle ?? "";
+    const title = post?.header ? stripHtmlTags(decode(post.header)) : "Пост";
+    const description = post?.subtitle ?? "";
 
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
+    return {
+      title: {
+        absolute: title,
+      },
       description,
-    },
-    twitter: {
-      title,
-      description,
-      card: "summary_large_image",
-    },
-  };
+      openGraph: {
+        title,
+        description,
+      },
+      twitter: {
+        title,
+        description,
+        card: "summary_large_image",
+      },
+    };
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function generateStaticParams() {
@@ -65,8 +71,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
   });
 
-  const _article = PostSchema.parse(article);
-
   const nextArticleId = await prisma.meduzaArticles.findFirst({
     where: {
       currentLink: article?.nextLink ?? "",
@@ -79,6 +83,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!article) {
     notFound();
   }
+
+  const _article = PostSchema.parse(article);
 
   return (
     <div className={`my-16 md:my-[100px]`}>

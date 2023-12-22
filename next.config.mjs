@@ -1,3 +1,7 @@
+// this import is used to validate schema on build
+// More info: https://env.t3.gg/docs/nextjs#validate-schema-on-build-(recommended)
+import "./src/env.mjs";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,

@@ -24,7 +24,7 @@ export function OpenGraphImage({ heroBanner, date, title = "" }: OgImageProps) {
         <img
           tw="flex flex-1"
           src={"https://ik.imagekit.io/fl2lbswwo/tr:q-50/" + heroBanner?.img}
-          alt={heroBanner?.captionText ?? ""}
+          alt={stripHtmlTags(decode(heroBanner?.captionText)) ?? ""}
         />
         {/* Overlay */}
         <div tw="absolute flex inset-0 bg-black bg-opacity-60" />

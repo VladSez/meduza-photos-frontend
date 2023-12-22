@@ -26,6 +26,7 @@
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "curly": "error",
+    "unicorn/no-unused-properties": "error",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/no-null": "off",
     "unicorn/prefer-at": "off"

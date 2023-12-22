@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Navigation } from "../components/navigation";
 import Providers from "./providers";
 
+import type { Metadata } from "next";
+
 import "./globals.css";
 import "dayjs/locale/ru";
 
@@ -42,6 +44,23 @@ const interLocal = localFont({
   ],
   preload: true,
 });
+
+export const metadata: Metadata = {
+  title: {
+    template: "Фотографии войны в Украине | %s",
+    default: "Фотографии войны в Украине.",
+  },
+  description: "Фото хроники войны в Украине.",
+  openGraph: {
+    title: "Фотографии войны в Украине.",
+    description: "Фото хроники войны в Украине.",
+  },
+  twitter: {
+    title: "Фотографии войны в Украине.",
+    description: "Фото хроники войны в Украине.",
+    card: "summary_large_image",
+  },
+};
 
 export default function RootLayout({
   children,
