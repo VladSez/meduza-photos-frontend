@@ -8,6 +8,7 @@ import { Virtuoso } from "react-virtuoso";
 import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
 import { useCalculateArticleInViewport } from "@/hooks/use-calculate-article-in-viewport";
 import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
+import { filterOutDuplicateIds } from "@/lib/utils";
 
 import { Article } from "../article";
 import { NextPagePlaceholder } from "../ui/next-page-placeholder";
@@ -26,12 +27,16 @@ export const VirtualizedFeed = ({ initialPosts }: FeedProps) => {
     hasNextPage,
   } = useMeduzaPosts({ initialPosts, take: 2, key: "feed" });
 
-  const flattenedData = feedData?.pages.flatMap((page) => page.posts) ?? [];
+  const posts = filterOutDuplicateIds(
+    feedData?.pages.flatMap((page) => {
+      return page.posts;
+    }) ?? []
+  );
 
   return (
     <>
       <Virtuoso
-        initialItemCount={flattenedData.length}
+        initialItemCount={posts.length}
         increaseViewportBy={1000}
         overscan={1000}
         useWindowScroll
@@ -40,7 +45,7 @@ export const VirtualizedFeed = ({ initialPosts }: FeedProps) => {
             void fetchNextPage();
           }
         }}
-        data={flattenedData}
+        data={posts}
         itemsRendered={(range) => {
           // the range has to be exactly 1, to be able to use to calculate the active section
           // (not super elegant solution unfortunately...)
