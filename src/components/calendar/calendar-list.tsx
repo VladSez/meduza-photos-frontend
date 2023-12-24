@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
+import { filterOutDuplicateIds } from "@/lib/utils";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
 import { NextPagePlaceholder } from "../ui/next-page-placeholder";
@@ -37,12 +38,13 @@ export function CalendarList({ initialPosts }: FeedProps) {
     }
   }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
 
-  const _data =
+  const posts = filterOutDuplicateIds(
     data?.pages.flatMap((page) => {
       return page.posts;
-    }) ?? [];
+    }) ?? []
+  );
 
-  const postsByMonth = separateDatesByMonth(_data);
+  const postsByMonth = separateDatesByMonth(posts);
 
   return (
     <>
