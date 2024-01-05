@@ -59,7 +59,9 @@ export async function generateStaticParams() {
     },
   });
 
-  const idToString = ids.map(({ id }) => String(id));
+  const idToString = ids.map(({ id }) => {
+    return String(id);
+  });
 
   return idToString;
 }

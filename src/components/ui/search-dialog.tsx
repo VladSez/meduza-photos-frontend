@@ -36,32 +36,30 @@ export function SearchDialog() {
   const { toast } = useToast();
   const router = useRouter();
 
-  const debouncedChangeHandler = React.useMemo(
-    () =>
-      debounce((search: string) => {
-        setLoading(true);
+  const debouncedChangeHandler = React.useMemo(() => {
+    return debounce((search: string) => {
+      setLoading(true);
 
-        searchPosts({ search: search.trim() })
-          .then((res) => {
-            setResults(res?.results);
-          })
-          .catch((error) => {
-            console.error(error);
+      searchPosts({ search: search.trim() })
+        .then((res) => {
+          setResults(res?.results);
+        })
+        .catch((error) => {
+          console.error(error);
 
-            if (error instanceof Error) {
-              toast({
-                variant: "destructive",
-                title: "Ошибка",
-                description: `Что-то пошло не так: попробуйте позже.`,
-              });
-            }
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }, 400),
-    [toast]
-  );
+          if (error instanceof Error) {
+            toast({
+              variant: "destructive",
+              title: "Ошибка",
+              description: `Что-то пошло не так: попробуйте позже.`,
+            });
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, 400);
+  }, [toast]);
 
   React.useEffect(() => {
     if (search) {
@@ -75,12 +73,16 @@ export function SearchDialog() {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        setOpen((open) => {
+          return !open;
+        });
       }
     };
 
     document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
+    return () => {
+      return document.removeEventListener("keydown", down);
+    };
   }, []);
 
   const handleChange = (event: string) => {
@@ -91,7 +93,9 @@ export function SearchDialog() {
     <>
       <button
         onClick={() => {
-          setOpen((open) => !open);
+          setOpen((open) => {
+            return !open;
+          });
         }}
         className="relative inline-flex h-8 w-full max-w-[208px] items-center justify-start rounded-md border bg-transparent px-4 py-2 text-sm shadow-sm transition-colors hover:bg-slate-50/50 focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
       >
@@ -102,7 +106,12 @@ export function SearchDialog() {
       </button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         {/* bug: https://github.com/pacocoursey/cmdk/issues/103 */}
-        <Command filter={() => 1} shouldFilter={false}>
+        <Command
+          filter={() => {
+            return 1;
+          }}
+          shouldFilter={false}
+        >
           <CommandInput
             placeholder="Поиск..."
             autoFocus

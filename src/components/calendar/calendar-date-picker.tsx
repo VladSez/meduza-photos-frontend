@@ -74,7 +74,9 @@ export function DatePicker() {
               "w-[280px] justify-start text-left font-normal",
               !filterDate && "text-muted-foreground"
             )}
-            onClick={() => setOpenPopover(!openPopover)}
+            onClick={() => {
+              setOpenPopover(!openPopover);
+            }}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {filterDate ? (
@@ -87,14 +89,16 @@ export function DatePicker() {
         content={
           <Calendar
             components={{
-              DayContent: (props) => (
-                <DateTime
-                  {...props}
-                  isPending={isPending}
-                  filterDate={filterDate}
-                  lastAvailableDate={lastAvailableDate}
-                />
-              ),
+              DayContent: (props) => {
+                return (
+                  <DateTime
+                    {...props}
+                    isPending={isPending}
+                    filterDate={filterDate}
+                    lastAvailableDate={lastAvailableDate}
+                  />
+                );
+              },
             }}
             mode="single"
             selected={filterDate}

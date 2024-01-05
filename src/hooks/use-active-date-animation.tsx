@@ -32,17 +32,17 @@ export const useActiveDateAnimation = ({
 
     const datesByMonth = separateDatesByMonth(timeline);
 
-    const currentActiveDate = timeline.find(
-      (entry) => entry.id === articleInViewportId
-    )?.date;
+    const currentActiveDate = timeline.find((entry) => {
+      return entry.id === articleInViewportId;
+    })?.date;
 
     const currentActiveMonth = dayjs(currentActiveDate).format("MMMM YYYY");
 
     // find index of the current active date in 'active' month
     const index =
-      datesByMonth?.[currentActiveMonth]?.findIndex(
-        (entry) => entry.id === articleInViewportId
-      ) ?? 0;
+      datesByMonth?.[currentActiveMonth]?.findIndex((entry) => {
+        return entry.id === articleInViewportId;
+      }) ?? 0;
 
     const scrollOffset = index * OFFSET;
 

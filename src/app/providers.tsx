@@ -51,30 +51,29 @@ export const FilterDateContext = createContext<{
 export default function Providers({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            // With SSR, we usually want to set some default staleTime
-            // above 0 to avoid refetching immediately on the client
-            // https://tanstack.com/query/v5/docs/react/guides/ssr
-            staleTime: 60 * 1000,
-          },
+  const [queryClient] = useState(() => {
+    return new QueryClient({
+      defaultOptions: {
+        queries: {
+          // With SSR, we usually want to set some default staleTime
+          // above 0 to avoid refetching immediately on the client
+          // https://tanstack.com/query/v5/docs/react/guides/ssr
+          staleTime: 60 * 1000,
         },
-        queryCache: new QueryCache({
-          onError: (error) => {
-            if (error instanceof Error) {
-              toast({
-                variant: "destructive",
-                title: "Ошибка",
-                description: `Что-то пошло не так: попробуйте позже.`,
-              });
-            }
-          },
-        }),
-      })
-  );
+      },
+      queryCache: new QueryCache({
+        onError: (error) => {
+          if (error instanceof Error) {
+            toast({
+              variant: "destructive",
+              title: "Ошибка",
+              description: `Что-то пошло не так: попробуйте позже.`,
+            });
+          }
+        },
+      }),
+    });
+  });
 
   const [articleInViewport, setArticleInViewport] = useState("");
   const [articleDateInViewport, setArticleDateInViewport] = useState("");
@@ -86,13 +85,12 @@ export default function Providers({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const filterDateContextValue = useMemo(
-    () => ({
+  const filterDateContextValue = useMemo(() => {
+    return {
       filterDate,
       setFilterDate: setFilterDateHandler,
-    }),
-    [filterDate, setFilterDateHandler]
-  );
+    };
+  }, [filterDate, setFilterDateHandler]);
 
   const setArticleInViewportHandler = useCallback(
     (articleId: string | undefined) => {
@@ -112,20 +110,19 @@ export default function Providers({ children }: { children: ReactNode }) {
     []
   );
 
-  const articleContextValue = useMemo(
-    () => ({
+  const articleContextValue = useMemo(() => {
+    return {
       articleInViewport,
       setArticleInViewport: setArticleInViewportHandler,
       articleDateInViewport,
       setArticleDateInViewport: setArticleDateInViewportHandler,
-    }),
-    [
-      articleDateInViewport,
-      articleInViewport,
-      setArticleDateInViewportHandler,
-      setArticleInViewportHandler,
-    ]
-  );
+    };
+  }, [
+    articleDateInViewport,
+    articleInViewport,
+    setArticleDateInViewportHandler,
+    setArticleInViewportHandler,
+  ]);
 
   return (
     <QueryClientProvider client={queryClient}>

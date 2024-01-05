@@ -23,7 +23,9 @@ export const alt = "Фотографии войны в Украине";
 export default async function Image({ params }: { params: { id: string } }) {
   const interFont = await fetch(
     new URL("../../../fonts/Inter-SemiBold.ttf", import.meta.url)
-  ).then((res) => res.arrayBuffer());
+  ).then((res) => {
+    return res.arrayBuffer();
+  });
 
   const { data, error } = await supabase
     .from("MeduzaArticles")

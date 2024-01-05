@@ -27,9 +27,9 @@ export const Timeline = memo(function Timeline({
       <div className="fixed top-20">
         {datesByMonth.map(([month, days]) => {
           // check if there are any 'active' dates in this month
-          const isActiveMonth = days.some(
-            ({ id }) => id === Number(articleInViewportId)
-          );
+          const isActiveMonth = days.some(({ id }) => {
+            return id === Number(articleInViewportId);
+          });
 
           // show only months with 'active' dates
           if (!isActiveMonth) {

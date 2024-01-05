@@ -5,7 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { Timeline } from "./timeline";
 
 async function sleep(ms: number) {
-  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+  return new Promise<void>((resolve) => {
+    return setTimeout(resolve, ms);
+  });
 }
 
 // https://buildui.com/recipes/artificial-delay
