@@ -1,7 +1,9 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
-import { Drawer } from "vaul";
+
+import { Drawer, DrawerContent, DrawerTrigger } from "@/ui/drawer";
 
 import useMediaQuery from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 
@@ -9,14 +11,14 @@ export function Popover({
   trigger,
   content,
   align = "center",
-  openPopover,
-  setOpenPopover,
+  open,
+  setOpen,
 }: {
   trigger: ReactNode;
   content: ReactNode | string;
   align?: "center" | "start" | "end";
-  openPopover: boolean;
-  setOpenPopover: Dispatch<SetStateAction<boolean>>;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const { device, isMobile } = useMediaQuery();
 
@@ -29,26 +31,23 @@ export function Popover({
 
   if (isMobile) {
     return (
-      <Drawer.Root open={openPopover} onOpenChange={setOpenPopover}>
-        <div className="sm:hidden">{trigger}</div>
-        <Drawer.Overlay className="fixed inset-0 z-40 bg-gray-100 bg-opacity-10 backdrop-blur" />
-        <Drawer.Portal>
-          <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 mt-24 rounded-t-[10px] border-t border-gray-200 bg-white">
-            <div className="sticky top-0 z-20 flex w-full items-center justify-center rounded-t-[10px] bg-inherit">
-              <div className="my-3 h-1 w-12 rounded-full bg-gray-300" />
-            </div>
-            <div className="flex min-h-[150px] w-full items-center justify-center overflow-hidden bg-white pb-8 align-middle shadow-xl">
-              {content}
-            </div>
-          </Drawer.Content>
-          <Drawer.Overlay />
-        </Drawer.Portal>
-      </Drawer.Root>
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+        <DrawerContent className="">
+          <div
+            className={cn(
+              "mx-auto mt-5 flex h-full w-full max-w-md flex-col p-4"
+            )}
+          >
+            {content}
+          </div>
+        </DrawerContent>
+      </Drawer>
     );
   }
 
   return (
-    <PopoverPrimitive.Root open={openPopover} onOpenChange={setOpenPopover}>
+    <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
       <PopoverPrimitive.Trigger className="hidden sm:inline-flex" asChild>
         {trigger}
       </PopoverPrimitive.Trigger>

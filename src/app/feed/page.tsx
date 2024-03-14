@@ -1,11 +1,43 @@
 import { AlertCircle } from "lucide-react";
+import { Suspense } from "react";
 
-import { Feed } from "@/components/feed";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/ui/alert";
 
 import { fetchPosts } from "../actions/fetch-posts";
+import { FeedClient } from "./_components/feed-client";
+import { TimelineServer } from "./_components/timeline-server";
 
 import type { Metadata } from "next";
+
+const TimelinePlaceholder = () => {
+  return (
+    <div className="relative top-16 mx-7 flex w-full max-w-[136px] animate-pulse md:my-10">
+      <div className="flex-1">
+        <div className="mb-6 h-4 w-full rounded bg-slate-200"></div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const revalidate = 3600; // 1 hour
 
@@ -34,7 +66,15 @@ export default async function FeedList() {
   return (
     <>
       <div className="mb-2 grid grid-cols-12 gap-2 md:my-5">
-        <Feed initialPosts={posts} />
+        <div className="md:col-span-2"></div>
+        <div className="col-span-12 my-14 lg:col-span-8">
+          <FeedClient initialPosts={posts} />
+        </div>
+        <div className="relative hidden justify-center lg:col-span-2 lg:flex">
+          <Suspense fallback={<TimelinePlaceholder />}>
+            <TimelineServer />
+          </Suspense>
+        </div>
       </div>
     </>
   );

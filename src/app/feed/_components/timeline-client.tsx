@@ -10,9 +10,9 @@ import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
-import type { TimelineType } from "./timeline-async";
+import type { TimelineType } from "./timeline-server";
 
-export const Timeline = memo(function Timeline({
+export const TimelineClient = memo(function Timeline({
   timeline,
 }: {
   timeline: TimelineType;
@@ -27,9 +27,9 @@ export const Timeline = memo(function Timeline({
       <div className="fixed top-20">
         {datesByMonth.map(([month, days]) => {
           // check if there are any 'active' dates in this month
-          const isActiveMonth = days.some(
-            ({ id }) => id === Number(articleInViewportId)
-          );
+          const isActiveMonth = days.some(({ id }) => {
+            return id === Number(articleInViewportId);
+          });
 
           // show only months with 'active' dates
           if (!isActiveMonth) {

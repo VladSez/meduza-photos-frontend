@@ -8,22 +8,22 @@ import { Calendar as CalendarIcon, Loader as LoaderIcon } from "lucide-react";
 import * as React from "react";
 import { DayContent } from "react-day-picker";
 
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover } from "@/components/ui/popover";
+import { Button } from "@/ui/button";
+import { Calendar } from "@/ui/calendar";
+import { Popover } from "@/ui/popover";
 import {
   Tooltip,
   TooltipContent,
   TooltipPortal,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/ui/tooltip";
 
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
 import { useFilterDate } from "@/hooks/use-filter-date";
 import { cn } from "@/lib/utils";
 
-import { useToast } from "../ui/use-toast";
+import { useToast } from "../../../ui/use-toast";
 
 import type { DayContentProps } from "react-day-picker";
 
@@ -58,15 +58,15 @@ export function DatePicker() {
   const { toast } = useToast();
 
   const { filterDate, setFilterDate } = useFilterDate();
-  const [openPopover, setOpenPopover] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const [isPending, setPending] = React.useState(false);
 
   return (
     <>
       <Popover
-        openPopover={openPopover}
-        setOpenPopover={setOpenPopover}
+        open={open}
+        setOpen={setOpen}
         trigger={
           <Button
             variant={"outline"}
@@ -74,7 +74,11 @@ export function DatePicker() {
               "w-[280px] justify-start text-left font-normal",
               !filterDate && "text-muted-foreground"
             )}
-            onClick={() => setOpenPopover(!openPopover)}
+            onClick={() => {
+              setOpen((open) => {
+                return !open;
+              });
+            }}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {filterDate ? (
@@ -85,51 +89,55 @@ export function DatePicker() {
           </Button>
         }
         content={
-          <Calendar
-            components={{
-              DayContent: (props) => (
-                <DateTime
-                  {...props}
-                  isPending={isPending}
-                  filterDate={filterDate}
-                  lastAvailableDate={lastAvailableDate}
-                />
-              ),
-            }}
-            mode="single"
-            selected={filterDate}
-            defaultMonth={filterDate ?? lastAvailableDate}
-            onSelect={async (date) => {
-              setFilterDate(date);
+          <div className="flex items-center justify-center">
+            <Calendar
+              components={{
+                DayContent: (props) => {
+                  return (
+                    <DateTime
+                      {...props}
+                      isPending={isPending}
+                      filterDate={filterDate}
+                      lastAvailableDate={lastAvailableDate}
+                    />
+                  );
+                },
+              }}
+              mode="single"
+              selected={filterDate}
+              defaultMonth={filterDate ?? lastAvailableDate}
+              onSelect={async (date) => {
+                setFilterDate(date);
 
-              if (date) {
-                try {
-                  setPending(true);
+                if (date) {
+                  try {
+                    setPending(true);
 
-                  await fetchPostByDate({
-                    date: dayjs(date).format("YYYY/MM/DD"),
-                  });
-                } catch (error) {
-                  if (error instanceof Error) {
-                    toast({
-                      variant: "destructive",
-                      title: "Ошибка",
-                      description: `Что-то пошло не так: попробуйте позже.`,
+                    await fetchPostByDate({
+                      date: dayjs(date).format("YYYY/MM/DD"),
                     });
+                  } catch (error) {
+                    if (error instanceof Error) {
+                      toast({
+                        variant: "destructive",
+                        title: "Ошибка",
+                        description: `Что-то пошло не так: попробуйте позже.`,
+                      });
+                    }
+                  } finally {
+                    setPending(false);
+                    setOpen(false);
                   }
-                } finally {
-                  setPending(false);
-                  setOpenPopover(false);
                 }
-              }
-            }}
-            initialFocus
-            weekStartsOn={1}
-            disabled={{ after: lastAvailableDate, before: endDate }}
-            locale={ru}
-            fromDate={endDate}
-            toDate={lastAvailableDate}
-          />
+              }}
+              initialFocus
+              weekStartsOn={1}
+              disabled={{ after: lastAvailableDate, before: endDate }}
+              locale={ru}
+              fromDate={endDate}
+              toDate={lastAvailableDate}
+            />
+          </div>
         }
       />
     </>

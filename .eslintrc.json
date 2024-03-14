@@ -26,6 +26,8 @@
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "curly": "error",
+    "array-callback-return": ["error", { "allowImplicit": true }],
+    "arrow-body-style": ["error", "always"],
     "unicorn/no-unused-properties": "error",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/no-null": "off",

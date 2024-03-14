@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { ImageResponse } from "next/og";
 import { z } from "zod";
 
-import { OpenGraphImage } from "@/components/og-image";
+import { OpenGraphImage } from "@/ui/og-image";
 
 import { supabase } from "@/lib/supabase";
 import { OpenGraphSchema } from "@/utils/zod-schema";
@@ -23,7 +23,9 @@ export const alt = "Фотографии войны в Украине. Лент�
 export default async function Image() {
   const interFont = await fetch(
     new URL("../../fonts/Inter-SemiBold.ttf", import.meta.url)
-  ).then((res) => res.arrayBuffer());
+  ).then((res) => {
+    return res.arrayBuffer();
+  });
 
   const { data, error } = await supabase
     .from("MeduzaArticles")

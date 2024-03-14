@@ -1,15 +1,19 @@
 import dayjs from "dayjs";
 import localFont from "next/font/local";
 
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/ui/toaster";
 
-import { Navigation } from "../components/navigation";
-import Providers from "./providers";
+import { cn } from "@/lib/utils";
+
+import { Providers } from "./providers";
 
 import type { Metadata } from "next";
 
-import "./globals.css";
 import "dayjs/locale/ru";
+
+import { Navigation } from "./components/navigation";
+
+import "./globals.css";
 
 dayjs.locale("ru");
 
@@ -68,8 +72,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={interLocal.className}>
+    <html lang="ru" className="">
+      <body className={cn(interLocal.className, "")}>
         <Providers>
           <Navigation />
           {children}

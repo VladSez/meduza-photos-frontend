@@ -13,7 +13,6 @@ const config: KnipConfig = {
     "src/app/**/*.{js,jsx,ts,tsx}",
   ],
 
-  ignore: ["src/lib/image-loader.ts"],
   ignoreDependencies: ["sharp", "eslint-config-next"],
 };
 

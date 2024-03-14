@@ -5,6 +5,11 @@ import "./src/env.mjs";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   async redirects() {
     return [
       {
@@ -22,8 +27,13 @@ const nextConfig = {
         port: "",
       },
     ],
-    loader: "custom",
-    loaderFile: "./src/lib/image-loader.ts",
+
+    // custom loader is broken for some reason, maybe my proxy is blocked. not sure
+    // loader: "custom",
+    // loaderFile: "./src/lib/image-loader.ts",
+
+    // main concern is cost
+    unoptimized: true,
   },
 };
 

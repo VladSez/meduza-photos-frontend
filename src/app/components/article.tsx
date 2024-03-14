@@ -1,9 +1,9 @@
 import Image from "next/image";
 
-import { PostPhotosSchema } from "@/utils/zod-schema";
+import { ArticleDate } from "@/ui/article-date";
+import { Banner } from "@/ui/banner";
 
-import { ArticleDate } from "./ui/article-date";
-import { Banner } from "./ui/banner";
+import { PostPhotosSchema } from "@/utils/zod-schema";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
 
