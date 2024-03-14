@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 
-import { Timeline } from "./timeline";
+import { TimelineClient } from "./timeline-client";
 
 async function sleep(ms: number) {
   return new Promise<void>((resolve) => {
@@ -28,7 +28,7 @@ const TimelineSchema = z.array(
     .strict()
 );
 
-export const TimelineAsync = async () => {
+export const TimelineServer = async () => {
   const _timeline = prisma.meduzaArticles.findMany({
     orderBy: {
       date: "desc",
@@ -45,5 +45,5 @@ export const TimelineAsync = async () => {
 
   const timeline = TimelineSchema.parse(delayed);
 
-  return <Timeline timeline={timeline} />;
+  return <TimelineClient timeline={timeline} />;
 };

@@ -10,13 +10,16 @@ import { useCalculateArticleInViewport } from "@/hooks/use-calculate-article-in-
 import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 import { filterOutDuplicateIds } from "@/lib/utils";
 
-import { Article } from "../article";
-import { NextPagePlaceholder } from "../ui/next-page-placeholder";
+import { NextPagePlaceholder } from "../../../ui/next-page-placeholder";
+import { Article } from "../../components/article";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
-import type { FeedProps } from ".";
 
-export const VirtualizedFeed = ({ initialPosts }: FeedProps) => {
+export interface FeedProps {
+  initialPosts: PostsSchemaType;
+}
+
+export const FeedClient = ({ initialPosts }: FeedProps) => {
   const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
     useArticleInViewport();
 

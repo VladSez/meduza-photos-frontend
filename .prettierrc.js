@@ -14,7 +14,7 @@ const config = {
     "", // use empty strings to separate groups with empty lines
     "<THIRD_PARTY_MODULES>",
     "",
-    "^@/components/(.*)$",
+    "^@/ui/(.*)$",
     "",
     "",
     "^@/(.*)$", // our imports from 'src' folder (check tsconfig.json)

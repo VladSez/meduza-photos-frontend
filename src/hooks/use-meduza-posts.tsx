@@ -4,7 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { fetchPosts } from "@/app/actions/fetch-posts";
 
-import type { FeedProps } from "@/components/feed";
+import type { FeedProps } from "@/app/feed/_components/feed-client";
 
 interface useMeduzaPostsProps {
   initialPosts: FeedProps["initialPosts"];

@@ -4,7 +4,7 @@ import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { Search } from "lucide-react";
 import * as React from "react";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/ui/dialog";
 
 import { cn } from "@/lib/utils";
 
@@ -51,7 +51,7 @@ const CommandInput = React.forwardRef<
       <CommandPrimitive.Input
         ref={ref}
         className={cn(
-          "flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-gray-500 disabled:cursor-not-allowed disabled:opacity-50 dark:placeholder:text-gray-400",
+          "flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-gray-500 disabled:cursor-not-allowed disabled:opacity-50 dark:placeholder:text-gray-400",
           className
         )}
         {...props}
@@ -69,10 +69,8 @@ const CommandList = React.forwardRef<
   return (
     <CommandPrimitive.List
       ref={ref}
-      className={cn(
-        "max-h-[300px] overflow-y-auto overflow-x-hidden",
-        className
-      )}
+      // className={cn("overflow-y-auto overflow-x-hidden", className)}
+      className={cn("", className)}
       {...props}
     />
   );
@@ -183,13 +181,11 @@ const CommandShortcut = ({
 CommandShortcut.displayName = "CommandShortcut";
 
 export {
-  // Command,
+  Command,
   CommandDialog,
-  CommandInput,
-  CommandList,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
-  // CommandShortcut,
-  // CommandSeparator,
+  CommandList,
 };

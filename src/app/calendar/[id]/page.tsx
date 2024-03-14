@@ -2,9 +2,9 @@ import { decode } from "html-entities";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { Article } from "@/components/article";
-import { Banner } from "@/components/ui/banner";
+import { Banner } from "@/ui/banner";
 
+import { Article } from "@/app/components/article";
 import { prisma } from "@/lib/prisma";
 import { stripHtmlTags } from "@/utils/strip-html-tags";
 import { PostSchema } from "@/utils/zod-schema";

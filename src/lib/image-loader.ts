@@ -2,6 +2,9 @@
 
 let urlEndpoint = "https://ik.imagekit.io/fl2lbswwo";
 
+// TODO: this is not working as expected
+// maybe my proxy is blocked. not sure
+// Remove?
 export default function myImageLoader({
   src,
   width,

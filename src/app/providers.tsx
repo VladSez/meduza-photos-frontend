@@ -5,10 +5,11 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import dayjs from "dayjs";
 import { createContext, useCallback, useMemo, useState } from "react";
 
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/ui/use-toast";
 
 import type { ReactNode } from "react";
 
@@ -131,6 +132,7 @@ export default function Providers({ children }: { children: ReactNode }) {
           {children}
         </FilterDateContext.Provider>
       </ArticleInViewportContext.Provider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
