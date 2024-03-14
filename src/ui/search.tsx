@@ -29,7 +29,7 @@ import { useToast } from "./use-toast";
 
 import type { MeduzaArticles } from "@prisma/client";
 
-export function Search({ isApple = false }) {
+export function Search() {
   const [open, setOpen] = React.useState(false);
   const { isDesktop } = useMediaQuery();
 
@@ -58,7 +58,7 @@ export function Search({ isApple = false }) {
     <>
       {isDesktop ? (
         <>
-          <SearchTrigger setOpen={setOpen} isApple={isApple} />
+          <SearchTrigger setOpen={setOpen} />
           <CommandDialog open={open} onOpenChange={setOpen}>
             <SearchContent close={close} />
           </CommandDialog>
@@ -66,7 +66,7 @@ export function Search({ isApple = false }) {
       ) : (
         <Drawer open={open} onOpenChange={setOpen}>
           <DrawerTrigger asChild>
-            <SearchTrigger setOpen={setOpen} isApple={isApple} />
+            <SearchTrigger setOpen={setOpen} />
           </DrawerTrigger>
           <DrawerContent className="max-h-[87%]">
             <div
@@ -83,30 +83,22 @@ export function Search({ isApple = false }) {
   );
 }
 
-const KeyboardShortcuts = ({ isApple = false }) => {
-  if (isApple) {
-    return (
-      <>
-        <span className="text-xs">⌘</span>K
-      </>
-    );
-  }
+const KeyboardShortcuts = () => {
   return (
     <>
-      <span className="text-xs">Ctrl</span>K
+      <span className="text-xs">⌘</span>K
     </>
   );
 };
 
 type SearchTriggerProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isApple: boolean;
 };
 
 const SearchTrigger = React.forwardRef<
   React.ElementRef<"button">,
   SearchTriggerProps
->(({ setOpen, isApple }, ref) => {
+>(({ setOpen }, ref) => {
   return (
     <button
       onClick={() => {
@@ -119,7 +111,7 @@ const SearchTrigger = React.forwardRef<
     >
       <span className="inline-flex">Поиск...</span>
       <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-slate-50 px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-        <KeyboardShortcuts isApple={isApple} />
+        <KeyboardShortcuts />
       </kbd>
     </button>
   );

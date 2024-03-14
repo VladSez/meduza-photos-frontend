@@ -32,7 +32,7 @@ const NAV_LINKS = [
   },
 ] as const satisfies Readonly<Navigation[]>;
 
-export function Navigation({ isApple = false }) {
+export function Navigation() {
   const pathname = usePathname();
   const isFeedPage = pathname === PATHS.feed;
 
@@ -70,7 +70,7 @@ export function Navigation({ isApple = false }) {
             </div>
           </div>
           <div className="mr-5 w-3/4">
-            <Search isApple={isApple} />
+            <Search />
           </div>
         </div>
       </motion.nav>

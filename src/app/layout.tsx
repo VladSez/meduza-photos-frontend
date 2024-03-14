@@ -4,15 +4,16 @@ import localFont from "next/font/local";
 import { Toaster } from "@/ui/toaster";
 
 import { cn } from "@/lib/utils";
-import { parseUserAgentHeader } from "@/utils/parse-user-agent-header";
+
+import { Providers } from "./providers";
+
+import type { Metadata } from "next";
+
+import "dayjs/locale/ru";
 
 import { Navigation } from "./components/navigation";
-import Providers from "./providers";
-
-import type { Metadata, Viewport } from "next";
 
 import "./globals.css";
-import "dayjs/locale/ru";
 
 dayjs.locale("ru");
 
@@ -65,33 +66,16 @@ export const metadata: Metadata = {
   },
 };
 
-export function generateViewport(): Viewport {
-  const { isAppleDevice } = parseUserAgentHeader();
-
-  return {
-    width: "device-width",
-    initialScale: 1,
-    // We want to prevent 'auto zoom' on input focus in iOS. This is not needed on Android.
-    // The user is still able to zoom in/out manually on iOS/android device.
-    ...(isAppleDevice && {
-      maximumScale: 1,
-      userScalable: true,
-    }),
-  };
-}
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { isAppleDevice } = parseUserAgentHeader();
-
   return (
     <html lang="ru" className="">
       <body className={cn(interLocal.className, "")}>
         <Providers>
-          <Navigation isApple={isAppleDevice} />
+          <Navigation />
           {children}
           <Toaster />
         </Providers>

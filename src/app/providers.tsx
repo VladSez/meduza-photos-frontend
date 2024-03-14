@@ -49,7 +49,7 @@ export const FilterDateContext = createContext<{
   setFilterDate: () => {}, // noop default callback,
 });
 
-export default function Providers({ children }: { children: ReactNode }) {
+export function Providers({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
   const [queryClient] = useState(() => {
