@@ -1,11 +1,9 @@
 import dayjs from "dayjs";
 import { ImageResponse } from "next/og";
-import { z } from "zod";
 
 import { OpenGraphImage } from "@/ui/og-image";
 
-import { supabase } from "@/lib/supabase";
-import { OpenGraphSchema } from "@/utils/zod-schema";
+import { getOpenGraphData } from "@/utils/get-opengraph-data";
 
 import "dayjs/locale/ru";
 
@@ -21,34 +19,17 @@ export const contentType = "image/png";
 export const alt = "Фотографии войны в Украине. Календарь событий";
 
 export default async function Image() {
-  const interFont = await fetch(
-    new URL("../../fonts/Inter-SemiBold.ttf", import.meta.url)
-  ).then((res) => {
-    return res.arrayBuffer();
-  });
-
-  const { data, error } = await supabase
-    .from("MeduzaArticles")
-    .select("header, dateString, photosWithMeta")
-    .limit(10)
-    .order("id", { ascending: false });
-
-  const posts = z.array(OpenGraphSchema).parse(data);
-
-  // take random post from posts array
-  const randomPost = Math.floor(Math.random() * posts.length);
-  const post = posts?.[randomPost];
-
-  const heroBanner = post?.photosWithMeta?.[0];
+  const res = await getOpenGraphData();
+  const { interFont, banner, error } = res;
 
   if (error) {
-    return new Response("Could not load preview", { status: 500 });
+    return new Response("Could not fetch response", { status: 500 });
   }
 
   return new ImageResponse(
     (
       <OpenGraphImage
-        heroBanner={heroBanner}
+        heroBanner={banner}
         title="Фотографии войны в Украине. Календарь событий"
       />
     ),

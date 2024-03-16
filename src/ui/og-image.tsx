@@ -20,12 +20,15 @@ export function OpenGraphImage({ heroBanner, date, title = "" }: OgImageProps) {
     <div tw="relative flex w-full h-full items-center justify-center">
       {/* Background */}
       <div tw="absolute flex inset-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          tw="flex flex-1"
-          src={"https://ik.imagekit.io/fl2lbswwo/tr:q-50/" + heroBanner?.img}
-          alt={stripHtmlTags(decode(heroBanner?.captionText)) ?? ""}
-        />
+        {heroBanner?.img ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            tw="flex flex-1"
+            src={heroBanner?.img}
+            // src="https://meduza.io/image/attachments/images/009/930/622/elarge/TAPqeLMouKjoz5RAVnAv5w.jpg"
+            alt={stripHtmlTags(decode(heroBanner?.captionText)) ?? ""}
+          />
+        ) : null}
         {/* Overlay */}
         <div tw="absolute flex inset-0 bg-black bg-opacity-60" />
       </div>
