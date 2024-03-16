@@ -5,7 +5,7 @@ import { Toaster } from "@/ui/toaster";
 
 import { cn } from "@/lib/utils";
 
-import { Providers } from "./providers";
+import Providers from "./providers";
 
 import type { Metadata } from "next";
 
