@@ -13,7 +13,7 @@ const config: KnipConfig = {
     "src/app/**/*.{js,jsx,ts,tsx}",
   ],
 
-  ignoreDependencies: ["sharp", "eslint-config-next"],
+  ignoreDependencies: ["sharp"],
 };
 
 export default config;
