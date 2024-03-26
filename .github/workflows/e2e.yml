@@ -13,8 +13,8 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-      - uses: patrickedqvist/wait-for-vercel-preview
-        name: 🚀 Wait for Vercel Preview deployment
+      - name: 🚀 Wait for Vercel Preview deployment
+        uses: patrickedqvist/wait-for-vercel-preview
         id: waitForDeploy
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
