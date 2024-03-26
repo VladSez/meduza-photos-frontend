@@ -1,12 +1,13 @@
-# https://enreina.com/blog/e2e-testing-in-next-js-with-playwright-vercel-and-github-actions-a-guide-with-example
-
 name: 🎭 Playwright E2E tests
 on:
   deployment_status:
 
 jobs:
   e2e:
+    # https://vercel.com/guides/how-can-i-run-end-to-end-tests-after-my-vercel-preview-deployment
     if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
+
+    name: Run e2e tests
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
