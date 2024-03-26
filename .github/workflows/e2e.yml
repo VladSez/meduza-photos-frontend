@@ -3,23 +3,13 @@
 name: 🎭 Playwright E2E tests
 on:
   deployment_status:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+
 jobs:
   e2e:
     if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-      # - name: 🚀 Wait for Vercel Preview deployment
-      #   uses: patrickedqvist/wait-for-vercel-preview
-      #   id: waitForDeploy
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     max_timeout: 300
-
       - uses: actions/checkout@v4
         name: 🛎️ Checkout repository
 
