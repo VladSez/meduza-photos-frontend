@@ -1,0 +1,49 @@
+name: 🚀 Type check, lint, knip
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  ci:
+    name: Run TS, lint and knip
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        name: ⬇️ Checkout repo
+
+      - uses: pnpm/action-setup@v3
+        name: 📦 Setup pnpm
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v4
+        name: ⎔ Setup Node.js
+        with:
+          node-version: lts/*
+          cache: "pnpm"
+
+      - name: 🚚 Install dependencies
+        run: pnpm install
+
+      - name: 🚀 Generate prisma client
+        run: npx prisma generate
+
+      - name: ʦ TypeScript
+        run: pnpm run type-check
+
+      - name: ⬣ ESLint
+        run: pnpm run lint
+
+      - name: 🧪 Knip
+        run: pnpm run knip

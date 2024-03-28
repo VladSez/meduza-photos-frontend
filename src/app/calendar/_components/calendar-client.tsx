@@ -49,14 +49,15 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
         <DatePicker />
       </div>
       <div className="mb-10">
-        {Object.entries(postsByMonth).map(([month, posts]) => {
+        {Object.entries(postsByMonth).map(([monthAndYear, posts]) => {
           return (
-            <div key={month} className="mx-5 md:my-10">
+            <div key={monthAndYear} className="mx-5 md:my-10">
               <h3 className="my-6 mb-10 text-3xl font-medium capitalize text-gray-900 sm:text-4xl">
-                {month}
+                {monthAndYear}
               </h3>
               <div className="flex flex-row flex-wrap gap-4">
                 {posts.map((post, index) => {
+                  // if it's the last post, add a ref to the last post
                   if (index === posts.length - 1) {
                     return (
                       <div key={post.id} ref={ref}>

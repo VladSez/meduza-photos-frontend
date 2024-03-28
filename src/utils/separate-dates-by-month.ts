@@ -21,6 +21,15 @@ export const separateDatesByMonth = <T extends TimelineType | PostsSchemaType>(
     [key: string]: (T extends Array<infer U> ? U : never)[];
   } = {};
 
+  /**
+   * Iterate over each date and separate them by month.
+   * Like:
+   * {
+   *  "January 2022": [post1, post2],
+   *  "February 2022": [post3, post4],
+   *  ...etc
+   * }
+   */
   for (const dateEntry of dates) {
     const month = dayjs(dateEntry?.date).format("MMMM YYYY");
 

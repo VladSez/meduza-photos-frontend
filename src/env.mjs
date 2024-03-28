@@ -5,6 +5,7 @@ export const env = createEnv({
   server: {
     DIRECT_URL: z.string().url(),
     DATABASE_URL: z.string().url(),
+    REVALIDATE_SECRET: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
