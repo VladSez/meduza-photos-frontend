@@ -59,11 +59,6 @@ export async function generateStaticParams() {
     },
   });
 
-  // TODO: double check later (seems like not working as expected currently)
-  // when we save new article in db and user clicks link in the email the page for new article is statically generated on demand
-  // but `/feed` on first visit is not updated so we need to revalidate the path
-  // revalidatePath(`/feed`);
-
   const idToString = ids.map(({ id }) => {
     return String(id);
   });
