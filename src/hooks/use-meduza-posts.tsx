@@ -22,7 +22,7 @@ export const useMeduzaPosts = ({
   }
 
   return useInfiniteQuery({
-    queryKey: [key],
+    queryKey: [key, take],
     queryFn: async ({ pageParam = 1 }: { pageParam: number }) => {
       const response = await fetchPosts({ take, page: pageParam });
 
