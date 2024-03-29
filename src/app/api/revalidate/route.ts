@@ -13,8 +13,8 @@ export function GET(request: Request) {
     });
   }
 
-  revalidatePath("/feed");
-  revalidatePath("/calendar");
+  // revalidate all pages
+  revalidatePath("/");
 
   return new Response("Revalidated", {
     status: 200,
