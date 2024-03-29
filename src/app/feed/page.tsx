@@ -9,37 +9,7 @@ import { TimelineServer } from "./_components/timeline-server";
 
 import type { Metadata } from "next";
 
-const TimelinePlaceholder = () => {
-  return (
-    <div className="relative top-16 mx-7 flex w-full max-w-[136px] animate-pulse md:my-10">
-      <div className="flex-1">
-        <div className="mb-6 h-4 w-full rounded bg-slate-200"></div>
-        <div className="my-4 flex flex-row items-center">
-          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
-          <div className="h-2 w-full rounded bg-slate-200"></div>
-        </div>
-        <div className="my-4 flex flex-row items-center">
-          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
-          <div className="h-2 w-full rounded bg-slate-200"></div>
-        </div>
-        <div className="my-4 flex flex-row items-center">
-          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
-          <div className="h-2 w-full rounded bg-slate-200"></div>
-        </div>
-        <div className="my-4 flex flex-row items-center">
-          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
-          <div className="h-2 w-full rounded bg-slate-200"></div>
-        </div>
-        <div className="my-4 flex flex-row items-center">
-          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
-          <div className="h-2 w-full rounded bg-slate-200"></div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export const revalidate = 3600; // 1 hour
+export const revalidate = 43_200; // 12 hours
 
 export const metadata: Metadata = {
   title: "Лента",
@@ -79,3 +49,33 @@ export default async function FeedList() {
     </>
   );
 }
+
+const TimelinePlaceholder = () => {
+  return (
+    <div className="relative top-16 mx-7 flex w-full max-w-[136px] animate-pulse md:my-10">
+      <div className="flex-1">
+        <div className="mb-6 h-4 w-full rounded bg-slate-200"></div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+        <div className="my-4 flex flex-row items-center">
+          <div className="mr-1 h-3 w-3 rounded-full bg-slate-200"></div>
+          <div className="h-2 w-full rounded bg-slate-200"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
