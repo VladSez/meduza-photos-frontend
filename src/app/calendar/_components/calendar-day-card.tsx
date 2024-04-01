@@ -4,14 +4,25 @@ import Link from "next/link";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
 
-export const CalendarDayCard = ({ post }: { post: PostsSchemaType[0] }) => {
+export const CalendarDayCard = ({
+  post,
+  index,
+}: {
+  post: PostsSchemaType[0];
+  index: number;
+}) => {
   const banner = post?.photosWithMeta[0];
 
   // we extract the date from the header html
   const headerDateContent = post?.header?.match(/<span>(.*?)<\/span>/)?.[0];
 
   return (
-    <Link href={`/calendar/${post.id}`} className="relative" key={post?.id}>
+    <Link
+      href={`/calendar/${post.id}`}
+      className="relative"
+      key={post?.id}
+      data-testid={`calenday-day-card-link-${index}`}
+    >
       <div
         className={`h-[530px] max-h-[530px] w-full max-w-full rounded-lg border text-xl text-gray-900 transition-all hover:bg-slate-100 md:w-[350px]`}
       >

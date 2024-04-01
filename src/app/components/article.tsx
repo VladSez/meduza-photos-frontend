@@ -15,6 +15,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
       {article?.header ? (
         <div className="flex justify-center">
           <div
+            data-testid="article-header"
             className={`my-4 mt-7 max-w-full break-words px-3 text-3xl font-semibold text-gray-900 md:max-w-5xl md:px-5 md:text-center md:text-4xl [&>span]:font-light`}
             dangerouslySetInnerHTML={{ __html: article?.header }}
           />
@@ -31,6 +32,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
               target="_blank"
               rel="noopener"
               className="hover:underline"
+              data-testid="article-date"
             >
               <ArticleDate date={article?.dateString} />
             </a>
@@ -47,84 +49,86 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
           </div>
         </>
       ) : null}
-      {photos?.map((photo, index) => {
-        if (!photo?.img) {
-          return <p key={photo?.img}>no image</p>;
-        }
-        return (
-          <div key={photo?.img}>
-            {photo?.title?.map((title) => {
-              return (
-                <div key={title} className="flex justify-center">
+      <div data-testid="article-body">
+        {photos?.map((photo, index) => {
+          if (!photo?.img) {
+            return <p key={photo?.img}>no image</p>;
+          }
+          return (
+            <div key={photo?.img}>
+              {photo?.title?.map((title) => {
+                return (
+                  <div key={title} className="flex justify-center">
+                    <div
+                      className={`my-2 mt-16 min-w-full px-3 text-3xl !font-semibold text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 md:text-4xl`}
+                      dangerouslySetInnerHTML={{ __html: title }}
+                    />
+                  </div>
+                );
+              })}
+
+              {photo?.subTitle?.map((subTitle) => {
+                const isSensitive = subTitle.includes("SensitiveBlock-");
+
+                if (isSensitive) {
+                  return null;
+                }
+
+                return (
+                  <div key={subTitle} className="flex justify-center">
+                    <div
+                      className={`my-7 max-w-full break-words px-3 text-xl text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
+                      dangerouslySetInnerHTML={{ __html: subTitle }}
+                    />
+                  </div>
+                );
+              })}
+
+              {index === 0 ? (
+                <Banner>
+                  <p>
+                    <span className="font-bold">Осторожно!</span> Некоторые
+                    фотографии содержат сцены жестокости, насилия и смерти.
+                    Призываем впечатлительных читателей не смотреть фото.
+                  </p>
+                </Banner>
+              ) : null}
+              <div className="relative mb-4 mt-10 h-[500px] w-full bg-gray-200 md:h-[900px]">
+                <a
+                  href={photo?.img}
+                  target="_blank"
+                  rel="noopener"
+                  title="Нажмите, чтобы посмотреть оригинальное изображение"
+                >
+                  <Image
+                    src={photo?.img}
+                    fill
+                    quality={80}
+                    alt={photo?.captionText ?? ""}
+                    style={{ objectFit: "cover", objectPosition: "center" }}
+                  />
+                </a>
+              </div>
+              {photo?.captionText ? (
+                <div className="flex justify-center">
                   <div
-                    className={`my-2 mt-16 min-w-full px-3 text-3xl !font-semibold text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 md:text-4xl`}
-                    dangerouslySetInnerHTML={{ __html: title }}
+                    className={`min-w-full break-words px-3 text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
+                    dangerouslySetInnerHTML={{ __html: photo?.captionText }}
                   />
                 </div>
-              );
-            })}
-
-            {photo?.subTitle?.map((subTitle) => {
-              const isSensitive = subTitle.includes("SensitiveBlock-");
-
-              if (isSensitive) {
-                return null;
-              }
-
-              return (
-                <div key={subTitle} className="flex justify-center">
+              ) : null}
+              {photo?.credit ? (
+                <div className="flex justify-center">
                   <div
-                    className={`my-7 max-w-full break-words px-3 text-xl text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
-                    dangerouslySetInnerHTML={{ __html: subTitle }}
+                    className={`mb-2 mt-1.5 min-w-full break-words px-3 text-gray-500 md:min-w-[672px] md:max-w-2xl md:px-5`}
+                    dangerouslySetInnerHTML={{ __html: photo?.credit }}
                   />
                 </div>
-              );
-            })}
-
-            {index === 0 ? (
-              <Banner>
-                <p>
-                  <span className="font-bold">Осторожно!</span> Некоторые
-                  фотографии содержат сцены жестокости, насилия и смерти.
-                  Призываем впечатлительных читателей не смотреть фото.
-                </p>
-              </Banner>
-            ) : null}
-            <div className="relative mb-4 mt-10 h-[500px] w-full bg-gray-200 md:h-[900px]">
-              <a
-                href={photo?.img}
-                target="_blank"
-                rel="noopener"
-                title="Нажмите, чтобы посмотреть оригинальное изображение"
-              >
-                <Image
-                  src={photo?.img}
-                  fill
-                  quality={80}
-                  alt={photo?.captionText ?? ""}
-                  style={{ objectFit: "cover", objectPosition: "center" }}
-                />
-              </a>
+              ) : null}
             </div>
-            {photo?.captionText ? (
-              <div className="flex justify-center">
-                <div
-                  className={`min-w-full break-words px-3 text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
-                  dangerouslySetInnerHTML={{ __html: photo?.captionText }}
-                />
-              </div>
-            ) : null}
-            {photo?.credit ? (
-              <div className="flex justify-center">
-                <div
-                  className={`mb-2 mt-1.5 min-w-full break-words px-3 text-gray-500 md:min-w-[672px] md:max-w-2xl md:px-5`}
-                  dangerouslySetInnerHTML={{ __html: photo?.credit }}
-                />
-              </div>
-            ) : null}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

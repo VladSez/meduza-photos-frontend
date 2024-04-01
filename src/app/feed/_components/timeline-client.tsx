@@ -65,6 +65,7 @@ const MonthWithDays = ({
       className="min-w-[200px]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      data-testid="timeline-month-with-days"
     >
       <div className="mx-8 md:my-10">
         <motion.p className="text-lg font-semibold capitalize text-gray-600">
