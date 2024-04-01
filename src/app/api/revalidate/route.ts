@@ -13,8 +13,10 @@ export function GET(request: Request) {
     });
   }
 
+  // revalidate all pages
   // revalidatePath("/");
   revalidateTag("meduza-posts");
+  revalidateTag("last-available-meduza-post");
 
   return new Response("Revalidated", {
     status: 200,
