@@ -37,7 +37,6 @@ export function DatePicker() {
   const [error, setError] = React.useState("");
 
   // fetch last available article from db
-  // if last available article is today, enable the today button otherwise show tooltip
   React.useEffect(() => {
     if (open) {
       fetchLastAvailablePost()
