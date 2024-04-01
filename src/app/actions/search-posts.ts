@@ -1,5 +1,7 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { prisma } from "@/lib/prisma";
 
 export async function searchPosts({
@@ -13,30 +15,38 @@ export async function searchPosts({
     };
   }
 
-  const results = await prisma.meduzaArticles.findMany({
-    orderBy: {
-      date: "desc",
-    },
-    where: {
-      OR: [
-        {
-          header: {
-            contains: search,
-            mode: "insensitive",
+  try {
+    const results = await prisma.meduzaArticles.findMany({
+      orderBy: {
+        date: "desc",
+      },
+      where: {
+        OR: [
+          {
+            header: {
+              contains: search,
+              mode: "insensitive",
+            },
           },
-        },
-        {
-          subtitle: {
-            contains: search,
-            mode: "insensitive",
+          {
+            subtitle: {
+              contains: search,
+              mode: "insensitive",
+            },
           },
-        },
-      ],
-    },
-    take: 40,
-  });
+        ],
+      },
+      take: 40,
+    });
 
-  return {
-    results,
-  };
+    return {
+      results,
+    };
+  } catch (error) {
+    console.error(error);
+
+    Sentry.captureException(error);
+
+    throw new Error("Failed to search posts");
+  }
 }

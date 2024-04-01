@@ -61,12 +61,14 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
                   if (index === posts.length - 1) {
                     return (
                       <div key={post.id} ref={ref}>
-                        <CalendarDayCard post={post} />
+                        <CalendarDayCard post={post} index={index} />
                       </div>
                     );
                   }
 
-                  return <CalendarDayCard post={post} key={post.id} />;
+                  return (
+                    <CalendarDayCard post={post} key={post.id} index={index} />
+                  );
                 })}
               </div>
             </div>

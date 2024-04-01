@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 import { env } from "@/env.mjs";
 
@@ -14,7 +14,9 @@ export function GET(request: Request) {
   }
 
   // revalidate all pages
-  revalidatePath("/");
+  // revalidatePath("/");
+  revalidateTag("meduza-posts");
+  revalidateTag("last-available-meduza-post");
 
   return new Response("Revalidated", {
     status: 200,

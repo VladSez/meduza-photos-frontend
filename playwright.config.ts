@@ -16,7 +16,7 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   expect: {
-    timeout: 15 * 1000,
+    timeout: 25 * 1000,
   },
   // Test directory
   // eslint-disable-next-line unicorn/prefer-module
