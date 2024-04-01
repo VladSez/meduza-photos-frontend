@@ -1,12 +1,12 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
+import { unstable_cache as cache } from "next/cache";
+
 import { prisma } from "@/lib/prisma";
 import { PostsSchema } from "@/utils/zod-schema";
 
-/**
- * Fetch meduza posts from db (server-action)
- */
-export async function fetchPosts({ page = 1, take = 5 }) {
+async function fetchMeduzaPosts({ page = 1, take = 5 }) {
   const skip = (page - 1) * take; // Calculate the number of items to skip
 
   try {
@@ -42,6 +42,7 @@ export async function fetchPosts({ page = 1, take = 5 }) {
     };
   } catch (error) {
     console.error(error);
+    Sentry.captureException(error);
 
     return {
       posts: [],
@@ -51,3 +52,10 @@ export async function fetchPosts({ page = 1, take = 5 }) {
     };
   }
 }
+
+/**
+ * Fetch meduza posts from db (server-action)
+ */
+export const fetchPosts = cache(fetchMeduzaPosts, ["meduza-posts"], {
+  tags: ["meduza-posts"],
+});

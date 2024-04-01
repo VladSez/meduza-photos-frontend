@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 import { env } from "@/env.mjs";
 
@@ -13,8 +13,8 @@ export function GET(request: Request) {
     });
   }
 
-  revalidatePath("/feed");
-  revalidatePath("/calendar");
+  // revalidatePath("/");
+  revalidateTag("meduza-posts");
 
   return new Response("Revalidated", {
     status: 200,
