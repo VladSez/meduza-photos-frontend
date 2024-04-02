@@ -20,9 +20,9 @@ dayjs.locale("ru");
 type setStateCallback = (arg: string) => void;
 
 type ArticleInViewportContext = {
-  articleInViewport: string;
+  articleInViewport: string | null;
   setArticleInViewport: setStateCallback;
-  articleDateInViewport: string;
+  articleDateInViewport: string | null;
   setArticleDateInViewport: setStateCallback;
 };
 
@@ -31,9 +31,9 @@ type ArticleInViewportContext = {
  */
 export const ArticleInViewportContext = createContext<ArticleInViewportContext>(
   {
-    articleInViewport: "",
+    articleInViewport: null,
     setArticleInViewport: () => {},
-    articleDateInViewport: "",
+    articleDateInViewport: null,
     setArticleDateInViewport: () => {},
   }
 );

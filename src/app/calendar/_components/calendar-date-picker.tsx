@@ -11,6 +11,13 @@ import { DayContent } from "react-day-picker";
 import { Button } from "@/ui/button";
 import { Calendar } from "@/ui/calendar";
 import { Popover } from "@/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/ui/tooltip";
 
 import { fetchLastAvailablePost } from "@/app/actions/fetch-last-available-post";
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
@@ -140,11 +147,11 @@ export function DatePicker() {
               />
             </div>
           ) : error ? (
-            <div className="flex h-[305.2px] w-[276px] items-center justify-center px-3">
+            <div className="flex h-full min-h-[305.2px] w-full min-w-[276px] items-center justify-center">
               Ошибка: что-то пошло не так, попробуйте позже
             </div>
           ) : (
-            <div className="flex h-[305.2px] w-[276px] items-center justify-center">
+            <div className="flex h-full min-h-[305.2px] w-full min-w-[276px] items-center justify-center">
               <LoaderIcon className="h-4 w-4 animate-spin" />
             </div>
           )
@@ -168,6 +175,53 @@ function DateTime(
   // show loader only for selected day (when user clicks on it)
   if (props.isPending && isSelectedDay) {
     return <LoaderIcon className="h-4 w-4 animate-spin" />;
+  }
+
+  const now = dayjs();
+  const calendarTodayDate = dayjs(props.date).isSame(now, "day");
+
+  const lastEnabledDayIsToday = dayjs(props.date).isSame(
+    props.lastAvailableDate,
+    "day"
+  );
+
+  // we fetch new data everyday at 13:30 UTC
+  // https://console.cron-job.org/jobs/4416660/history
+  const timeWhenWeFetchNewData = dayjs()
+    .utc()
+    .set("hour", 13)
+    .set("minute", 30);
+
+  const localTimeFormat = timeWhenWeFetchNewData.local().format("HH:mm");
+  const utcTimeFormat = timeWhenWeFetchNewData.format("HH:mm");
+
+  // show tooltip, when data for today is not available yet
+  if (calendarTodayDate && !lastEnabledDayIsToday) {
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <time
+              dateTime={dateTime}
+              className="flex h-full w-full items-center justify-center"
+            >
+              <div>
+                <DayContent {...props} />
+              </div>
+            </time>
+          </TooltipTrigger>
+          <TooltipPortal>
+            <TooltipContent>
+              <p>
+                Новые фото должны быть доступны сегодня после{" "}
+                {/* We show times in both local and utc format for better ux */}
+                {localTimeFormat} ({utcTimeFormat} UTC)
+              </p>
+            </TooltipContent>
+          </TooltipPortal>
+        </Tooltip>
+      </TooltipProvider>
+    );
   }
 
   return (
