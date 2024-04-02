@@ -1,12 +1,14 @@
 "use server";
 
 import * as Sentry from "@sentry/nextjs";
-import { unstable_cache as cache } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { PostSchema } from "@/utils/zod-schema";
 
-async function getLastAvailablePost() {
+/**
+ * Fetch the last available post from the database (server-action)
+ */
+export async function fetchLastAvailablePost() {
   try {
     const _mostRecentPost = await prisma.meduzaArticles.findFirst({
       orderBy: {
@@ -27,15 +29,3 @@ async function getLastAvailablePost() {
     throw new Error("Failed to fetch last available post");
   }
 }
-
-/**
- * Fetch the last available post from the database
- */
-export const fetchLastAvailablePost = cache(
-  getLastAvailablePost,
-  ["last-available-meduza-post"],
-  {
-    tags: ["last-available-meduza-post"],
-    revalidate: 3600, // 1 hour
-  }
-);
