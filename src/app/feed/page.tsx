@@ -9,7 +9,7 @@ import { TimelineServer } from "./_components/timeline-server";
 
 import type { Metadata } from "next";
 
-export const revalidate = 43_200; // 12 hours
+export const revalidate = 3600; // 1 hour
 
 export const metadata: Metadata = {
   title: "Лента",
