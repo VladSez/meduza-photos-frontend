@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
 
-import { env } from "@/env.mjs";
+import { env } from "@/env";
 
 export function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -15,9 +15,9 @@ export function GET(request: Request) {
 
   // revalidate all pages
   // https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data
-  revalidatePath("/", "layout");
+  revalidatePath("/");
 
-  return new Response("Revalidated", {
+  return new Response("Revalidated successfully", {
     status: 200,
   });
 }

@@ -13,7 +13,14 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   },
   // For Next.js >= 13.4.4, you only need to destructure *client* variables:
-  experimental__runtimeEnv: {
+  runtimeEnv: {
+    // server
+    DIRECT_URL: process.env.DIRECT_URL,
+    DATABASE_URL: process.env.DATABASE_URL,
+    REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
+    SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
+
+    // client
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },

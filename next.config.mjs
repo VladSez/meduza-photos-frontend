@@ -1,11 +1,16 @@
-import { withSentryConfig } from "@sentry/nextjs";
+import { fileURLToPath } from "node:url";
 
-// this import is used to validate schema on build
-// More info: https://env.t3.gg/docs/nextjs#validate-schema-on-build-(recommended)
-import "./src/env.mjs";
+import { withSentryConfig } from "@sentry/nextjs";
+import createJiti from "jiti";
+import { withAxiom } from "next-axiom";
+
+const jiti = createJiti(fileURLToPath(import.meta.url));
+
+// Import env here to validate during build. Using jiti we can import .ts files :)
+jiti("./src/env.ts");
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig = withAxiom({
   reactStrictMode: true,
   logging: {
     fetches: {
@@ -37,7 +42,7 @@ const nextConfig = {
     // main concern is cost
     unoptimized: true,
   },
-};
+});
 
 export default withSentryConfig(
   nextConfig,
