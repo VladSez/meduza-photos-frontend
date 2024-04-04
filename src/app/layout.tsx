@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { AxiomWebVitals } from "next-axiom";
 import localFont from "next/font/local";
 
 import { Toaster } from "@/ui/toaster";
@@ -75,6 +76,7 @@ export default function RootLayout({
     <html lang="ru" className="">
       <body className={cn(interLocal.className, "")}>
         <Providers>
+          <AxiomWebVitals />
           <Navigation />
           {children}
           <Toaster />

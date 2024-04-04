@@ -7,6 +7,8 @@ import { CalendarListClient } from "./_components/calendar-client";
 
 import type { Metadata } from "next";
 
+export const revalidate = 28_800; // revalidate every 8 hours
+
 export const metadata: Metadata = {
   title: "Календарь",
   description: "Календарь событий войны в Украине.",

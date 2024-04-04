@@ -1,11 +1,12 @@
 import { withSentryConfig } from "@sentry/nextjs";
+import { withAxiom } from "next-axiom";
 
 // this import is used to validate schema on build
 // More info: https://env.t3.gg/docs/nextjs#validate-schema-on-build-(recommended)
 import "./src/env.mjs";
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig = withAxiom({
   reactStrictMode: true,
   logging: {
     fetches: {
@@ -37,7 +38,7 @@ const nextConfig = {
     // main concern is cost
     unoptimized: true,
   },
-};
+});
 
 export default withSentryConfig(
   nextConfig,
