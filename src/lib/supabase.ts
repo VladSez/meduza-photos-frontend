@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
-import { env } from "@/env.mjs";
+import { env } from "@/env";
 
 /**
  * We can't use prisma, because it's not available in the edge runtime (only node runtime)

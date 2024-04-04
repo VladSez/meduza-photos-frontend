@@ -1,9 +1,13 @@
+import { fileURLToPath } from "node:url";
+
 import { withSentryConfig } from "@sentry/nextjs";
+import createJiti from "jiti";
 import { withAxiom } from "next-axiom";
 
-// this import is used to validate schema on build
-// More info: https://env.t3.gg/docs/nextjs#validate-schema-on-build-(recommended)
-import "./src/env.mjs";
+const jiti = createJiti(fileURLToPath(import.meta.url));
+
+// Import env here to validate during build. Using jiti we can import .ts files :)
+jiti("./src/env.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withAxiom({

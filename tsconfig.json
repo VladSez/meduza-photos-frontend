@@ -16,7 +16,7 @@
     "verbatimModuleSyntax": true, // https://www.typescriptlang.org/tsconfig#verbatimModuleSyntax
 
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "noEmit": true,
 
     /* TYPE CHECKING RULES */

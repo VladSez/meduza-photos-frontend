@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
 
-import { env } from "@/env.mjs";
+import { env } from "@/env";
 
 export function GET(request: Request) {
   const { searchParams } = new URL(request.url);
