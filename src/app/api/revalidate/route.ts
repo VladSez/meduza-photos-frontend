@@ -15,7 +15,7 @@ export function GET(request: Request) {
 
   // revalidate all pages
   // https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 
   return new Response("Revalidated successfully", {
     status: 200,
