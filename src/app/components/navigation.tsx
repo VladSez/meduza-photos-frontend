@@ -53,6 +53,7 @@ export function Navigation() {
 
                 return (
                   <Link
+                    prefetch={false}
                     href={href}
                     key={href}
                     className={clsx(
