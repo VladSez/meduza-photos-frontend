@@ -1,6 +1,8 @@
 "use server";
 
 import * as Sentry from "@sentry/nextjs";
+import * as chrono from "chrono-node/ru";
+import dayjs from "dayjs";
 
 import { prisma } from "@/lib/prisma";
 
@@ -15,26 +17,36 @@ export async function searchPosts({
     };
   }
 
+  // A natural language date parser in JavaScript https://github.com/wanasit/chrono
+  const chronoParseResult = chrono.parseDate(search);
+
   try {
     const results = await prisma.meduzaArticles.findMany({
       orderBy: {
         date: "desc",
       },
       where: {
-        OR: [
-          {
-            header: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-          {
-            subtitle: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-        ],
+        // If chronoParseResult is not null, we search by date, otherwise by header or subtitle
+        ...(chronoParseResult
+          ? {
+              dateString: dayjs(chronoParseResult).format("YYYY/MM/DD"),
+            }
+          : {
+              OR: [
+                {
+                  header: {
+                    contains: search,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  subtitle: {
+                    contains: search,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }),
       },
       take: 40,
     });

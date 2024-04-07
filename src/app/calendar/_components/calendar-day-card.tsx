@@ -36,9 +36,6 @@ export const CalendarDayCard = ({
               objectPosition: "center",
             }}
             className="rounded-lg rounded-b-none"
-            // https://nextjs.org/docs/pages/api-reference/components/image#sizes
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            quality={70}
           />
         </div>
         <div className="mx-5 my-3">
