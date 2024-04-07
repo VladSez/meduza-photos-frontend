@@ -16,10 +16,8 @@ import {
   CommandItem,
   CommandList,
 } from "@/ui/command";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/ui/drawer";
 
 import { searchPosts } from "@/app/actions/search-posts";
-import useMediaQuery from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { stripHtmlTags } from "@/utils/strip-html-tags";
 
@@ -31,7 +29,6 @@ import type { MeduzaArticles } from "@prisma/client";
 
 export function Search() {
   const [open, setOpen] = React.useState(false);
-  const { isDesktop } = useMediaQuery();
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -56,29 +53,10 @@ export function Search() {
 
   return (
     <>
-      {isDesktop ? (
-        <>
-          <SearchTrigger setOpen={setOpen} />
-          <CommandDialog open={open} onOpenChange={setOpen}>
-            <SearchContent close={close} />
-          </CommandDialog>
-        </>
-      ) : (
-        <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerTrigger asChild>
-            <SearchTrigger setOpen={setOpen} />
-          </DrawerTrigger>
-          <DrawerContent className="max-h-[87%]">
-            <div
-              className={cn(
-                "mx-auto mt-5 flex h-full w-full max-w-md flex-col p-4"
-              )}
-            >
-              <SearchContent close={close} isDrawer />
-            </div>
-          </DrawerContent>
-        </Drawer>
-      )}
+      <SearchTrigger setOpen={setOpen} />
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <SearchContent close={close} />
+      </CommandDialog>
     </>
   );
 }

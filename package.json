@@ -35,6 +35,7 @@
     "@types/react": "18.2.74",
     "@types/react-dom": "18.2.24",
     "autoprefixer": "10.4.19",
+    "chrono-node": "2.7.5",
     "class-variance-authority": "0.7.0",
     "clsx": "2.1.0",
     "cmdk": "0.2.0",

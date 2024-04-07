@@ -52,8 +52,9 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
       <div data-testid="article-body">
         {photos?.map((photo, index) => {
           if (!photo?.img) {
-            return <p key={photo?.img}>no image</p>;
+            return <p key={photo?.img}>Изображение не найдено</p>;
           }
+
           return (
             <div key={photo?.img}>
               {photo?.title?.map((title) => {
@@ -103,7 +104,6 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
                   <Image
                     src={photo?.img}
                     fill
-                    quality={80}
                     alt={photo?.captionText ?? ""}
                     style={{ objectFit: "cover", objectPosition: "center" }}
                   />

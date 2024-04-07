@@ -57,8 +57,10 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
               </h3>
               <div className="flex flex-row flex-wrap gap-4">
                 {posts.map((post, index) => {
-                  // if it's the last post, add a ref to the last post
-                  if (index === posts.length - 1) {
+                  const isLastPost = index === posts.length - 1;
+
+                  // add a ref to the last post, we use to fetch more items
+                  if (isLastPost) {
                     return (
                       <div key={post.id} ref={ref}>
                         <CalendarDayCard post={post} index={index} />
