@@ -15,8 +15,29 @@ export function GET(request: Request) {
 
   // revalidate all pages
   // https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data
-  revalidatePath("/", "layout");
-  revalidatePath("/calendar", "layout");
+  // https://github.com/vercel/next.js/discussions/54075
+  // revalidatePath("/", "layout");
+  revalidatePath("/");
+
+  fetch("https://meduza-photos-frontend.vercel.app/feed")
+    .then((res) => {
+      if (res.ok) {
+        console.info("/feed path visited");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+  fetch("https://meduza-photos-frontend.vercel.app/calendar")
+    .then((res) => {
+      if (res.ok) {
+        console.info("/calendar path visited");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
   return new Response("Revalidated successfully", {
     status: 200,

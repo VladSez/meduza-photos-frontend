@@ -185,12 +185,8 @@ function DateTime(
     "day"
   );
 
-  // we fetch new data everyday at 13:30 UTC
   // https://console.cron-job.org/jobs/4416660/history
-  const timeWhenWeFetchNewData = dayjs()
-    .utc()
-    .set("hour", 13)
-    .set("minute", 30);
+  const timeWhenWeFetchNewData = dayjs().utc().set("hour", 13).set("minute", 0);
 
   const localTimeFormat = timeWhenWeFetchNewData.local().format("HH:mm");
   const utcTimeFormat = timeWhenWeFetchNewData.format("HH:mm");
