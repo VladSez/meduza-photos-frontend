@@ -16,28 +16,32 @@ export function GET(request: Request) {
   // revalidate all pages
   // https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data
   // https://github.com/vercel/next.js/discussions/54075
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 
-  // "visit" a page to purge the cache
+  // "visit" the pages to purge the cache
   fetch("https://meduza-photos-frontend.vercel.app/feed")
     .then((res) => {
-      if (res.ok) {
+      if (res.ok && res.status === 200) {
         console.info("/feed path visited");
+      } else if (res.status !== 200) {
+        console.info("/feed was not ok", res.status);
       }
     })
     .catch((error) => {
       console.error(error);
     });
 
-  // fetch("https://meduza-photos-frontend.vercel.app/calendar")
-  //   .then((res) => {
-  //     if (res.ok) {
-  //       console.info("/calendar path visited");
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     console.error(error);
-  //   });
+  fetch("https://meduza-photos-frontend.vercel.app/calendar")
+    .then((res) => {
+      if (res.ok && res.status === 200) {
+        console.info("/calendar path visited");
+      } else if (res.status !== 200) {
+        console.info("/calendar was not ok", res.status);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
   return new Response("Revalidated successfully", {
     status: 200,
