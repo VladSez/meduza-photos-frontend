@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { format } from "date-fns";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
@@ -80,16 +79,16 @@ test("calendar navigation works", async ({ page }) => {
 
   await expect(calendar).toBeVisible();
 
-  const yesterday = dayjs().subtract(1, "day").toDate();
+  const yesterday = dayjs().subtract(1, "day");
 
-  const dateTimeTitle = format(yesterday, "yyyy-MM-dd");
+  const dateTimeTitle = yesterday.format("YYYY-MM-DD");
 
   const dateButtonInCalendar = page.locator(`[datetime='${dateTimeTitle}']`);
 
   // click date on calendar
   await dateButtonInCalendar.click();
 
-  const articleDate = dayjs().format("DD MMMM YYYY");
+  const articleDate = yesterday.format("DD MMMM YYYY");
 
   // article is shown
   await expect(page.getByTestId("article-header")).toBeVisible();
