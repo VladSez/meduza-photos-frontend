@@ -80,23 +80,9 @@ test("calendar navigation works", async ({ page }) => {
 
   await expect(calendar).toBeVisible();
 
-  const today = dayjs().toDate();
   const yesterday = dayjs().subtract(1, "day").toDate();
 
-  // 13:30 UTC is time when we fetch new data
-  const timeWhenWeFetchNewData = dayjs()
-    .utc()
-    .set("hour", 13)
-    .set("minute", 30);
-
-  const newDataShouldBeAvailable = dayjs()
-    .utc()
-    .isAfter(timeWhenWeFetchNewData);
-
-  const dateTimeTitle = format(
-    newDataShouldBeAvailable ? today : yesterday,
-    "yyyy-MM-dd"
-  );
+  const dateTimeTitle = format(yesterday, "yyyy-MM-dd");
 
   const dateButtonInCalendar = page.locator(`[datetime='${dateTimeTitle}']`);
 
