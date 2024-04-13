@@ -2,7 +2,7 @@
 
 import { decode } from "html-entities";
 import debounce from "lodash.debounce";
-import { Loader } from "lucide-react";
+import { Lightbulb, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import Highlighter from "react-highlight-words";
@@ -22,7 +22,15 @@ import { cn } from "@/lib/utils";
 import { stripHtmlTags } from "@/utils/strip-html-tags";
 
 import { ArticleDate } from "./article-date";
+import { Button } from "./button";
 import { ScrollArea } from "./scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./tooltip";
 import { useToast } from "./use-toast";
 
 import type { MeduzaArticles } from "@prisma/client";
@@ -99,10 +107,9 @@ SearchTrigger.displayName = "SearchTrigger";
 
 type SearchContentProps = {
   close: () => void;
-  isDrawer?: boolean;
 };
 
-const SearchContent = ({ close, isDrawer }: SearchContentProps) => {
+const SearchContent = ({ close }: SearchContentProps) => {
   const [search, setSearch] = React.useState("");
   const [results, setResults] = React.useState<MeduzaArticles[]>([]);
   const [isLoading, setLoading] = React.useState(false);
@@ -164,18 +171,59 @@ const SearchContent = ({ close, isDrawer }: SearchContentProps) => {
         onValueChange={handleChange}
         value={search}
       />
+
       <ScrollArea
-        className={cn(
-          "h-[300px] overflow-y-auto rounded-md p-2",
-          isDrawer && "h-[65vh]"
-        )}
+        className={cn("h-[345px] overflow-y-auto rounded-md p-2")}
         type="always"
       >
         <CommandList className="">
-          <CommandGroup heading={`Результаты: ${results?.length ?? ""}`}>
+          {/* <p className="ml-3 text-xs">Попробуйте поискать:</p> */}
+          <div className="space-x-3 space-y-1">
+            <Button
+              variant={"secondary"}
+              className="ml-3 h-[22px] text-xs"
+              onClick={() => {
+                setSearch("Вчера");
+              }}
+            >
+              Вчера
+            </Button>
+            <Button
+              variant={"secondary"}
+              className="h-[22px] text-xs"
+              onClick={() => {
+                setSearch("Неделю назад");
+              }}
+            >
+              Неделю назад
+            </Button>
+            <Button
+              variant={"secondary"}
+              className="h-[22px] text-xs"
+              onClick={() => {
+                setSearch("Месяц назад");
+              }}
+            >
+              Месяц назад
+            </Button>
+            <Button
+              variant={"secondary"}
+              className="h-[22px] text-xs"
+              onClick={() => {
+                setSearch("Год назад");
+              }}
+            >
+              Год назад
+            </Button>
+          </div>
+          <CommandGroup
+            heading={
+              <div className="">Результаты: {results?.length ?? ""}</div>
+            }
+          >
             {isLoading ? null : (
               <CommandEmpty className="min-h-[70px]">
-                <div>Ничего не найдено</div>
+                <div className="">Ничего не найдено</div>
               </CommandEmpty>
             )}
             {isLoading ? (
@@ -192,7 +240,6 @@ const SearchContent = ({ close, isDrawer }: SearchContentProps) => {
                     className="my-3 space-y-2 px-4 py-3 first:mt-0 last:mb-0"
                     key={result.id}
                     onSelect={() => {
-                      // setOpen(false);
                       close();
                       router.push(`/calendar/${result?.id}`);
                     }}
@@ -230,6 +277,26 @@ const SearchContent = ({ close, isDrawer }: SearchContentProps) => {
           </CommandGroup>
         </CommandList>
       </ScrollArea>
+      <div className="flex justify-end p-3">
+        <TooltipProvider>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <div className="inline-flex cursor-pointer font-medium text-gray-900 opacity-70 transition-opacity hover:opacity-100">
+                <p className="text-xs">Подсказка</p>
+                <Lightbulb className="ml-0.5" size={16} />
+              </div>
+            </TooltipTrigger>
+            <TooltipPortal>
+              <TooltipContent>
+                <p>
+                  Попробуйте ввести дату в поле для поиска в формате
+                  &quot;24.02.2022&quot; или &quot;3 недели назад&quot;
+                </p>
+              </TooltipContent>
+            </TooltipPortal>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
     </Command>
   );
 };

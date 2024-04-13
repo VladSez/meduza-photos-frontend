@@ -139,7 +139,7 @@ export function DatePicker() {
                   }
                 }}
                 initialFocus
-                weekStartsOn={1} // Monday as first day of the week
+                weekStartsOn={1} // Monday as a first day of the week
                 disabled={{ after: lastAvailableDate, before: endDate }}
                 locale={ru}
                 fromDate={endDate}
