@@ -11,13 +11,7 @@ import { DayContent } from "react-day-picker";
 import { Button } from "@/ui/button";
 import { Calendar } from "@/ui/calendar";
 import { Popover } from "@/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipPortal,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/ui/tooltip";
+import { Tooltip, TooltipProvider } from "@/ui/tooltip";
 
 import { fetchLastAvailablePost } from "@/app/actions/fetch-last-available-post";
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
@@ -195,8 +189,8 @@ function DateTime(
   if (calendarTodayDate && !lastEnabledDayIsToday) {
     return (
       <TooltipProvider>
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
+        <Tooltip
+          trigger={
             <time
               dateTime={dateTime}
               className="flex h-full w-full items-center justify-center"
@@ -205,17 +199,15 @@ function DateTime(
                 <DayContent {...props} />
               </div>
             </time>
-          </TooltipTrigger>
-          <TooltipPortal>
-            <TooltipContent>
-              <p>
-                Новые фото должны быть доступны сегодня после{" "}
-                {/* We show times in both local and utc format for better ux */}
-                {localTimeFormat} ({utcTimeFormat} UTC)
-              </p>
-            </TooltipContent>
-          </TooltipPortal>
-        </Tooltip>
+          }
+          content={
+            <p>
+              Новые фото должны быть доступны сегодня после{" "}
+              {/* We show times in both local and utc format for better ux */}
+              {localTimeFormat} ({utcTimeFormat} UTC)
+            </p>
+          }
+        />
       </TooltipProvider>
     );
   }

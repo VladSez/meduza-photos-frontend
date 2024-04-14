@@ -2,6 +2,8 @@ import { expect, test } from "@playwright/test";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
+import { SEARCH_TERMS } from "@/ui/search";
+
 import "dayjs/locale/ru";
 
 dayjs.locale("ru");
@@ -94,4 +96,58 @@ test("calendar navigation works", async ({ page }) => {
   await expect(page.getByTestId("article-header")).toBeVisible();
   await expect(page.getByTestId("article-date")).toHaveText(articleDate);
   await expect(page.getByTestId("article-body")).toBeVisible();
+});
+
+test("search works", async ({ page }) => {
+  // go to page via url
+  await page.goto("/");
+
+  await expect(page).toHaveURL("/feed");
+
+  // open search modal
+  await page.getByRole("button", { name: "Поиск..." }).click();
+
+  await expect(
+    page.getByRole("button", { name: SEARCH_TERMS[0] })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: SEARCH_TERMS[1] })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: SEARCH_TERMS[2] })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: SEARCH_TERMS[3] })
+  ).toBeVisible();
+
+  // start search screen
+  await expect(page.getByText("Ничего не найдено")).toBeVisible();
+
+  const searchInput = page.getByTestId("search-input");
+  await expect(searchInput).toBeVisible();
+
+  await searchInput.fill("Киев");
+  await expect(searchInput).toHaveValue("Киев");
+
+  await expect(
+    page.getByRole("button", { name: SEARCH_TERMS[0] })
+  ).toBeDisabled();
+
+  await expect(
+    page.locator("span").filter({ hasText: "Загрузка..." })
+  ).toBeVisible();
+
+  await expect(page.getByText("Результаты: 40")).toBeVisible();
+
+  const searchResult = page.getByTestId(`search-result-0`);
+  await expect(searchResult).toBeVisible();
+
+  await searchInput.clear();
+  await expect(searchInput).toHaveValue("");
+
+  await expect(page.getByText("История:")).toBeVisible();
+  await expect(page.getByRole("button", { name: "киев" })).toBeVisible();
+
+  const deleteSearchQueryBtn = page.getByTestId(`delete-history-0`);
+  await expect(deleteSearchQueryBtn).toBeVisible();
 });

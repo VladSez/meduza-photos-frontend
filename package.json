@@ -20,6 +20,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@mantine/hooks": "7.8.0",
     "@prisma/client": "5.12.1",
     "@radix-ui/react-dialog": "1.0.5",
     "@radix-ui/react-popover": "1.0.7",
