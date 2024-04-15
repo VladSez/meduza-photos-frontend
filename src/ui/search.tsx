@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocalStorage } from "@mantine/hooks";
+import { AnimatePresence, motion } from "framer-motion";
 import { decode } from "html-entities";
 import debounce from "lodash.debounce";
 import { X as DeleteIcon, Lightbulb, Loader } from "lucide-react";
@@ -130,7 +131,7 @@ const SearchContent = ({ close }: SearchContentProps) => {
 
   const router = useRouter();
 
-  const { isDesktop } = useMediaQuery();
+  const { isMobile } = useMediaQuery();
 
   const debouncedHandleSearch = React.useMemo(() => {
     return debounce((searchQuery: string) => {
@@ -169,7 +170,7 @@ const SearchContent = ({ close }: SearchContentProps) => {
         .finally(() => {
           setLoading(false);
         });
-    }, 400);
+    }, 600);
   }, [setLocalStorageValue, toast]);
 
   React.useEffect(() => {
@@ -249,55 +250,64 @@ const SearchContent = ({ close }: SearchContentProps) => {
                         <p className="mb-2 ml-0.5 text-xs font-medium">
                           История:
                         </p>
-                        {localStorageValue?.map((item, index) => {
-                          return (
-                            <div
-                              key={index}
-                              className="flex w-full flex-row flex-nowrap items-center"
-                            >
-                              <Tooltip
-                                trigger={
-                                  <Button
-                                    size="sm"
-                                    variant={"secondary"}
-                                    className="w-full text-xs"
-                                    onClick={() => {
-                                      setSearch(item.text);
-                                    }}
-                                  >
-                                    {item.text}
-                                  </Button>
-                                }
-                                content={"Нажмите чтобы применить запрос"}
-                              />
+                        <AnimatePresence initial={false} mode="popLayout">
+                          {localStorageValue?.map((item, index) => {
+                            return (
+                              <motion.div
+                                key={item.id}
+                                layout
+                                initial={{ x: 0, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: -300, opacity: 0 }}
+                                transition={{
+                                  opacity: { duration: 0.2 },
+                                }}
+                                className="flex w-full flex-row flex-nowrap items-center"
+                              >
+                                <Tooltip
+                                  trigger={
+                                    <Button
+                                      size="sm"
+                                      variant={"secondary"}
+                                      className="w-full text-xs"
+                                      onClick={() => {
+                                        setSearch(item.text);
+                                      }}
+                                    >
+                                      {item.text}
+                                    </Button>
+                                  }
+                                  content={"Нажмите чтобы применить запрос"}
+                                />
 
-                              <Tooltip
-                                trigger={
-                                  <Button
-                                    data-testid={`delete-history-${index}`}
-                                    variant="ghost"
-                                    size="icon"
-                                    className="ml-0.5 h-9 w-9"
-                                    onClick={() => {
-                                      // Remove item from localStorage
-                                      setLocalStorageValue((prev) => {
-                                        return prev.filter((prevItem) => {
-                                          return prevItem.id !== item.id;
+                                <Tooltip
+                                  trigger={
+                                    <Button
+                                      data-testid={`delete-history-${index}`}
+                                      variant="ghost"
+                                      size="icon"
+                                      className="ml-0.5 h-9 w-9"
+                                      onClick={() => {
+                                        // Remove item from localStorage
+                                        setLocalStorageValue((prev) => {
+                                          return prev.filter((prevItem) => {
+                                            return prevItem.id !== item.id;
+                                          });
                                         });
-                                      });
-                                    }}
-                                  >
-                                    <DeleteIcon
-                                      size={17}
-                                      className="cursor-pointer opacity-70 transition-opacity hover:opacity-100"
-                                    />
-                                  </Button>
-                                }
-                                content={"Удалить этот запрос из истории"}
-                              />
-                            </div>
-                          );
-                        })}
+                                      }}
+                                    >
+                                      <DeleteIcon
+                                        size={17}
+                                        className="cursor-pointer opacity-70 transition-opacity hover:opacity-100"
+                                      />
+                                    </Button>
+                                  }
+                                  content={"Удалить этот запрос из истории"}
+                                />
+                              </motion.div>
+                            );
+                          })}
+                        </AnimatePresence>
                       </div>
                     ) : noHistorySaved && !search ? (
                       <div className="">Ничего не найдено</div>
@@ -363,22 +373,7 @@ const SearchContent = ({ close }: SearchContentProps) => {
           </CommandList>
         </ScrollArea>
         <div className="flex justify-end p-3">
-          {isDesktop ? (
-            <Tooltip
-              trigger={
-                <div className="inline-flex cursor-pointer font-medium text-gray-900 opacity-70 transition-opacity hover:opacity-100">
-                  <p className="text-xs">Подсказка</p>
-                  <Lightbulb className="ml-0.5" size={16} />
-                </div>
-              }
-              content={
-                <p>
-                  Попробуйте ввести дату в поле для поиска в формате
-                  &quot;24.02.2022&quot; или &quot;3 недели назад&quot;
-                </p>
-              }
-            />
-          ) : (
+          {isMobile ? (
             <Popover
               open={isPopoverOpen}
               setOpen={setPopoverOpen}
@@ -389,7 +384,22 @@ const SearchContent = ({ close }: SearchContentProps) => {
                 </div>
               }
               content={
-                <p className="h-[250px]">
+                <p className="h-[200px]">
+                  Попробуйте ввести дату в поле для поиска в формате
+                  &quot;24.02.2022&quot; или &quot;3 недели назад&quot;
+                </p>
+              }
+            />
+          ) : (
+            <Tooltip
+              trigger={
+                <div className="inline-flex cursor-pointer font-medium text-gray-900 opacity-70 transition-opacity hover:opacity-100">
+                  <p className="text-xs">Подсказка</p>
+                  <Lightbulb className="ml-0.5" size={16} />
+                </div>
+              }
+              content={
+                <p>
                   Попробуйте ввести дату в поле для поиска в формате
                   &quot;24.02.2022&quot; или &quot;3 недели назад&quot;
                 </p>

@@ -124,7 +124,6 @@ test("search works", async ({ page }) => {
   await expect(page.getByText("Ничего не найдено")).toBeVisible();
 
   const searchInput = page.getByTestId("search-input");
-  await expect(searchInput).toBeVisible();
 
   await searchInput.fill("Киев");
   await expect(searchInput).toHaveValue("Киев");
@@ -149,5 +148,27 @@ test("search works", async ({ page }) => {
   await expect(page.getByRole("button", { name: "киев" })).toBeVisible();
 
   const deleteSearchQueryBtn = page.getByTestId(`delete-history-0`);
-  await expect(deleteSearchQueryBtn).toBeVisible();
+  await deleteSearchQueryBtn.click();
+
+  // search history is cleared
+  await expect(page.getByText("История:")).toBeHidden();
+  await expect(page.getByRole("button", { name: "киев" })).toBeHidden();
+
+  // start search screen is again visible
+  await expect(page.getByText("Ничего не найдено")).toBeVisible();
+
+  const invalidSearchQuery = "Киев 9999999";
+
+  await searchInput.fill(invalidSearchQuery);
+  await expect(searchInput).toHaveValue(invalidSearchQuery);
+
+  await expect(
+    page.locator("span").filter({ hasText: "Загрузка..." })
+  ).toBeVisible();
+
+  await expect(
+    page.getByText(`Ничего не найдено по запросу "${invalidSearchQuery}"`)
+  ).toBeVisible();
+
+  await expect(page.getByText("Подсказка")).toBeVisible();
 });
