@@ -125,8 +125,10 @@ test("search works", async ({ page }) => {
 
   const searchInput = page.getByTestId("search-input");
 
-  await searchInput.fill("Киев");
-  await expect(searchInput).toHaveValue("Киев");
+  const validSearchQuery = "Киев";
+
+  await searchInput.fill(validSearchQuery);
+  await expect(searchInput).toHaveValue(validSearchQuery);
 
   await expect(
     page.getByRole("button", { name: SEARCH_TERMS[0] })
@@ -144,17 +146,48 @@ test("search works", async ({ page }) => {
   await searchInput.clear();
   await expect(searchInput).toHaveValue("");
 
+  // history is shown when input is empty and search query is saved in history
   await expect(page.getByText("История:")).toBeVisible();
-  await expect(page.getByRole("button", { name: "киев" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: validSearchQuery })
+  ).toBeVisible();
 
-  const deleteSearchQueryBtn = page.getByTestId(`delete-history-0`);
+  const applySearchQueryBtn = page.getByTestId(`apply-history-search-query-0`);
+
+  // click on search query from history
+  await applySearchQueryBtn.click();
+  await expect(searchInput).toHaveValue(validSearchQuery);
+
+  await expect(
+    page.locator("span").filter({ hasText: "Загрузка..." })
+  ).toBeVisible();
+
+  // search results are shown
+  await expect(page.getByText("Результаты: 40")).toBeVisible();
+
+  // clear input
+  await searchInput.clear();
+  await expect(searchInput).toHaveValue("");
+
+  // history is shown once again
+  await expect(page.getByText("История:")).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: validSearchQuery })
+  ).toBeVisible();
+
+  const deleteSearchQueryBtn = page.getByTestId(
+    `delete-history-search-query-0`
+  );
+  // delete search query from history
   await deleteSearchQueryBtn.click();
 
   // search history is cleared
   await expect(page.getByText("История:")).toBeHidden();
-  await expect(page.getByRole("button", { name: "киев" })).toBeHidden();
+  await expect(
+    page.getByRole("button", { name: validSearchQuery })
+  ).toBeHidden();
 
-  // start search screen is again visible
+  // start search screen is again visible when history is empty and input is empty
   await expect(page.getByText("Ничего не найдено")).toBeVisible();
 
   const invalidSearchQuery = "Киев 9999999";
@@ -170,5 +203,6 @@ test("search works", async ({ page }) => {
     page.getByText(`Ничего не найдено по запросу "${invalidSearchQuery}"`)
   ).toBeVisible();
 
+  // tip is shown in footer
   await expect(page.getByText("Подсказка")).toBeVisible();
 });

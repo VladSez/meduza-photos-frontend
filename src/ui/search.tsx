@@ -265,6 +265,7 @@ const SearchContent = ({ close }: SearchContentProps) => {
                                 <Tooltip
                                   trigger={
                                     <Button
+                                      data-testid={`apply-history-search-query-${index}`}
                                       size="sm"
                                       variant={"secondary"}
                                       className="w-full text-xs"
@@ -281,7 +282,7 @@ const SearchContent = ({ close }: SearchContentProps) => {
                                 <Tooltip
                                   trigger={
                                     <Button
-                                      data-testid={`delete-history-${index}`}
+                                      data-testid={`delete-history-search-query-${index}`}
                                       variant="ghost"
                                       size="icon"
                                       className="ml-0.5 h-9 w-9"
