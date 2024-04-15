@@ -1,9 +1,8 @@
 "use client";
 
-import { useLocalStorage } from "@mantine/hooks";
+import { useDebouncedCallback, useLocalStorage } from "@mantine/hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { decode } from "html-entities";
-import debounce from "lodash.debounce";
 import { X as DeleteIcon, Lightbulb, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -133,45 +132,44 @@ const SearchContent = ({ close }: SearchContentProps) => {
 
   const { isMobile } = useMediaQuery();
 
-  const debouncedHandleSearch = React.useMemo(() => {
-    return debounce((searchQuery: string) => {
-      searchPosts({ search: searchQuery })
-        .then((res) => {
-          if (res?.results?.length > 0) {
-            // Add search query to localStorage
-            setLocalStorageValue((prevSearchQueries) => {
-              const isDuplicate = prevSearchQueries.some((item) => {
-                return item.text.toLowerCase() === searchQuery.toLowerCase();
-              });
-
-              if (!isDuplicate && searchQuery.length > 0) {
-                return [
-                  ...prevSearchQueries,
-                  { text: searchQuery, id: Date.now().toString() },
-                ];
-              }
-              return prevSearchQueries;
+  // https://mantine.dev/hooks/use-debounced-callback/
+  const debouncedHandleSearch = useDebouncedCallback((searchQuery: string) => {
+    searchPosts({ search: searchQuery })
+      .then((res) => {
+        if (res?.results?.length > 0) {
+          // Add search query to localStorage
+          setLocalStorageValue((prevSearchQueries) => {
+            const isDuplicate = prevSearchQueries.some((item) => {
+              return item.text.toLowerCase() === searchQuery.toLowerCase();
             });
-          }
 
-          setResults(res?.results);
-        })
-        .catch((error) => {
-          console.error(error);
+            if (!isDuplicate && searchQuery.length > 0) {
+              return [
+                ...prevSearchQueries,
+                { text: searchQuery, id: Date.now().toString() },
+              ];
+            }
+            return prevSearchQueries;
+          });
+        }
 
-          if (error instanceof Error) {
-            toast({
-              variant: "destructive",
-              title: "Ошибка",
-              description: `Что-то пошло не так: попробуйте позже.`,
-            });
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }, 600);
-  }, [setLocalStorageValue, toast]);
+        setResults(res?.results);
+      })
+      .catch((error) => {
+        console.error(error);
+
+        if (error instanceof Error) {
+          toast({
+            variant: "destructive",
+            title: "Ошибка",
+            description: `Что-то пошло не так: попробуйте позже.`,
+          });
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, 800);
 
   React.useEffect(() => {
     if (search) {
