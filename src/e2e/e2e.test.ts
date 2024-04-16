@@ -107,21 +107,21 @@ test("search works", async ({ page }) => {
   // open search modal
   await page.getByRole("button", { name: "Поиск..." }).click();
 
-  await expect(
-    page.getByRole("button", { name: SEARCH_TERMS[0] })
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: SEARCH_TERMS[1] })
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: SEARCH_TERMS[2] })
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: SEARCH_TERMS[3] })
-  ).toBeVisible();
+  // get all search chips
+  const searchSuggestionsButtons = page.getByTestId("search-chip");
+  const searchSuggestionsButtonsCount = await searchSuggestionsButtons.count();
+
+  // all search chips are visible
+  for (let i = 0; i < searchSuggestionsButtonsCount; ++i) {
+    await expect(searchSuggestionsButtons.nth(i)).toBeVisible();
+
+    const text = SEARCH_TERMS[i];
+    await expect(searchSuggestionsButtons.nth(i)).toHaveText(text ?? "");
+    await expect(searchSuggestionsButtons.nth(i)).toBeEnabled();
+  }
 
   // start search screen
-  await expect(page.getByText("Ничего не найдено")).toBeVisible();
+  await expect(page.getByText("Попробуйте поискать что-нибудь")).toBeVisible();
 
   const searchInput = page.getByTestId("search-input");
 
@@ -130,9 +130,10 @@ test("search works", async ({ page }) => {
   await searchInput.fill(validSearchQuery);
   await expect(searchInput).toHaveValue(validSearchQuery);
 
-  await expect(
-    page.getByRole("button", { name: SEARCH_TERMS[0] })
-  ).toBeDisabled();
+  // all search chips are disabled during loading
+  for (let i = 0; i < searchSuggestionsButtonsCount; ++i) {
+    await expect(searchSuggestionsButtons.nth(i)).toBeDisabled();
+  }
 
   await expect(
     page.locator("span").filter({ hasText: "Загрузка..." })
@@ -149,10 +150,15 @@ test("search works", async ({ page }) => {
   // history is shown when input is empty and search query is saved in history
   await expect(page.getByText("История:")).toBeVisible();
   await expect(
-    page.getByRole("button", { name: validSearchQuery })
+    page
+      .getByRole("button")
+      .and(page.getByTestId(`apply-history-search-query-${validSearchQuery}`))
   ).toBeVisible();
 
-  const applySearchQueryBtn = page.getByTestId(`apply-history-search-query-0`);
+  // click on search query from history
+  const applySearchQueryBtn = page.getByTestId(
+    `apply-history-search-query-${validSearchQuery}`
+  );
 
   // click on search query from history
   await applySearchQueryBtn.click();
@@ -171,24 +177,31 @@ test("search works", async ({ page }) => {
 
   // history is shown once again
   await expect(page.getByText("История:")).toBeVisible();
+
   await expect(
-    page.getByRole("button", { name: validSearchQuery })
+    page
+      .getByRole("button")
+      .and(page.getByTestId(`apply-history-search-query-${validSearchQuery}`))
   ).toBeVisible();
 
+  // delete search query from history
   const deleteSearchQueryBtn = page.getByTestId(
-    `delete-history-search-query-0`
+    `delete-history-search-query-${validSearchQuery}`
   );
   // delete search query from history
   await deleteSearchQueryBtn.click();
 
   // search history is cleared
   await expect(page.getByText("История:")).toBeHidden();
+
   await expect(
-    page.getByRole("button", { name: validSearchQuery })
+    page
+      .getByRole("button")
+      .and(page.getByTestId(`apply-history-search-query-${validSearchQuery}`))
   ).toBeHidden();
 
   // start search screen is again visible when history is empty and input is empty
-  await expect(page.getByText("Ничего не найдено")).toBeVisible();
+  await expect(page.getByText("Попробуйте поискать что-нибудь")).toBeVisible();
 
   const invalidSearchQuery = "Киев 9999999";
 
@@ -202,6 +215,30 @@ test("search works", async ({ page }) => {
   await expect(
     page.getByText(`Ничего не найдено по запросу "${invalidSearchQuery}"`)
   ).toBeVisible();
+
+  // clear input
+  await searchInput.clear();
+  await expect(searchInput).toHaveValue("");
+
+  // start search screen is again visible when history is empty and input is empty
+  await expect(page.getByText("Попробуйте поискать что-нибудь")).toBeVisible();
+
+  // click on search suggestion
+  const searchSuggestionButton = page.getByRole("button", {
+    name: SEARCH_TERMS[0],
+  });
+
+  await searchSuggestionButton.click();
+  await expect(searchInput).toHaveValue(SEARCH_TERMS[0]);
+
+  await expect(searchSuggestionButton).toHaveAttribute("data-active", "true");
+
+  await expect(
+    page.locator("span").filter({ hasText: "Загрузка..." })
+  ).toBeVisible();
+
+  await expect(page.getByText("Результаты: 1")).toBeVisible();
+  await expect(page.getByTestId(`search-result-0`)).toBeVisible();
 
   // tip is shown in footer
   await expect(page.getByText("Подсказка")).toBeVisible();

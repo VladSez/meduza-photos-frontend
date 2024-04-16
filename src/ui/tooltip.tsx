@@ -35,11 +35,12 @@ TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 type AppTooltipProps = {
   trigger: React.ReactNode;
   content: React.ReactNode;
+  delayDuration?: number;
 };
 
-function Tooltip({ trigger, content }: AppTooltipProps) {
+function Tooltip({ trigger, content, delayDuration = 0 }: AppTooltipProps) {
   return (
-    <RadixTooltip delayDuration={0}>
+    <RadixTooltip delayDuration={delayDuration}>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipPortal>
         <TooltipContent side="top" align="center">
