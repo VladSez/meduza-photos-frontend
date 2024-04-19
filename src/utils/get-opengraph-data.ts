@@ -1,13 +1,23 @@
-import { decode } from "html-entities";
 import { z } from "zod";
 
 import { supabase } from "@/lib/supabase";
 
-import { searchMeduzaApi } from "./search-meduza-api";
-import { stripHtmlTags } from "./strip-html-tags";
 import { OpenGraphSchema } from "./zod-schema";
 
 import type { PostgrestError } from "@supabase/supabase-js";
+import type { OpenGraphSchemaType } from "./zod-schema";
+
+type FontOptions = {
+  name: string;
+  data: ArrayBuffer;
+  style: string;
+  weight: number;
+}[];
+
+type Size = {
+  width: number;
+  height: number;
+};
 
 export async function getOpenGraphData({ id }: { id?: string } = {}) {
   const interFont = await fetch(
@@ -46,31 +56,31 @@ export async function getOpenGraphData({ id }: { id?: string } = {}) {
 
   const heroBanner = post?.photosWithMeta?.[0];
 
-  if (!heroBanner) {
-    return { banner: undefined, post: undefined, interFont, error: true };
-  }
+  const fonts = [
+    {
+      name: "Inter",
+      data: interFont,
+      style: "normal",
+      weight: 600,
+    },
+  ] as const satisfies FontOptions;
 
-  const postHeaderWithoutHTML = stripHtmlTags(decode(post?.header));
+  const size = {
+    width: 1200,
+    height: 630,
+  } as const satisfies Size;
 
-  // meduza has api for search (used on their website)
-  const { randomImage, imgByTitleUrl } = await searchMeduzaApi({
-    title: id ? postHeaderWithoutHTML : undefined,
-  });
-
-  // if id is not provided, we take random image from meduza api search results
-  // if id is provided, we take image by title (we use search meduza api to find post image by title)
-  const ogImage = id ? imgByTitleUrl ?? "" : randomImage ?? "";
-
-  const banner = {
-    ...heroBanner,
-    img: ogImage,
+  return {
+    banner: heroBanner,
+    post,
+    error: Boolean(topError),
+    fonts,
+    size,
   } satisfies {
-    img?: string;
-    title?: string[];
-    subTitle?: string[];
-    captionText?: string | null;
-    credit?: string | null;
+    banner: OpenGraphSchemaType["photosWithMeta"][0] | undefined;
+    post: OpenGraphSchemaType | undefined;
+    error: boolean;
+    fonts: FontOptions;
+    size: Size;
   };
-
-  return { banner, post, interFont, error: topError || !heroBanner };
 }

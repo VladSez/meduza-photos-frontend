@@ -11,16 +11,12 @@ dayjs.locale("ru");
 
 export const runtime = "edge";
 
-export const size = {
-  width: 1200,
-  height: 630,
-};
 export const contentType = "image/png";
 export const alt = "Фотографии войны в Украине. Календарь событий";
 
 export default async function Image() {
   const res = await getOpenGraphData();
-  const { interFont, banner, error } = res;
+  const { fonts, banner, error, size } = res;
 
   if (error) {
     return new Response("Could not fetch response", { status: 500 });
@@ -35,14 +31,7 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: [
-        {
-          name: "Inter",
-          data: interFont,
-          style: "normal",
-          weight: 600,
-        },
-      ],
+      fonts,
     }
   );
 }
