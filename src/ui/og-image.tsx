@@ -36,7 +36,7 @@ export function OpenGraphImage({ heroBanner, date, title = "" }: OgImageProps) {
         <div tw="text-5xl p-16">{stripHtmlTags(decode(title))}</div>
 
         {date ? (
-          <div tw="relative bottom-8 left-16">
+          <div tw="relative bottom-8 left-[66px]">
             {dayjs(date).format("DD MMMM YYYY")}
           </div>
         ) : null}
