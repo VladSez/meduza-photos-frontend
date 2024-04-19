@@ -197,20 +197,17 @@ const SearchContent = ({ close }: SearchContentProps) => {
   // https://mantine.dev/hooks/use-debounced-callback/
   const debouncedHandleSearch = useDebouncedCallback((searchQuery: string) => {
     handleSearch(searchQuery);
-  }, 800);
+  }, 750);
 
+  // fetch search results on search query change
   React.useEffect(() => {
-    if (search) {
-      const trimmedSearch = search.trim();
+    const trimmedSearch = search.trim();
 
-      if (trimmedSearch) {
-        setStep(SEARCH_SCREENS.LOADING);
-      }
-
-      debouncedHandleSearch(trimmedSearch);
-    } else {
-      debouncedHandleSearch("");
+    if (trimmedSearch) {
+      setStep(SEARCH_SCREENS.LOADING);
     }
+    // fetch search results
+    debouncedHandleSearch(trimmedSearch);
   }, [debouncedHandleSearch, search]);
 
   const handleChange = (searchQuery: string) => {
@@ -397,6 +394,8 @@ export const SEARCH_TERMS = [
   "Год назад",
   "24 февраля 2022",
   "Киев",
+  "Мариуполь",
+  "Донбасс",
 ] as const;
 
 type SearchChipsProps = {
@@ -449,10 +448,10 @@ const SearchHistory = ({
 }: SearchHistoryProps) => {
   return (
     <CommandEmpty className="min-h-[70px]">
-      <div className="ml-1 flex w-[99%] flex-col">
-        <div className="flex flex-col items-start space-y-2">
-          <p className="mb-2 ml-0.5 text-xs font-medium">История:</p>
-          <AnimatePresence initial={false} mode="popLayout">
+      <AnimatePresence initial={false} mode="popLayout">
+        <div className="ml-1 flex w-[99%] flex-col">
+          <div className="flex flex-col items-start space-y-2">
+            <p className="mb-2 ml-0.5 text-xs font-medium">История:</p>
             {localStorageValue?.map((item) => {
               return (
                 <motion.div
@@ -512,9 +511,9 @@ const SearchHistory = ({
                 </motion.div>
               );
             })}
-          </AnimatePresence>
+          </div>
         </div>
-      </div>
+      </AnimatePresence>
     </CommandEmpty>
   );
 };
