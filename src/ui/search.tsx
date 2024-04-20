@@ -1,10 +1,11 @@
 "use client";
 
+import { useDebouncedCallback, useLocalStorage } from "@mantine/hooks";
+import { AnimatePresence, motion } from "framer-motion";
 import { decode } from "html-entities";
-import debounce from "lodash.debounce";
-import { Loader } from "lucide-react";
+import { X as DeleteIcon, Lightbulb, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import Highlighter from "react-highlight-words";
 
 import {
@@ -16,13 +17,18 @@ import {
   CommandItem,
   CommandList,
 } from "@/ui/command";
+import { Tooltip, TooltipProvider } from "@/ui/tooltip";
 
 import { searchPosts } from "@/app/actions/search-posts";
+import useMediaQuery from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { stripHtmlTags } from "@/utils/strip-html-tags";
 
 import { ArticleDate } from "./article-date";
+import { Button } from "./button";
+import { Popover } from "./popover";
 import { ScrollArea } from "./scroll-area";
+import { Separator } from "./separator";
 import { useToast } from "./use-toast";
 
 import type { MeduzaArticles } from "@prisma/client";
@@ -97,139 +103,417 @@ const SearchTrigger = React.forwardRef<
 
 SearchTrigger.displayName = "SearchTrigger";
 
-type SearchContentProps = {
-  close: () => void;
-  isDrawer?: boolean;
+const useSearchHistoryLocalStorage = () => {
+  return useLocalStorage<{ text: string; id: string }[]>({
+    key: "previous-search-queries",
+    defaultValue: [],
+  });
 };
 
-const SearchContent = ({ close, isDrawer }: SearchContentProps) => {
+const SEARCH_SCREENS = {
+  INITIAL: "initial",
+  HISTORY: "history",
+  LOADING: "loading",
+  NOT_FOUND: "not_found",
+  SEARCH_RESULTS: "search_results",
+  ERROR: "error",
+} as const;
+
+type SEARCH_SCREEN_KEYS = (typeof SEARCH_SCREENS)[keyof typeof SEARCH_SCREENS];
+
+type SearchSteps = {
+  [key in SEARCH_SCREEN_KEYS]: React.ReactNode;
+};
+
+type SearchContentProps = {
+  close: () => void;
+};
+
+const SearchContent = ({ close }: SearchContentProps) => {
   const [search, setSearch] = React.useState("");
   const [results, setResults] = React.useState<MeduzaArticles[]>([]);
-  const [isLoading, setLoading] = React.useState(false);
+  const [isPopoverOpen, setPopoverOpen] = React.useState(false);
+
+  const [step, setStep] = React.useState<SEARCH_SCREEN_KEYS>(
+    SEARCH_SCREENS.INITIAL
+  );
+
+  const [localStorageValue, setLocalStorageValue] =
+    useSearchHistoryLocalStorage();
 
   const { toast } = useToast();
 
   const router = useRouter();
 
-  const debouncedChangeHandler = React.useMemo(() => {
-    return debounce((search: string) => {
-      if (search) {
-        setLoading(true);
-      }
+  const { isMobile } = useMediaQuery();
 
-      searchPosts({ search: search.trim() })
-        .then((res) => {
-          setResults(res?.results);
-        })
-        .catch((error) => {
-          console.error(error);
+  const handleSearch = (searchQuery: string) => {
+    searchPosts({ search: searchQuery })
+      .then((res) => {
+        const hasResults = res?.results?.length > 0;
 
-          if (error instanceof Error) {
-            toast({
-              variant: "destructive",
-              title: "Ошибка",
-              description: `Что-то пошло не так: попробуйте позже.`,
+        if (hasResults) {
+          // Add search query to localStorage
+          setLocalStorageValue((prevSearchQueries) => {
+            const isDuplicate = prevSearchQueries.some((item) => {
+              return item.text.toLowerCase() === searchQuery.toLowerCase();
             });
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }, 400);
-  }, [toast]);
 
-  React.useEffect(() => {
-    if (search) {
-      debouncedChangeHandler(search);
-    } else {
-      debouncedChangeHandler("");
-    }
-  }, [debouncedChangeHandler, search]);
+            if (!isDuplicate && searchQuery.length > 0) {
+              return [
+                ...prevSearchQueries,
+                { text: searchQuery, id: Date.now().toString() },
+              ];
+            }
+            return prevSearchQueries;
+          });
+        }
 
-  const handleChange = (event: string) => {
-    setSearch(event);
+        setResults(res?.results);
+
+        if (hasResults) {
+          setStep(SEARCH_SCREENS.SEARCH_RESULTS);
+        } else if (searchQuery) {
+          setStep(SEARCH_SCREENS.NOT_FOUND);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+
+        if (searchQuery && error) {
+          setStep(SEARCH_SCREENS.ERROR);
+        }
+
+        if (error instanceof Error) {
+          toast({
+            variant: "destructive",
+            title: "Ошибка",
+            description: `Что-то пошло не так: попробуйте позже.`,
+          });
+        }
+      });
   };
+
+  // https://mantine.dev/hooks/use-debounced-callback/
+  const debouncedHandleSearch = useDebouncedCallback((searchQuery: string) => {
+    handleSearch(searchQuery);
+  }, 750);
+
+  // fetch search results on search query change
+  React.useEffect(() => {
+    const trimmedSearch = search.trim();
+
+    if (trimmedSearch) {
+      setStep(SEARCH_SCREENS.LOADING);
+    }
+    // fetch search results
+    debouncedHandleSearch(trimmedSearch);
+  }, [debouncedHandleSearch, search]);
+
+  const handleChange = (searchQuery: string) => {
+    setSearch(searchQuery);
+  };
+
+  const noHistorySaved = localStorageValue?.length === 0;
+  const hasHistorySaved = localStorageValue?.length > 0;
+
+  const searchQuery = search.trim();
+  const hasNoResults = results?.length === 0;
+
+  const canShowHistory = hasHistorySaved && !searchQuery && hasNoResults;
+
+  useEffect(() => {
+    if (canShowHistory) {
+      setStep(SEARCH_SCREENS.HISTORY);
+    } else if (noHistorySaved && !searchQuery) {
+      setStep(SEARCH_SCREENS.INITIAL);
+    }
+  }, [canShowHistory, noHistorySaved, searchQuery]);
+
+  const SearchScreens = {
+    [SEARCH_SCREENS.INITIAL]: (
+      <CommandEmpty className="min-h-[70px]">
+        <div className="flex w-[99%] flex-col space-y-2">
+          <div className="">Попробуйте поискать что-нибудь</div>
+          <div className="space-x-3 space-y-1.5">
+            <SearchChips search={search} setSearch={setSearch} step={step} />
+          </div>
+        </div>
+      </CommandEmpty>
+    ),
+    [SEARCH_SCREENS.HISTORY]: (
+      <SearchHistory
+        setSearch={setSearch}
+        localStorageValue={localStorageValue}
+        setLocalStorageValue={setLocalStorageValue}
+      />
+    ),
+    [SEARCH_SCREENS.LOADING]: (
+      <CommandEmpty className="flex min-h-[100px] items-center justify-center">
+        <div className="inline-flex items-center text-sm">
+          <Loader className="mr-1.5 animate-spin" size={16} />
+          Загрузка...
+        </div>
+      </CommandEmpty>
+    ),
+    [SEARCH_SCREENS.NOT_FOUND]: (
+      <CommandEmpty className="min-h-[70px]">
+        <div className="ml-1 flex w-[99%] flex-col">
+          <div className="">
+            Ничего не найдено по запросу &quot;{search}&quot;
+          </div>
+        </div>
+      </CommandEmpty>
+    ),
+    [SEARCH_SCREENS.SEARCH_RESULTS]: results?.map((result, index) => {
+      return (
+        <CommandItem
+          data-testid={`search-result-${index}`}
+          className="my-3 space-y-2 px-4 py-3 first:mt-0 last:mb-0"
+          key={result.id}
+          onSelect={() => {
+            close();
+            router.push(`/calendar/${result?.id}`);
+          }}
+        >
+          <div className="mb-2">
+            <div>
+              <Highlighter
+                highlightClassName="bg-yellow-300 font-semibold"
+                unhighlightClassName={`break-words font-semibold text-gray-900 [&>span]:font-light`}
+                searchWords={search?.split(" ") ?? []}
+                autoEscape={true}
+                textToHighlight={stripHtmlTags(decode(result?.header ?? ""))}
+              />
+            </div>
+            <ArticleDate date={result?.dateString} className="text-xs" />
+          </div>
+          <Highlighter
+            highlightClassName="bg-yellow-300 font-semibold"
+            unhighlightClassName={`break-words text-gray-900 [&>span]:font-light`}
+            searchWords={search?.split(" ") ?? []}
+            autoEscape={true}
+            textToHighlight={stripHtmlTags(decode(result?.subtitle ?? ""))}
+          />
+        </CommandItem>
+      );
+    }),
+    [SEARCH_SCREENS.ERROR]: (
+      <div className="">Что-то пошло не так. Попробуйте позже</div>
+    ),
+  } as const satisfies SearchSteps;
+
+  const SearchScreenComponent = SearchScreens[step];
 
   return (
     // bug: https://github.com/pacocoursey/cmdk/issues/103
-    <Command
-      filter={() => {
-        return 1;
-      }}
-      shouldFilter={false}
-    >
-      <CommandInput
-        placeholder="Поиск..."
-        autoFocus
-        onValueChange={handleChange}
-        value={search}
-      />
-      <ScrollArea
-        className={cn(
-          "h-[300px] overflow-y-auto rounded-md p-2",
-          isDrawer && "h-[65vh]"
-        )}
-        type="always"
+    <TooltipProvider>
+      <Command
+        filter={() => {
+          return 1;
+        }}
+        shouldFilter={false}
       >
-        <CommandList className="">
-          <CommandGroup heading={`Результаты: ${results?.length ?? ""}`}>
-            {isLoading ? null : (
-              <CommandEmpty className="min-h-[70px]">
-                <div>Ничего не найдено</div>
-              </CommandEmpty>
+        <CommandInput
+          placeholder="Поиск..."
+          autoFocus
+          onValueChange={handleChange}
+          value={search}
+          data-testid="search-input"
+        />
+        <ScrollArea
+          className={cn("h-[365px] overflow-y-auto rounded-md p-2")}
+          type="always"
+        >
+          <CommandList className="">
+            {step === SEARCH_SCREENS.INITIAL ? null : (
+              <div className="space-x-3 space-y-1.5">
+                <SearchChips
+                  search={search}
+                  setSearch={setSearch}
+                  step={step}
+                />
+              </div>
             )}
-            {isLoading ? (
-              <CommandEmpty className="min-h-[70px]">
-                <div className="inline-flex items-center text-sm">
-                  <Loader className="mr-1.5 animate-spin" size={16} />
-                  Загрузка...
+            <CommandGroup
+              heading={
+                step === SEARCH_SCREENS.SEARCH_RESULTS ? (
+                  <div className="">Результаты: {results?.length ?? ""}</div>
+                ) : undefined
+              }
+            >
+              {SearchScreenComponent}
+            </CommandGroup>
+          </CommandList>
+        </ScrollArea>
+        <Separator className="h-[0.5px]" />
+        <div className="flex justify-end p-3">
+          {isMobile ? (
+            <Popover
+              open={isPopoverOpen}
+              setOpen={setPopoverOpen}
+              trigger={
+                <div className="inline-flex cursor-pointer font-medium text-gray-900 opacity-70 transition-opacity hover:opacity-100">
+                  <p className="text-xs">Подсказка</p>
+                  <Lightbulb className="ml-0.5" size={16} />
                 </div>
-              </CommandEmpty>
-            ) : (
-              results?.map((result) => {
-                return (
-                  <CommandItem
-                    className="my-3 space-y-2 px-4 py-3 first:mt-0 last:mb-0"
-                    key={result.id}
-                    onSelect={() => {
-                      // setOpen(false);
-                      close();
-                      router.push(`/calendar/${result?.id}`);
-                    }}
-                  >
-                    <div className="mb-2">
-                      <div>
-                        <Highlighter
-                          highlightClassName="bg-yellow-300 font-semibold"
-                          unhighlightClassName={`break-words font-semibold text-gray-900 [&>span]:font-light`}
-                          searchWords={search?.split(" ") ?? []}
-                          autoEscape={true}
-                          textToHighlight={stripHtmlTags(
-                            decode(result?.header ?? "")
-                          )}
+              }
+              content={
+                <p className="h-[200px]">
+                  Попробуйте ввести дату в поле для поиска в формате
+                  &quot;24.02.2022&quot; или &quot;3 недели назад&quot;
+                </p>
+              }
+            />
+          ) : (
+            <Tooltip
+              trigger={
+                <div className="inline-flex cursor-pointer font-medium text-gray-900 opacity-70 transition-opacity hover:opacity-100">
+                  <p className="text-xs">Подсказка</p>
+                  <Lightbulb className="ml-0.5" size={16} />
+                </div>
+              }
+              content={
+                <p>
+                  Попробуйте ввести дату в поле для поиска в формате
+                  &quot;24.02.2022&quot; или &quot;3 недели назад&quot;
+                </p>
+              }
+            />
+          )}
+        </div>
+      </Command>
+    </TooltipProvider>
+  );
+};
+
+export const SEARCH_TERMS = [
+  "Вчера",
+  "Неделю назад",
+  "Месяц назад",
+  "Год назад",
+  "24 февраля 2022",
+  "Киев",
+  "Мариуполь",
+  "Донбасс",
+] as const;
+
+type SearchChipsProps = {
+  step: string;
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const SearchChips = ({ step, search, setSearch }: SearchChipsProps) => {
+  return SEARCH_TERMS.map((searchText) => {
+    const isDisabled = step === SEARCH_SCREENS.LOADING;
+    const isSelected = search === searchText;
+
+    return (
+      <Button
+        data-testid="search-chip"
+        disabled={step === SEARCH_SCREENS.LOADING}
+        key={searchText}
+        variant={"secondary"}
+        data-active={isSelected}
+        className={cn(
+          "ml-3 h-[22px] text-xs font-normal",
+          { "disabled:opacity-100": isDisabled && isSelected },
+          {
+            "bg-gray-800 text-gray-100 hover:bg-gray-800/95": isSelected,
+          }
+        )}
+        onClick={() => {
+          setSearch(searchText);
+        }}
+      >
+        {searchText}
+      </Button>
+    );
+  });
+};
+
+type SearchHistoryProps = {
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  localStorageValue: { text: string; id: string }[];
+  setLocalStorageValue: React.Dispatch<
+    React.SetStateAction<{ text: string; id: string }[]>
+  >;
+};
+
+const SearchHistory = ({
+  setSearch,
+  localStorageValue,
+  setLocalStorageValue,
+}: SearchHistoryProps) => {
+  return (
+    <CommandEmpty className="min-h-[70px]">
+      <AnimatePresence initial={false} mode="popLayout">
+        <div className="ml-1 flex w-[99%] flex-col">
+          <div className="flex flex-col items-start space-y-2">
+            <p className="mb-2 ml-0.5 text-xs font-medium">История:</p>
+            {localStorageValue?.map((item) => {
+              return (
+                <motion.div
+                  key={item.id}
+                  layout
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  transition={{
+                    opacity: { duration: 0.2 },
+                  }}
+                  className="flex w-full flex-row flex-nowrap items-center"
+                >
+                  <Tooltip
+                    delayDuration={700}
+                    trigger={
+                      <Button
+                        data-testid={`apply-history-search-query-${item.text}`}
+                        size="sm"
+                        variant={"secondary"}
+                        className="w-full text-xs font-semibold"
+                        onClick={() => {
+                          setSearch(item.text);
+                        }}
+                      >
+                        {item.text}
+                      </Button>
+                    }
+                    content={"Нажмите чтобы применить запрос"}
+                  />
+
+                  <Tooltip
+                    delayDuration={700}
+                    trigger={
+                      <Button
+                        data-testid={`delete-history-search-query-${item.text}`}
+                        variant="ghost"
+                        size="icon"
+                        className="ml-0.5 h-9 w-9"
+                        onClick={() => {
+                          // Remove item from localStorage
+                          setLocalStorageValue((prev) => {
+                            return prev.filter((prevItem) => {
+                              return prevItem.id !== item.id;
+                            });
+                          });
+                        }}
+                      >
+                        <DeleteIcon
+                          size={17}
+                          className="cursor-pointer opacity-70 transition-opacity hover:opacity-100"
                         />
-                      </div>
-                      <ArticleDate
-                        date={result?.dateString}
-                        className="text-xs"
-                      />
-                    </div>
-                    <Highlighter
-                      highlightClassName="bg-yellow-300 font-semibold"
-                      unhighlightClassName={`break-words text-gray-900 [&>span]:font-light`}
-                      searchWords={search?.split(" ") ?? []}
-                      autoEscape={true}
-                      textToHighlight={stripHtmlTags(
-                        decode(result?.subtitle ?? "")
-                      )}
-                    />
-                  </CommandItem>
-                );
-              })
-            )}
-          </CommandGroup>
-        </CommandList>
-      </ScrollArea>
-    </Command>
+                      </Button>
+                    }
+                    content={"Удалить этот запрос из истории"}
+                  />
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </AnimatePresence>
+    </CommandEmpty>
   );
 };

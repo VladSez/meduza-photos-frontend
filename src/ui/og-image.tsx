@@ -24,8 +24,7 @@ export function OpenGraphImage({ heroBanner, date, title = "" }: OgImageProps) {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             tw="flex flex-1"
-            src={heroBanner?.img}
-            // src="https://meduza.io/image/attachments/images/009/930/622/elarge/TAPqeLMouKjoz5RAVnAv5w.jpg"
+            src={`https://ik.imagekit.io/fl2lbswwo/tr:f-png,w-1200,h-630,q-75/${heroBanner?.img}`}
             alt={stripHtmlTags(decode(heroBanner?.captionText)) ?? ""}
           />
         ) : null}
@@ -37,7 +36,7 @@ export function OpenGraphImage({ heroBanner, date, title = "" }: OgImageProps) {
         <div tw="text-5xl p-16">{stripHtmlTags(decode(title))}</div>
 
         {date ? (
-          <div tw="relative bottom-8 left-16">
+          <div tw="relative bottom-8 left-[66px]">
             {dayjs(date).format("DD MMMM YYYY")}
           </div>
         ) : null}

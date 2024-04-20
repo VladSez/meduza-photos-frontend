@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
-const Tooltip = TooltipPrimitive.Root;
+const RadixTooltip = TooltipPrimitive.Root;
 
 const TooltipTrigger = TooltipPrimitive.Trigger;
 
@@ -32,10 +32,29 @@ const TooltipContent = React.forwardRef<
 });
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
+type AppTooltipProps = {
+  trigger: React.ReactNode;
+  content: React.ReactNode;
+  delayDuration?: number;
+};
+
+function Tooltip({ trigger, content, delayDuration = 0 }: AppTooltipProps) {
+  return (
+    <RadixTooltip delayDuration={delayDuration}>
+      <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+      <TooltipPortal>
+        <TooltipContent side="top" align="center">
+          {content}
+        </TooltipContent>
+      </TooltipPortal>
+    </RadixTooltip>
+  );
+}
+
 export {
   Tooltip,
-  TooltipContent,
-  TooltipPortal,
   TooltipProvider,
-  TooltipTrigger,
+  // TooltipContent,
+  // TooltipPortal,
+  // TooltipTrigger,
 };
