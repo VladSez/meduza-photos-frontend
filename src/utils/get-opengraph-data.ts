@@ -21,7 +21,7 @@ type Size = {
 
 export async function getOpenGraphData({ id }: { id?: string } = {}) {
   const interFont = await fetch(
-    new URL("../fonts/Inter-SemiBold.ttf", import.meta.url)
+    new URL("../fonts/Inter-Bold.ttf", import.meta.url)
   ).then((res) => {
     return res.arrayBuffer();
   });
