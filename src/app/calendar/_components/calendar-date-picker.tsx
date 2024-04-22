@@ -15,8 +15,9 @@ import { Tooltip, TooltipProvider } from "@/ui/tooltip";
 
 import { fetchLastAvailablePost } from "@/app/actions/fetch-last-available-post";
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
-import { useFilterDate } from "@/hooks/use-filter-date";
+import { useFilterDateContext } from "@/hooks/use-filter-date-context";
 import { cn } from "@/lib/utils";
+import { toastGenericError } from "@/utils/toast-generic-error";
 
 import { useToast } from "../../../ui/use-toast";
 
@@ -29,7 +30,7 @@ const endDate = dayjs("2022-02-24").toDate();
 export function DatePicker() {
   const { toast } = useToast();
 
-  const { filterDate, setFilterDate } = useFilterDate();
+  const { filterDate, setFilterDate } = useFilterDateContext();
   const [open, setOpen] = React.useState(false);
 
   const [isPending, setPending] = React.useState(false);
@@ -52,11 +53,7 @@ export function DatePicker() {
           if (error instanceof Error) {
             setError(error?.message);
 
-            toast({
-              variant: "destructive",
-              title: "Ошибка",
-              description: `Что-то пошло не так: попробуйте позже.`,
-            });
+            toast(toastGenericError);
           }
         });
     }
@@ -120,11 +117,7 @@ export function DatePicker() {
                       });
                     } catch (error) {
                       if (error instanceof Error) {
-                        toast({
-                          variant: "destructive",
-                          title: "Ошибка",
-                          description: `Что-то пошло не так: попробуйте позже.`,
-                        });
+                        toast(toastGenericError);
                       }
                     } finally {
                       setPending(false);

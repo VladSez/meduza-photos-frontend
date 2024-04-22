@@ -1,24 +1,49 @@
 "use server";
 
 import * as Sentry from "@sentry/nextjs";
+import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/redis";
+import { getIpAddress } from "@/utils/get-ip";
 import { PostsSchema } from "@/utils/zod-schema";
+
+import type { PostsSchemaType } from "@/utils/zod-schema";
+
+const fetchPostsSchema = z
+  .object({
+    page: z.number().int().positive().default(1),
+    take: z.number().int().positive().default(5),
+  })
+  .strict();
 
 /**
  * Fetch meduza posts from db (server-action)
  */
-export async function fetchPosts({ page = 1, take = 5 }) {
-  const skip = (page - 1) * take; // Calculate the number of items to skip
+export async function fetchPosts({
+  page = 1,
+  take = 5,
+  isServerAction = false,
+}: { page?: number; take?: number; isServerAction?: boolean } = {}) {
+  const parsed = fetchPostsSchema.parse({ page, take });
+
+  const { page: validatedPage, take: validatedTake } = parsed;
 
   try {
+    if (isServerAction) {
+      const ip = getIpAddress();
+      await checkRateLimit(ip);
+    }
+
+    const skip = (validatedPage - 1) * validatedTake; // Calculate the number of items to skip
+
     const [postsResult, totalResult] = await Promise.allSettled([
       prisma.meduzaArticles.findMany({
         orderBy: {
           date: "desc",
         },
         skip,
-        take,
+        take: validatedTake,
       }),
       prisma.meduzaArticles.count(),
     ]);
@@ -34,23 +59,25 @@ export async function fetchPosts({ page = 1, take = 5 }) {
     const posts = PostsSchema.parse(postsResult.value);
     const total = totalResult.value;
 
-    const hasMore = total - (skip + take) > 0;
+    const hasMore = total - (skip + validatedTake) > 0;
 
     return {
       posts,
       hasMore,
-      nextPage: hasMore ? page + 1 : undefined,
-      hasError: false,
+      nextPage: hasMore ? validatedPage + 1 : undefined,
+    } satisfies {
+      posts: PostsSchemaType;
+      hasMore: boolean;
+      nextPage: number | undefined;
     };
   } catch (error) {
     console.error(error);
     Sentry.captureException(error);
 
-    return {
-      posts: [],
-      hasMore: false,
-      nextPage: undefined,
-      hasError: true,
-    };
+    if (error instanceof Error && error.message === "Rate limit exceeded") {
+      throw new Error("Rate limit exceeded");
+    }
+
+    throw new Error("Failed to fetch posts");
   }
 }

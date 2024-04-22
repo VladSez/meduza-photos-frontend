@@ -11,6 +11,8 @@ import { createContext, useCallback, useMemo, useState } from "react";
 
 import { useToast } from "@/ui/use-toast";
 
+import { toastGenericError } from "@/utils/toast-generic-error";
+
 import type { ReactNode } from "react";
 
 import "dayjs/locale/ru";
@@ -49,8 +51,23 @@ export const FilterDateContext = createContext<{
   setFilterDate: () => {}, // noop default callback,
 });
 
+type GlobalErrorContextType = {
+  globalError: Error | null;
+  setError: (error: Error | null) => void;
+};
+
+export const GlobalErrorContext = createContext<GlobalErrorContextType>({
+  globalError: null,
+  setError: () => {},
+});
+
 export default function Providers({ children }: { children: ReactNode }) {
   const { toast } = useToast();
+  const [articleInViewport, setArticleInViewport] = useState("");
+  const [articleDateInViewport, setArticleDateInViewport] = useState("");
+  const [filterDate, setFilterDate] = useState<Date>();
+  const [globalError, setError] =
+    useState<GlobalErrorContextType["globalError"]>(null);
 
   const [queryClient] = useState(() => {
     return new QueryClient({
@@ -65,20 +82,12 @@ export default function Providers({ children }: { children: ReactNode }) {
       queryCache: new QueryCache({
         onError: (error) => {
           if (error instanceof Error) {
-            toast({
-              variant: "destructive",
-              title: "Ошибка",
-              description: `Что-то пошло не так: попробуйте позже.`,
-            });
+            toast(toastGenericError);
           }
         },
       }),
     });
   });
-
-  const [articleInViewport, setArticleInViewport] = useState("");
-  const [articleDateInViewport, setArticleDateInViewport] = useState("");
-  const [filterDate, setFilterDate] = useState<Date>();
 
   const setFilterDateHandler = useCallback((filterDate: Date | undefined) => {
     if (filterDate) {
@@ -125,13 +134,31 @@ export default function Providers({ children }: { children: ReactNode }) {
     setArticleInViewportHandler,
   ]);
 
+  const setErrorHandler = useCallback(
+    (error: GlobalErrorContextType["globalError"]) => {
+      if (error) {
+        setError(error);
+      }
+    },
+    []
+  );
+
+  const globalErrorContextValue = useMemo(() => {
+    return {
+      globalError,
+      setError: setErrorHandler,
+    };
+  }, [globalError, setErrorHandler]);
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ArticleInViewportContext.Provider value={articleContextValue}>
-        <FilterDateContext.Provider value={filterDateContextValue}>
-          {children}
-        </FilterDateContext.Provider>
-      </ArticleInViewportContext.Provider>
+      <GlobalErrorContext.Provider value={globalErrorContextValue}>
+        <ArticleInViewportContext.Provider value={articleContextValue}>
+          <FilterDateContext.Provider value={filterDateContextValue}>
+            {children}
+          </FilterDateContext.Provider>
+        </ArticleInViewportContext.Provider>
+      </GlobalErrorContext.Provider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { memo } from "react";
 
 import { useActiveDateAnimation } from "@/hooks/use-active-date-animation";
-import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
+import { useArticleInViewportContext } from "@/hooks/use-article-in-viewport-context";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -17,7 +17,7 @@ export const TimelineClient = memo(function Timeline({
 }: {
   timeline: TimelineType;
 }) {
-  const { articleInViewport } = useArticleInViewport();
+  const { articleInViewport } = useArticleInViewportContext();
   const articleInViewportId = Number(articleInViewport);
 
   const datesByMonth = Object.entries(separateDatesByMonth(timeline));
@@ -135,7 +135,7 @@ const Day = memo(function Day({
 // import { memo } from "react";
 
 // import { useActiveDateAnimation } from "@/hooks/use-active-date-animation";
-// import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
+// import { useArticleInViewportContext } from "@/hooks/use-article-in-viewport-context";
 // import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
 // import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -148,7 +148,7 @@ const Day = memo(function Day({
 //   timeline: TimelineType;
 //   mostRecentArticleId: number;
 // }) {
-//   const { articleInViewport } = useArticleInViewport();
+//   const { articleInViewport } = useArticleInViewportContext();
 //   const articleInViewportId = articleInViewport || mostRecentArticleId;
 
 //   const datesByMonth = Object.entries(separateDatesByMonth(timeline));

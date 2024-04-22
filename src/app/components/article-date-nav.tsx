@@ -4,7 +4,8 @@ import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 
-import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
+import { useArticleInViewportContext } from "@/hooks/use-article-in-viewport-context";
+import { useGlobalErrorContext } from "@/hooks/use-global-error-context";
 
 import { PATHS } from "./navigation";
 
@@ -12,11 +13,12 @@ export function ArticleDateNav() {
   const pathname = usePathname();
   const isFeedPage = pathname === PATHS.feed;
 
-  const { articleDateInViewport } = useArticleInViewport();
+  const { articleDateInViewport } = useArticleInViewportContext();
+  const { globalError } = useGlobalErrorContext();
 
   const shouldShowArticleDate = isFeedPage && articleDateInViewport;
 
-  if (!isFeedPage) {
+  if (!isFeedPage || globalError) {
     return null;
   }
 

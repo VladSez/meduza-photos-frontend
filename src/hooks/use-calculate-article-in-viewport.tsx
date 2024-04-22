@@ -3,7 +3,7 @@
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { useRef } from "react";
 
-import { useArticleInViewport } from "./use-article-in-viewport";
+import { useArticleInViewportContext } from "./use-article-in-viewport-context";
 
 /**
  * A hook that calculates the article (articleId), that is currently in viewport.
@@ -18,7 +18,7 @@ export const useCalculateArticleInViewport = () => {
     setArticleInViewport,
     articleDateInViewport,
     setArticleDateInViewport,
-  } = useArticleInViewport();
+  } = useArticleInViewportContext();
 
   if (!scrollY) {
     throw new Error("scrollY is not defined");

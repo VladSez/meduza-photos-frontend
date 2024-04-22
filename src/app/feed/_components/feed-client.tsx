@@ -2,10 +2,10 @@
 
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
-import { memo } from "react";
+import React, { memo } from "react";
 import { Virtuoso } from "react-virtuoso";
 
-import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
+import { useArticleInViewportContext } from "@/hooks/use-article-in-viewport-context";
 import { useCalculateArticleInViewport } from "@/hooks/use-calculate-article-in-viewport";
 import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 import { filterOutDuplicateIds } from "@/lib/utils";
@@ -21,7 +21,7 @@ export interface FeedProps {
 
 export const FeedClient = ({ initialPosts }: FeedProps) => {
   const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
-    useArticleInViewport();
+    useArticleInViewportContext();
 
   const {
     data: feedData,
