@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@/lib/rate-limit";
 
 import type { NextFetchEvent, NextRequest } from "next/server";
 

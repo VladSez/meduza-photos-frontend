@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
-import { checkRateLimit } from "@/lib/redis";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { getIpAddress } from "@/utils/get-ip";
 
 const fetchPostByDateSchema = z

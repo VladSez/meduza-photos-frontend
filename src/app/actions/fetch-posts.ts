@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
-import { checkRateLimit } from "@/lib/redis";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { getIpAddress } from "@/utils/get-ip";
 import { PostsSchema } from "@/utils/zod-schema";
 
