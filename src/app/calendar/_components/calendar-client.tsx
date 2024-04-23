@@ -8,7 +8,7 @@ import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 import { filterOutDuplicateIds } from "@/lib/utils";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
-import { NextPagePlaceholder } from "../../../ui/next-page-placeholder";
+import { NextPageLoadingSpinner } from "../../../ui/next-page-loading-spinner";
 import { DatePicker } from "./calendar-date-picker";
 import { CalendarDayCard } from "./calendar-day-card";
 
@@ -79,12 +79,12 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
       </div>
       {hasNextPage ? (
         <motion.div
-          className="my-10 flex justify-center"
+          className="flex justify-center pb-10 pt-5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <NextPagePlaceholder />
+          <NextPageLoadingSpinner />
         </motion.div>
       ) : null}
     </>

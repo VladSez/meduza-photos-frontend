@@ -10,7 +10,7 @@ import { useCalculateArticleInViewport } from "@/hooks/use-calculate-article-in-
 import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 import { filterOutDuplicateIds } from "@/lib/utils";
 
-import { NextPagePlaceholder } from "../../../ui/next-page-placeholder";
+import { NextPageLoadingSpinner } from "../../../ui/next-page-loading-spinner";
 import { Article } from "../../components/article";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -79,7 +79,7 @@ export const FeedClient = ({ initialPosts }: FeedProps) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <NextPagePlaceholder />
+          <NextPageLoadingSpinner />
         </motion.div>
       ) : null}
     </>

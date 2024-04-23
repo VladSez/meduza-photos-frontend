@@ -1,4 +1,4 @@
-export const NextPagePlaceholder = () => {
+export const NextPageLoadingSpinner = () => {
   return (
     <div className="flex justify-center">
       <svg
