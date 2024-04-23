@@ -10,7 +10,7 @@ import { useArticleInViewportContext } from "@/hooks/use-article-in-viewport-con
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
-import type { TimelineType } from "./timeline-server";
+import type { TimelineType } from "../page";
 
 export const TimelineClient = memo(function Timeline({
   timeline,
