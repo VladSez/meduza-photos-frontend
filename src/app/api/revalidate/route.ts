@@ -1,4 +1,4 @@
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 import { env } from "@/env";
 
@@ -17,8 +17,6 @@ export function GET(request: Request) {
   // https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data
   // https://github.com/vercel/next.js/discussions/54075
   revalidatePath("/", "layout");
-
-  revalidateTag("fetchLastAvailablePost");
 
   // "visit" the pages to purge the cache
   fetch("https://meduza-photos-frontend.vercel.app/feed")

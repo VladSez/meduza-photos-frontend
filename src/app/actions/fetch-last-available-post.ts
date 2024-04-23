@@ -1,36 +1,40 @@
 "use server";
 
 import * as Sentry from "@sentry/nextjs";
-import { unstable_cache } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { getIpAddress } from "@/utils/get-ip";
 import { PostSchema } from "@/utils/zod-schema";
 
 /**
  * Fetch the last available post from the database (server-action)
  */
-export const fetchLastAvailablePost = unstable_cache(
-  async () => {
-    try {
-      const _mostRecentPost = await prisma.meduzaArticles.findFirst({
-        orderBy: {
-          date: "desc",
-        },
-      });
+export async function fetchLastAvailablePost() {
+  try {
+    const ip = getIpAddress();
+    await checkRateLimit(ip);
 
-      const mostRecentPost = PostSchema.parse(_mostRecentPost);
+    const _mostRecentPost = await prisma.meduzaArticles.findFirst({
+      orderBy: {
+        date: "desc",
+      },
+    });
 
-      return {
-        mostRecentPost,
-      };
-    } catch (error) {
-      console.error(error);
+    const mostRecentPost = PostSchema.parse(_mostRecentPost);
 
-      Sentry.captureException(error);
+    return {
+      mostRecentPost,
+    };
+  } catch (error) {
+    console.error(error);
 
-      throw new Error("Failed to fetch last available post");
+    Sentry.captureException(error);
+
+    if (error instanceof Error && error.message === "Rate limit exceeded") {
+      throw new Error("Rate limit exceeded");
     }
-  },
-  ["fetchLastAvailablePost"],
-  { tags: ["fetchLastAvailablePost"], revalidate: 86_400 } // revalidate every 24 hours
-);
+
+    throw new Error("Failed to fetch last available post");
+  }
+}
