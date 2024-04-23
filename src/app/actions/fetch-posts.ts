@@ -5,7 +5,6 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { getIpAddress } from "@/utils/get-ip";
 import { PostsSchema } from "@/utils/zod-schema";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -30,9 +29,9 @@ export async function fetchPosts({
   const { page: validatedPage, take: validatedTake } = parsed;
 
   try {
+    // this is used for the infinite scroll, so we want to relax a bit the rate limit
     if (isServerAction) {
-      const ip = getIpAddress();
-      await checkRateLimit(ip);
+      await checkRateLimit({ mode: "relaxed" });
     }
 
     const skip = (validatedPage - 1) * validatedTake; // Calculate the number of items to skip

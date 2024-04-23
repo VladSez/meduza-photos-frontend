@@ -7,7 +7,6 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { getIpAddress } from "@/utils/get-ip";
 
 const searchSchema = z
   .object({
@@ -29,8 +28,7 @@ export async function searchPosts({
   }
 
   try {
-    const ip = getIpAddress();
-    await checkRateLimit(ip);
+    await checkRateLimit({ mode: "strict" });
 
     // A natural language date parser in JavaScript https://github.com/wanasit/chrono
     const chronoParseResult = chrono.parseDate(parsedSearch);

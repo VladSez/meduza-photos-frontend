@@ -5,7 +5,6 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { getIpAddress } from "@/utils/get-ip";
 
 const fetchPostByDateSchema = z
   .object({
@@ -19,8 +18,7 @@ const fetchPostByDateSchema = z
 export async function fetchPostByDate({ date }: { date: string }) {
   const { date: parsedDate } = fetchPostByDateSchema.parse({ date });
 
-  const ip = getIpAddress();
-  await checkRateLimit(ip);
+  await checkRateLimit({ mode: "strict" });
 
   const article = await prisma.meduzaArticles.findFirst({
     where: {

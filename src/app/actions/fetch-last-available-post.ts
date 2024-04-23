@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/nextjs";
 
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { getIpAddress } from "@/utils/get-ip";
 import { PostSchema } from "@/utils/zod-schema";
 
 /**
@@ -12,8 +11,7 @@ import { PostSchema } from "@/utils/zod-schema";
  */
 export async function fetchLastAvailablePost() {
   try {
-    const ip = getIpAddress();
-    await checkRateLimit(ip);
+    await checkRateLimit({ mode: "strict" });
 
     const _mostRecentPost = await prisma.meduzaArticles.findFirst({
       orderBy: {

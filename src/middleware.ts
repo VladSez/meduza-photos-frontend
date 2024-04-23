@@ -19,7 +19,7 @@ export default async function middleware(
   }
 
   const ip = request.ip ?? "Anonymous";
-  const rateLimitResponse = await rateLimit?.limit(ip);
+  const rateLimitResponse = await rateLimit?.strict.limit(ip, { rate: 2 });
 
   if (rateLimitResponse) {
     context.waitUntil(rateLimitResponse.pending);
