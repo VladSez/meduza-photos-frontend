@@ -9,7 +9,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 const fetchPostByDateSchema = z
   .object({
-    date: z.date(),
+    date: z.string().datetime().min(1),
   })
   .strict();
 
