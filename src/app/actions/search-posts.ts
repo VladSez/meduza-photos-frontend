@@ -10,15 +10,13 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 const searchSchema = z
   .object({
-    search: z.string().optional().default(""),
+    search: z.string().max(128).default(""),
   })
   .strict();
 
-export async function searchPosts({
-  search = "",
-}: {
-  search: string | undefined;
-}) {
+type searchSchemaType = z.infer<typeof searchSchema>;
+
+export async function searchPosts({ search = "" }: searchSchemaType) {
   const { search: parsedSearch } = searchSchema.parse({ search });
 
   if (!parsedSearch) {
