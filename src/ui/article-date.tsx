@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import { cn } from "@/lib/utils";
 
-export const articleDateFormat = "DD MMMM, YYYY";
+export const articleDateFormat = "DD MMMM YYYY";
 
 export function ArticleDate({
   date,
