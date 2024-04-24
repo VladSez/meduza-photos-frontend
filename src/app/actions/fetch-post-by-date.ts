@@ -1,5 +1,6 @@
 "use server";
 
+import dayjs from "dayjs";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -8,21 +9,25 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 const fetchPostByDateSchema = z
   .object({
-    date: z.string().min(1),
+    date: z.date(),
   })
   .strict();
+
+type fetchPostByDateType = z.infer<typeof fetchPostByDateSchema>;
 
 /**
  * Fetch meduza post by date from db (server-action)
  */
-export async function fetchPostByDate({ date }: { date: string }) {
+export async function fetchPostByDate({ date }: fetchPostByDateType) {
   const { date: parsedDate } = fetchPostByDateSchema.parse({ date });
 
   await checkRateLimit({ mode: "strict" });
 
+  const formattedDate = dayjs(parsedDate).format("YYYY/MM/DD");
+
   const article = await prisma.meduzaArticles.findFirst({
     where: {
-      dateString: parsedDate,
+      dateString: formattedDate,
     },
     select: {
       id: true,
@@ -30,7 +35,7 @@ export async function fetchPostByDate({ date }: { date: string }) {
   });
 
   if (!article?.id) {
-    throw new Error(`Пост не найден: ${parsedDate}`);
+    throw new Error(`Пост не найден: ${formattedDate}`);
   }
 
   redirect(`/calendar/${article?.id}`);

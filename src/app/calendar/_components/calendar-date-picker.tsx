@@ -8,6 +8,7 @@ import { Calendar as CalendarIcon, LoaderIcon } from "lucide-react";
 import * as React from "react";
 import { DayContent } from "react-day-picker";
 
+import { articleDateFormat } from "@/ui/article-date";
 import { Button } from "@/ui/button";
 import { Calendar } from "@/ui/calendar";
 import { Popover } from "@/ui/popover";
@@ -25,6 +26,7 @@ import type { DayContentProps } from "react-day-picker";
 
 dayjs.extend(utc);
 
+// the oldest date we have in db
 const endDate = dayjs("2022-02-24").toDate();
 
 export function DatePicker() {
@@ -79,7 +81,7 @@ export function DatePicker() {
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {filterDate ? (
-              dayjs(filterDate).format("DD MMMM, YYYY")
+              dayjs(filterDate).format(articleDateFormat)
             ) : (
               <span>Выберите дату</span>
             )}
@@ -113,11 +115,15 @@ export function DatePicker() {
                       setPending(true);
 
                       await fetchPostByDate({
-                        date: dayjs(date).format("YYYY/MM/DD"),
+                        date,
                       });
                     } catch (error) {
                       if (error instanceof Error) {
-                        toast(toastGenericError);
+                        toast({
+                          variant: "destructive",
+                          title: "Ошибка",
+                          description: `Пост от ${dayjs(date).format(articleDateFormat)} не найден`,
+                        });
                       }
                     } finally {
                       setPending(false);

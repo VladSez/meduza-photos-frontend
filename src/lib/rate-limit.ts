@@ -12,15 +12,15 @@ export const rateLimit =
           redis: Redis.fromEnv(),
           analytics: true,
           prefix: "@ratelimit:strict",
-          // allow 10 requests from the same IP in 10 seconds
-          limiter: Ratelimit.slidingWindow(10, "10s"),
+          // allow 30 requests from the same IP in 60 seconds
+          limiter: Ratelimit.slidingWindow(30, "60s"),
         }),
         relaxed: new Ratelimit({
           redis: Redis.fromEnv(),
           analytics: true,
           prefix: "@ratelimit:relaxed",
-          // allow 20 requests from the same IP in 10 seconds
-          limiter: Ratelimit.slidingWindow(20, "10s"),
+          // allow 60 requests from the same IP in 60 seconds
+          limiter: Ratelimit.slidingWindow(60, "60s"),
         }),
       } as const satisfies { [key in Mode]: Ratelimit })
     : null;
