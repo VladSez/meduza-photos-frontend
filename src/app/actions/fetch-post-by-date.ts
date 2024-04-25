@@ -25,6 +25,8 @@ export async function fetchPostByDate({ date }: fetchPostByDateType) {
 
   const formattedDate = dayjs(parsedDate).format("YYYY/MM/DD");
 
+  console.info("server", { date, parsedDate, formattedDate });
+
   const article = await prisma.meduzaArticles.findFirst({
     where: {
       dateString: formattedDate,
