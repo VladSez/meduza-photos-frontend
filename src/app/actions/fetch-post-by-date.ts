@@ -9,7 +9,9 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 const fetchPostByDateSchema = z
   .object({
-    date: z.string().datetime().min(1),
+    // eslint-disable-next-line unicorn/better-regex
+    // date: z.string().regex(/^\d{4}\/\d{2}\/\d{2}$/),
+    date: z.string().datetime({ offset: true }),
   })
   .strict();
 
@@ -24,8 +26,6 @@ export async function fetchPostByDate({ date }: fetchPostByDateType) {
   await checkRateLimit({ mode: "strict" });
 
   const formattedDate = dayjs(parsedDate).format("YYYY/MM/DD");
-
-  console.info("server", { date, parsedDate, formattedDate });
 
   const article = await prisma.meduzaArticles.findFirst({
     where: {

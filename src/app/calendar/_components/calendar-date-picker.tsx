@@ -114,14 +114,8 @@ export function DatePicker() {
                     try {
                       setPending(true);
 
-                      console.info("client", {
-                        date,
-                        iso: dayjs(date).toISOString(),
-                        utc: dayjs(date).utc().format(),
-                      });
                       await fetchPostByDate({
-                        // date: dayjs(date).toISOString(),
-                        date: dayjs(date).utc().toISOString(),
+                        date: dayjs(date).format(),
                       });
                     } catch (error) {
                       if (error instanceof Error) {
