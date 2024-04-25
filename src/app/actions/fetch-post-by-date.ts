@@ -1,6 +1,5 @@
 "use server";
 
-import dayjs from "dayjs";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -10,8 +9,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 const fetchPostByDateSchema = z
   .object({
     // eslint-disable-next-line unicorn/better-regex
-    // date: z.string().regex(/^\d{4}\/\d{2}\/\d{2}$/),
-    date: z.string().datetime({ offset: true }),
+    date: z.string().regex(/^\d{4}\/\d{2}\/\d{2}$/), // YYYY/MM/DD
   })
   .strict();
 
@@ -25,11 +23,9 @@ export async function fetchPostByDate({ date }: fetchPostByDateType) {
 
   await checkRateLimit({ mode: "strict" });
 
-  const formattedDate = dayjs(parsedDate).format("YYYY/MM/DD");
-
   const article = await prisma.meduzaArticles.findFirst({
     where: {
-      dateString: formattedDate,
+      dateString: parsedDate,
     },
     select: {
       id: true,
@@ -37,7 +33,7 @@ export async function fetchPostByDate({ date }: fetchPostByDateType) {
   });
 
   if (!article?.id) {
-    throw new Error(`Пост не найден: ${formattedDate}`);
+    throw new Error(`Пост не найден: ${parsedDate}`);
   }
 
   redirect(`/calendar/${article?.id}`);

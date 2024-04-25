@@ -115,7 +115,7 @@ export function DatePicker() {
                       setPending(true);
 
                       await fetchPostByDate({
-                        date: dayjs(date).format(),
+                        date: dayjs(date).format("YYYY/MM/DD"),
                       });
                     } catch (error) {
                       if (error instanceof Error) {
