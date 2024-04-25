@@ -179,10 +179,13 @@ function DateTime(
   );
 
   // https://console.cron-job.org/jobs/4416660/history
-  const timeWhenWeFetchNewData = dayjs().utc().set("hour", 13).set("minute", 0);
+  const timeWhenWeFetchNewDataInUTC = dayjs()
+    .utc()
+    .set("hour", 14)
+    .set("minute", 0);
 
-  const localTimeFormat = timeWhenWeFetchNewData.local().format("HH:mm");
-  const utcTimeFormat = timeWhenWeFetchNewData.format("HH:mm");
+  const localTimeFormat = timeWhenWeFetchNewDataInUTC.local().format("HH:mm");
+  const utcTimeFormat = timeWhenWeFetchNewDataInUTC.format("HH:mm");
 
   // show tooltip, when data for today is not available yet
   if (calendarTodayDate && !lastEnabledDayIsToday) {
