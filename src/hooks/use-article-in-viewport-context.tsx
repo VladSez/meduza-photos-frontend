@@ -4,6 +4,6 @@ import { useContext } from "react";
 
 import { ArticleInViewportContext } from "@/app/providers";
 
-export const useArticleInViewport = () => {
+export const useArticleInViewportContext = () => {
   return useContext(ArticleInViewportContext);
 };

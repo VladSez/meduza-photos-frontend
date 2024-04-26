@@ -1,7 +1,7 @@
 export default function Loading() {
   return (
     <div className="animate-pulse">
-      <div className="mt-28 flex flex-col items-center justify-start gap-10">
+      <div className="mt-28 flex flex-col items-center justify-start gap-10 animate-in fade-in">
         <div className="mx-auto mb-8 w-full max-w-xl p-4">
           {/* Title placeholder */}
           <div className="flex space-x-4">

@@ -2,15 +2,15 @@
 
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
-import { memo } from "react";
+import React, { memo } from "react";
 import { Virtuoso } from "react-virtuoso";
 
-import { useArticleInViewport } from "@/hooks/use-article-in-viewport";
+import { useArticleInViewportContext } from "@/hooks/use-article-in-viewport-context";
 import { useCalculateArticleInViewport } from "@/hooks/use-calculate-article-in-viewport";
 import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 import { filterOutDuplicateIds } from "@/lib/utils";
 
-import { NextPagePlaceholder } from "../../../ui/next-page-placeholder";
+import { NextPageLoadingSpinner } from "../../../ui/next-page-loading-spinner";
 import { Article } from "../../components/article";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -21,7 +21,7 @@ export interface FeedProps {
 
 export const FeedClient = ({ initialPosts }: FeedProps) => {
   const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
-    useArticleInViewport();
+    useArticleInViewportContext();
 
   const {
     data: feedData,
@@ -72,14 +72,14 @@ export const FeedClient = ({ initialPosts }: FeedProps) => {
           );
         }}
       />
-      {hasNextPage ? (
+      {hasNextPage && isFetching ? (
         <motion.div
           className="mt-12 flex flex-col justify-center space-y-5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <NextPagePlaceholder />
+          <NextPageLoadingSpinner />
         </motion.div>
       ) : null}
     </>

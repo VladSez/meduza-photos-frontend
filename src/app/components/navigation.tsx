@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 
 import { Search } from "@/ui/search";
 
+import { useGlobalErrorContext } from "@/hooks/use-global-error-context";
 import { cn } from "@/lib/utils";
 
 import { ArticleDateNav } from "./article-date-nav";
@@ -36,6 +37,8 @@ export function Navigation() {
   const pathname = usePathname();
   const isFeedPage = pathname === PATHS.feed;
 
+  const { globalError } = useGlobalErrorContext();
+
   return (
     <>
       <motion.nav className="fixed top-0 z-10 flex w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -45,7 +48,7 @@ export function Navigation() {
               className={cn(
                 "relative bottom-2 space-x-3 px-3 md:px-7 lg:bottom-0",
                 // we use 'bottom-2' when <ArticleDateNav /> is shown (to create some space for date), otherwise 'bottom-0'
-                { "bottom-0": !isFeedPage }
+                { "bottom-0": !isFeedPage || globalError }
               )}
             >
               {NAV_LINKS.map(({ href, label }) => {

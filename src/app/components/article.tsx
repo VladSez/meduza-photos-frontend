@@ -50,7 +50,24 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
         </>
       ) : null}
       <div data-testid="article-body">
-        {photos?.map((photo, index) => {
+        {article?.subtitle ? (
+          <div className="flex justify-center">
+            <div
+              className={`my-7 max-w-full break-words px-3 text-xl text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 [&_a]:text-blue-600 [&_a]:underline`}
+              dangerouslySetInnerHTML={{ __html: article?.subtitle }}
+            />
+          </div>
+        ) : null}
+
+        <Banner>
+          <p>
+            <span className="font-bold">Осторожно!</span> Некоторые фотографии
+            содержат сцены жестокости, насилия и смерти. Призываем
+            впечатлительных читателей не смотреть фото.
+          </p>
+        </Banner>
+
+        {photos?.map((photo) => {
           if (!photo?.img) {
             return <p key={photo?.img}>Изображение не найдено</p>;
           }
@@ -85,15 +102,6 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
                 );
               })}
 
-              {index === 0 ? (
-                <Banner>
-                  <p>
-                    <span className="font-bold">Осторожно!</span> Некоторые
-                    фотографии содержат сцены жестокости, насилия и смерти.
-                    Призываем впечатлительных читателей не смотреть фото.
-                  </p>
-                </Banner>
-              ) : null}
               <div className="relative mb-4 mt-10 h-[500px] w-full bg-gray-200 md:h-[900px]">
                 <a
                   href={photo?.img}

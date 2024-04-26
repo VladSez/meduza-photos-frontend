@@ -2,7 +2,10 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 
+import { useToast } from "@/ui/use-toast";
+
 import { fetchPosts } from "@/app/actions/fetch-posts";
+import { toastGenericError } from "@/utils/toast-generic-error";
 
 import type { FeedProps } from "@/app/feed/_components/feed-client";
 
@@ -17,6 +20,8 @@ export const useMeduzaPosts = ({
   take = 5,
   key = "",
 }: useMeduzaPostsProps) => {
+  const { toast } = useToast();
+
   if (!key) {
     throw new Error("key is required");
   }
@@ -24,13 +29,25 @@ export const useMeduzaPosts = ({
   return useInfiniteQuery({
     queryKey: [key, take],
     queryFn: async ({ pageParam = 1 }: { pageParam: number }) => {
-      const response = await fetchPosts({ take, page: pageParam });
+      try {
+        const response = await fetchPosts({
+          take,
+          page: pageParam,
+          isServerAction: true,
+        });
 
-      if (!response) {
-        throw new Error("Network response was not ok");
+        if (!response) {
+          throw new Error("Network response was not ok");
+        }
+
+        return response;
+      } catch (error) {
+        console.error(error);
+
+        toast(toastGenericError);
+
+        throw new Error("smth went wrong");
       }
-
-      return response;
     },
     getNextPageParam: (lastPage) => {
       // if we have more posts, we return the next page, otherwise we return 'undefined',
@@ -45,8 +62,7 @@ export const useMeduzaPosts = ({
           posts: initialPosts,
           hasMore: true,
           nextPage: 2,
-          hasError: false,
-        },
+        } satisfies Awaited<ReturnType<typeof fetchPosts>>,
       ],
       pageParams: [1], // initial page param
     },

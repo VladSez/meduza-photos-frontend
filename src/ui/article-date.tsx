@@ -2,6 +2,8 @@ import dayjs from "dayjs";
 
 import { cn } from "@/lib/utils";
 
+export const articleDateFormat = "DD MMMM YYYY";
+
 export function ArticleDate({
   date,
   className,
@@ -15,7 +17,7 @@ export function ArticleDate({
 
   return (
     <time dateTime={new Date(date).toISOString()} className={cn("", className)}>
-      {dayjs(date).format("DD MMMM YYYY")}
+      {dayjs(date).format(articleDateFormat)}
     </time>
   );
 }

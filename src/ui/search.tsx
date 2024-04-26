@@ -23,6 +23,7 @@ import { searchPosts } from "@/app/actions/search-posts";
 import useMediaQuery from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { stripHtmlTags } from "@/utils/strip-html-tags";
+import { toastGenericError } from "@/utils/toast-generic-error";
 
 import { ArticleDate } from "./article-date";
 import { Button } from "./button";
@@ -182,14 +183,8 @@ const SearchContent = ({ close }: SearchContentProps) => {
 
         if (searchQuery && error) {
           setStep(SEARCH_SCREENS.ERROR);
-        }
 
-        if (error instanceof Error) {
-          toast({
-            variant: "destructive",
-            title: "Ошибка",
-            description: `Что-то пошло не так: попробуйте позже.`,
-          });
+          toast(toastGenericError);
         }
       });
   };
@@ -250,7 +245,10 @@ const SearchContent = ({ close }: SearchContentProps) => {
     ),
     [SEARCH_SCREENS.LOADING]: (
       <CommandEmpty className="flex min-h-[100px] items-center justify-center">
-        <div className="inline-flex items-center text-sm">
+        <div
+          className="inline-flex items-center text-sm"
+          data-testid="search-screen-loading"
+        >
           <Loader className="mr-1.5 animate-spin" size={16} />
           Загрузка...
         </div>
@@ -299,7 +297,11 @@ const SearchContent = ({ close }: SearchContentProps) => {
       );
     }),
     [SEARCH_SCREENS.ERROR]: (
-      <div className="">Что-то пошло не так. Попробуйте позже</div>
+      <CommandEmpty className="min-h-[70px]">
+        <div className="ml-1 flex w-[99%] flex-col">
+          <div className="">Что-то пошло не так. Попробуйте позже</div>
+        </div>
+      </CommandEmpty>
     ),
   } as const satisfies SearchSteps;
 

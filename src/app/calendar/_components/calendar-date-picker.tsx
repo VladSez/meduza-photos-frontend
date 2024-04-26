@@ -8,6 +8,7 @@ import { Calendar as CalendarIcon, LoaderIcon } from "lucide-react";
 import * as React from "react";
 import { DayContent } from "react-day-picker";
 
+import { articleDateFormat } from "@/ui/article-date";
 import { Button } from "@/ui/button";
 import { Calendar } from "@/ui/calendar";
 import { Popover } from "@/ui/popover";
@@ -15,8 +16,10 @@ import { Tooltip, TooltipProvider } from "@/ui/tooltip";
 
 import { fetchLastAvailablePost } from "@/app/actions/fetch-last-available-post";
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
-import { useFilterDate } from "@/hooks/use-filter-date";
+import { useFilterDateContext } from "@/hooks/use-filter-date-context";
+import { useLastAvailablePostDateContext } from "@/hooks/use-last-available-date-context";
 import { cn } from "@/lib/utils";
+import { toastGenericError } from "@/utils/toast-generic-error";
 
 import { useToast } from "../../../ui/use-toast";
 
@@ -24,26 +27,26 @@ import type { DayContentProps } from "react-day-picker";
 
 dayjs.extend(utc);
 
+// the oldest date we have in db
 const endDate = dayjs("2022-02-24").toDate();
 
 export function DatePicker() {
   const { toast } = useToast();
+  const { lastAvailablePostDate, setLastAvailablePostDate } =
+    useLastAvailablePostDateContext();
 
-  const { filterDate, setFilterDate } = useFilterDate();
+  const { filterDate, setFilterDate } = useFilterDateContext();
   const [open, setOpen] = React.useState(false);
-
   const [isPending, setPending] = React.useState(false);
-
-  const [lastAvailableDate, setLastAvailableDate] = React.useState<Date>();
   const [error, setError] = React.useState("");
 
   // fetch last available article from db
   React.useEffect(() => {
-    if (open) {
+    if (open && !lastAvailablePostDate) {
       fetchLastAvailablePost()
-        .then(({ mostRecentPost }) => {
-          if (mostRecentPost) {
-            setLastAvailableDate(dayjs(mostRecentPost.dateString).toDate());
+        .then(({ mostRecentPostDate }) => {
+          if (mostRecentPostDate) {
+            setLastAvailablePostDate(dayjs(mostRecentPostDate).toDate());
           }
         })
         .catch((error) => {
@@ -52,15 +55,11 @@ export function DatePicker() {
           if (error instanceof Error) {
             setError(error?.message);
 
-            toast({
-              variant: "destructive",
-              title: "Ошибка",
-              description: `Что-то пошло не так: попробуйте позже.`,
-            });
+            toast(toastGenericError);
           }
         });
     }
-  }, [open, toast]);
+  }, [lastAvailablePostDate, open, setLastAvailablePostDate, toast]);
 
   return (
     <>
@@ -82,14 +81,14 @@ export function DatePicker() {
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {filterDate ? (
-              dayjs(filterDate).format("DD MMMM, YYYY")
+              dayjs(filterDate).format(articleDateFormat)
             ) : (
               <span>Выберите дату</span>
             )}
           </Button>
         }
         content={
-          lastAvailableDate ? (
+          lastAvailablePostDate ? (
             <div className="flex items-center justify-center">
               <Calendar
                 data-testid="calendar-date-picker"
@@ -100,14 +99,14 @@ export function DatePicker() {
                         {...props}
                         isPending={isPending}
                         filterDate={filterDate}
-                        lastAvailableDate={lastAvailableDate}
+                        lastAvailableDate={lastAvailablePostDate}
                       />
                     );
                   },
                 }}
                 mode="single"
                 selected={filterDate}
-                defaultMonth={filterDate ?? lastAvailableDate}
+                defaultMonth={filterDate ?? lastAvailablePostDate}
                 onDayClick={async (date) => {
                   setFilterDate(date);
 
@@ -123,7 +122,7 @@ export function DatePicker() {
                         toast({
                           variant: "destructive",
                           title: "Ошибка",
-                          description: `Что-то пошло не так: попробуйте позже.`,
+                          description: `Пост от ${dayjs(date).format(articleDateFormat)} не найден`,
                         });
                       }
                     } finally {
@@ -134,15 +133,17 @@ export function DatePicker() {
                 }}
                 initialFocus
                 weekStartsOn={1} // Monday as a first day of the week
-                disabled={{ after: lastAvailableDate, before: endDate }}
+                disabled={{ after: lastAvailablePostDate, before: endDate }}
                 locale={ru}
                 fromDate={endDate}
-                toDate={lastAvailableDate}
+                toDate={lastAvailablePostDate}
               />
             </div>
           ) : error ? (
             <div className="flex h-full min-h-[305.2px] w-full min-w-[276px] items-center justify-center">
-              Ошибка: что-то пошло не так, попробуйте позже
+              <p className="max-w-[225px]">
+                Ошибка: что-то пошло не так, попробуйте позже
+              </p>
             </div>
           ) : (
             <div className="flex h-full min-h-[305.2px] w-full min-w-[276px] items-center justify-center">
@@ -180,10 +181,13 @@ function DateTime(
   );
 
   // https://console.cron-job.org/jobs/4416660/history
-  const timeWhenWeFetchNewData = dayjs().utc().set("hour", 13).set("minute", 0);
+  const timeWhenWeFetchNewDataInUTC = dayjs()
+    .utc()
+    .set("hour", 14)
+    .set("minute", 0);
 
-  const localTimeFormat = timeWhenWeFetchNewData.local().format("HH:mm");
-  const utcTimeFormat = timeWhenWeFetchNewData.format("HH:mm");
+  const localTimeFormat = timeWhenWeFetchNewDataInUTC.local().format("HH:mm");
+  const utcTimeFormat = timeWhenWeFetchNewDataInUTC.format("HH:mm");
 
   // show tooltip, when data for today is not available yet
   if (calendarTodayDate && !lastEnabledDayIsToday) {

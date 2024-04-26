@@ -3,24 +3,34 @@
 import * as Sentry from "@sentry/nextjs";
 import * as chrono from "chrono-node/ru";
 import dayjs from "dayjs";
+import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 
-export async function searchPosts({
-  search = "",
-}: {
-  search: string | undefined;
-}) {
-  if (!search) {
+const searchSchema = z
+  .object({
+    search: z.string().max(128).default(""),
+  })
+  .strict();
+
+type searchSchemaType = z.infer<typeof searchSchema>;
+
+export async function searchPosts({ search = "" }: searchSchemaType) {
+  const { search: parsedSearch } = searchSchema.parse({ search });
+
+  if (!parsedSearch) {
     return {
       results: [],
     };
   }
 
-  // A natural language date parser in JavaScript https://github.com/wanasit/chrono
-  const chronoParseResult = chrono.parseDate(search);
-
   try {
+    await checkRateLimit({ mode: "strict" });
+
+    // A natural language date parser in JavaScript https://github.com/wanasit/chrono
+    const chronoParseResult = chrono.parseDate(parsedSearch);
+
     const results = await prisma.meduzaArticles.findMany({
       orderBy: {
         date: "desc",
@@ -35,13 +45,13 @@ export async function searchPosts({
               OR: [
                 {
                   header: {
-                    contains: search,
+                    contains: parsedSearch,
                     mode: "insensitive",
                   },
                 },
                 {
                   subtitle: {
-                    contains: search,
+                    contains: parsedSearch,
                     mode: "insensitive",
                   },
                 },
@@ -55,9 +65,13 @@ export async function searchPosts({
       results,
     };
   } catch (error) {
-    console.error(error);
+    console.error("err:", error);
 
     Sentry.captureException(error);
+
+    if (error instanceof Error && error.message === "Rate limit exceeded") {
+      throw new Error("Rate limit exceeded");
+    }
 
     throw new Error("Failed to search posts");
   }

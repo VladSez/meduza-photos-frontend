@@ -89,7 +89,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const _article = PostSchema.parse(article);
 
   return (
-    <div className={`my-16 md:my-[100px]`}>
+    <div className={`py-16 md:py-[100px] md:pb-[50px]`}>
       <Article article={_article} />
 
       {nextArticleId?.id ? (

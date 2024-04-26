@@ -26,7 +26,7 @@ export const CalendarDayCard = ({
       <div
         className={`h-[530px] max-h-[530px] w-full max-w-full rounded-lg border text-xl text-gray-900 transition-all hover:bg-slate-100 md:w-[350px]`}
       >
-        <div className="relative h-[280px] w-full rounded-lg bg-gray-200 ">
+        <div className="relative h-[280px] w-full rounded-lg bg-gray-200">
           <Image
             src={banner?.img}
             alt={banner?.captionText ?? ""}

@@ -1,7 +1,7 @@
 export const ArticlePlaceholder = () => {
   return (
     <div
-      className="mt-20 flex flex-col items-center justify-start gap-10"
+      className="mt-20 flex flex-col items-center justify-start gap-10 animate-in fade-in"
       data-testid="article-placeholder"
     >
       <div className="mx-auto w-full max-w-2xl animate-pulse p-4">

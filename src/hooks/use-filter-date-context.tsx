@@ -4,6 +4,6 @@ import { useContext } from "react";
 
 import { FilterDateContext } from "@/app/providers";
 
-export const useFilterDate = () => {
+export const useFilterDateContext = () => {
   return useContext(FilterDateContext);
 };
