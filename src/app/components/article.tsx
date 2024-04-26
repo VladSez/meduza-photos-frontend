@@ -11,7 +11,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
   const photos = PostPhotosSchema.parse(article?.photosWithMeta);
 
   return (
-    <div className="animate-in fade-in">
+    <div className="">
       {article?.header ? (
         <div className="flex justify-center">
           <div
