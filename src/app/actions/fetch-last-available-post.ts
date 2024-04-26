@@ -3,10 +3,9 @@
 import * as Sentry from "@sentry/nextjs";
 
 import { prisma } from "@/lib/prisma";
-import { checkRateLimit, redis } from "@/lib/rate-limit";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { PostSchema } from "@/utils/zod-schema";
 
-const redisKey = "mostRecentPostDate";
 /**
  * Fetch the last available post from the database (server-action)
  */
@@ -14,18 +13,6 @@ const redisKey = "mostRecentPostDate";
 export async function fetchLastAvailablePost() {
   try {
     await checkRateLimit({ mode: "strict" });
-
-    const _cachedMostRecentPostDate = await redis.get(redisKey);
-
-    if (_cachedMostRecentPostDate) {
-      const cachedMostRecentPostDate = PostSchema.pick({
-        dateString: true,
-      }).parse(_cachedMostRecentPostDate);
-
-      return {
-        mostRecentPostDate: cachedMostRecentPostDate?.dateString,
-      };
-    }
 
     const _mostRecentPost = await prisma.meduzaArticles.findFirst({
       orderBy: {
@@ -39,8 +26,6 @@ export async function fetchLastAvailablePost() {
     const mostRecentPostDate = PostSchema.pick({ dateString: true }).parse(
       _mostRecentPost
     );
-
-    await redis.set(redisKey, mostRecentPostDate);
 
     return {
       mostRecentPostDate: mostRecentPostDate?.dateString,

@@ -17,6 +17,7 @@ import { Tooltip, TooltipProvider } from "@/ui/tooltip";
 import { fetchLastAvailablePost } from "@/app/actions/fetch-last-available-post";
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
 import { useFilterDateContext } from "@/hooks/use-filter-date-context";
+import { useLastAvailablePostDateContext } from "@/hooks/use-last-available-date-context";
 import { cn } from "@/lib/utils";
 import { toastGenericError } from "@/utils/toast-generic-error";
 
@@ -31,22 +32,21 @@ const endDate = dayjs("2022-02-24").toDate();
 
 export function DatePicker() {
   const { toast } = useToast();
+  const { lastAvailablePostDate, setLastAvailablePostDate } =
+    useLastAvailablePostDateContext();
 
   const { filterDate, setFilterDate } = useFilterDateContext();
   const [open, setOpen] = React.useState(false);
-
   const [isPending, setPending] = React.useState(false);
-
-  const [lastAvailableDate, setLastAvailableDate] = React.useState<Date>();
   const [error, setError] = React.useState("");
 
   // fetch last available article from db
   React.useEffect(() => {
-    if (open) {
+    if (open && !lastAvailablePostDate) {
       fetchLastAvailablePost()
         .then(({ mostRecentPostDate }) => {
           if (mostRecentPostDate) {
-            setLastAvailableDate(dayjs(mostRecentPostDate).toDate());
+            setLastAvailablePostDate(dayjs(mostRecentPostDate).toDate());
           }
         })
         .catch((error) => {
@@ -59,7 +59,7 @@ export function DatePicker() {
           }
         });
     }
-  }, [open, toast]);
+  }, [lastAvailablePostDate, open, setLastAvailablePostDate, toast]);
 
   return (
     <>
@@ -88,7 +88,7 @@ export function DatePicker() {
           </Button>
         }
         content={
-          lastAvailableDate ? (
+          lastAvailablePostDate ? (
             <div className="flex items-center justify-center">
               <Calendar
                 data-testid="calendar-date-picker"
@@ -99,14 +99,14 @@ export function DatePicker() {
                         {...props}
                         isPending={isPending}
                         filterDate={filterDate}
-                        lastAvailableDate={lastAvailableDate}
+                        lastAvailableDate={lastAvailablePostDate}
                       />
                     );
                   },
                 }}
                 mode="single"
                 selected={filterDate}
-                defaultMonth={filterDate ?? lastAvailableDate}
+                defaultMonth={filterDate ?? lastAvailablePostDate}
                 onDayClick={async (date) => {
                   setFilterDate(date);
 
@@ -133,10 +133,10 @@ export function DatePicker() {
                 }}
                 initialFocus
                 weekStartsOn={1} // Monday as a first day of the week
-                disabled={{ after: lastAvailableDate, before: endDate }}
+                disabled={{ after: lastAvailablePostDate, before: endDate }}
                 locale={ru}
                 fromDate={endDate}
-                toDate={lastAvailableDate}
+                toDate={lastAvailablePostDate}
               />
             </div>
           ) : error ? (

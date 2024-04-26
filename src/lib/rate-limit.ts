@@ -3,7 +3,6 @@ import { Redis } from "@upstash/redis";
 
 import { getIpAddress } from "@/utils/get-ip";
 
-export const redis = Redis.fromEnv();
 type Mode = "strict" | "relaxed";
 
 export const rateLimit =
