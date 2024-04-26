@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Calendar() {
-  const { posts } = await fetchPosts({ take: 10 });
+  const { posts } = await fetchPosts({ take: 20 });
 
   return (
     <article className="animate-in fade-in">
