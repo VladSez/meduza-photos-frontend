@@ -54,7 +54,7 @@ export default async function FeedList() {
 
   return (
     <>
-      <div className="mb-2 grid grid-cols-12 gap-2 md:my-5">
+      <div className="mb-2 grid h-full grid-cols-12 gap-2 md:my-5">
         <div className="md:col-span-2"></div>
         <div className="col-span-12 my-14 lg:col-span-8">
           <FeedClient initialPosts={posts.value.posts} />

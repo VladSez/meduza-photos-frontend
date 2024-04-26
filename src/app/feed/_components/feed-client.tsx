@@ -72,7 +72,7 @@ export const FeedClient = ({ initialPosts }: FeedProps) => {
           );
         }}
       />
-      {hasNextPage ? (
+      {hasNextPage && isFetching ? (
         <motion.div
           className="mt-12 flex flex-col justify-center space-y-5"
           initial={{ opacity: 0 }}
