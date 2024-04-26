@@ -37,6 +37,8 @@ jobs:
         run: pnpm exec playwright test
         env:
           BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         name: 🎲 Upload Playwright report
