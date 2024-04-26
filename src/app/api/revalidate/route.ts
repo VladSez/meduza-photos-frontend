@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 
 import { env } from "@/env";
+import { redis } from "@/lib/rate-limit";
 
 export function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -17,6 +18,16 @@ export function GET(request: Request) {
   // https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data
   // https://github.com/vercel/next.js/discussions/54075
   revalidatePath("/", "layout");
+
+  // delete the redis key
+  redis
+    .del("mostRecentPostDate")
+    .then(() => {
+      console.info("Key: `mostRecentPostDate` has been deleted from Redis.");
+    })
+    .catch((error) => {
+      console.error("Redis error:", error);
+    });
 
   // "visit" the pages to purge the cache
   fetch("https://meduza-photos-frontend.vercel.app/feed")

@@ -3,6 +3,7 @@ import { Redis } from "@upstash/redis";
 
 import { getIpAddress } from "@/utils/get-ip";
 
+export const redis = Redis.fromEnv();
 type Mode = "strict" | "relaxed";
 
 export const rateLimit =
@@ -12,15 +13,15 @@ export const rateLimit =
           redis: Redis.fromEnv(),
           analytics: true,
           prefix: "@ratelimit:strict",
-          // allow 30 requests from the same IP in 60 seconds
-          limiter: Ratelimit.slidingWindow(30, "60s"),
+          // allow 60 requests from the same IP in 5 mins
+          limiter: Ratelimit.slidingWindow(60, "5m"),
         }),
         relaxed: new Ratelimit({
           redis: Redis.fromEnv(),
           analytics: true,
           prefix: "@ratelimit:relaxed",
-          // allow 60 requests from the same IP in 60 seconds
-          limiter: Ratelimit.slidingWindow(60, "60s"),
+          // allow 250 requests from the same IP in 5 mins
+          limiter: Ratelimit.slidingWindow(250, "5m"),
         }),
       } as const satisfies { [key in Mode]: Ratelimit })
     : null;

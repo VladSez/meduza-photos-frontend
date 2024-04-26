@@ -44,9 +44,9 @@ export function DatePicker() {
   React.useEffect(() => {
     if (open) {
       fetchLastAvailablePost()
-        .then(({ mostRecentPost }) => {
-          if (mostRecentPost) {
-            setLastAvailableDate(dayjs(mostRecentPost.dateString).toDate());
+        .then(({ mostRecentPostDate }) => {
+          if (mostRecentPostDate) {
+            setLastAvailableDate(dayjs(mostRecentPostDate).toDate());
           }
         })
         .catch((error) => {
@@ -141,7 +141,9 @@ export function DatePicker() {
             </div>
           ) : error ? (
             <div className="flex h-full min-h-[305.2px] w-full min-w-[276px] items-center justify-center">
-              Ошибка: что-то пошло не так, попробуйте позже
+              <p className="max-w-[225px]">
+                Ошибка: что-то пошло не так, попробуйте позже
+              </p>
             </div>
           ) : (
             <div className="flex h-full min-h-[305.2px] w-full min-w-[276px] items-center justify-center">
