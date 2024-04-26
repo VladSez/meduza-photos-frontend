@@ -5,7 +5,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import dayjs from "dayjs";
 import { createContext, useCallback, useMemo, useState } from "react";
 
@@ -159,7 +159,7 @@ export default function Providers({ children }: { children: ReactNode }) {
           </FilterDateContext.Provider>
         </ArticleInViewportContext.Provider>
       </GlobalErrorContext.Provider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }

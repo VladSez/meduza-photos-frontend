@@ -13,7 +13,7 @@ const config: KnipConfig = {
     "src/app/**/*.{js,jsx,ts,tsx}",
   ],
 
-  ignoreDependencies: ["sharp"],
+  ignoreDependencies: ["sharp", "@tanstack/react-query-devtools"],
 };
 
 export default config;
