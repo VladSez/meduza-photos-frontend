@@ -14,7 +14,7 @@ export default async function Calendar() {
   const { posts } = await fetchPosts({ take: 10 });
 
   return (
-    <article>
+    <article className="animate-in fade-in">
       <h1 className="mx-auto mb-10 mt-24 max-w-4xl text-center text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:mt-32 lg:text-6xl">
         Хроники войны в Украине
       </h1>
