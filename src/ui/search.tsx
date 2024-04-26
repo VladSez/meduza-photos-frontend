@@ -245,7 +245,10 @@ const SearchContent = ({ close }: SearchContentProps) => {
     ),
     [SEARCH_SCREENS.LOADING]: (
       <CommandEmpty className="flex min-h-[100px] items-center justify-center">
-        <div className="inline-flex items-center text-sm">
+        <div
+          className="inline-flex items-center text-sm"
+          data-testid="search-screen-loading"
+        >
           <Loader className="mr-1.5 animate-spin" size={16} />
           Загрузка...
         </div>

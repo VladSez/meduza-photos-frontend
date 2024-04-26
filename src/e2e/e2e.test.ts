@@ -331,9 +331,11 @@ test("search works", async ({ page }) => {
     await expect(searchSuggestionsButtons.nth(i)).toBeDisabled();
   }
 
-  await expect(
-    page.locator("span").filter({ hasText: "Загрузка..." })
-  ).toBeVisible();
+  const searchSpinner = page
+    .getByTestId("search-screen-loading")
+    .and(page.getByText("Загрузка..."));
+
+  await expect(searchSpinner).toBeVisible();
 
   await expect(page.getByText("Результаты: 40")).toBeVisible();
 
@@ -360,9 +362,7 @@ test("search works", async ({ page }) => {
   await applySearchQueryBtn.click();
   await expect(searchInput).toHaveValue(validSearchQuery);
 
-  await expect(
-    page.locator("span").filter({ hasText: "Загрузка..." })
-  ).toBeVisible();
+  await expect(searchSpinner).toBeVisible();
 
   // search results are shown
   await expect(page.getByText("Результаты: 40")).toBeVisible();
@@ -404,9 +404,7 @@ test("search works", async ({ page }) => {
   await searchInput.fill(invalidSearchQuery);
   await expect(searchInput).toHaveValue(invalidSearchQuery);
 
-  await expect(
-    page.locator("span").filter({ hasText: "Загрузка..." })
-  ).toBeVisible();
+  await expect(searchSpinner).toBeVisible();
 
   await expect(
     page.getByText(`Ничего не найдено по запросу "${invalidSearchQuery}"`)
@@ -429,9 +427,7 @@ test("search works", async ({ page }) => {
 
   await expect(searchSuggestionButton).toHaveAttribute("data-active", "true");
 
-  await expect(
-    page.locator("span").filter({ hasText: "Загрузка..." })
-  ).toBeVisible();
+  await expect(searchSpinner).toBeVisible();
 
   await expect(page.getByText("Результаты: 1")).toBeVisible();
   await expect(page.getByTestId(`search-result-0`)).toBeVisible();
