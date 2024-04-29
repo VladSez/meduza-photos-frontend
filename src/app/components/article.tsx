@@ -78,7 +78,7 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
                 return (
                   <div key={title} className="flex justify-center">
                     <div
-                      className={`my-2 mt-16 min-w-full px-3 text-3xl !font-semibold text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 md:text-4xl`}
+                      className={`my-2 mt-16 min-w-full break-words px-3 text-3xl !font-semibold text-gray-900 md:min-w-[672px] md:max-w-2xl md:px-5 md:text-4xl`}
                       dangerouslySetInnerHTML={{ __html: title }}
                     />
                   </div>

@@ -19,7 +19,7 @@ export const ArticlePlaceholder = () => {
           </div>
         </div>
         {/* Date placeholder */}
-        <div className="mx-auto my-5 h-3 w-72 rounded bg-slate-200"></div>
+        <div className="mx-auto my-5 h-3 w-72 max-w-full rounded bg-slate-200"></div>
 
         {/* Article text placeholder */}
         <div className="mt-14 flex space-x-4">
