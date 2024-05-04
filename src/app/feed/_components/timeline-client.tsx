@@ -69,9 +69,9 @@ const MonthWithDays = ({
       data-testid="timeline-month-with-days"
     >
       <div className="mx-8 md:my-10">
-        <motion.p className="text-lg font-semibold capitalize text-gray-600">
+        <p className="text-lg font-semibold capitalize text-gray-900">
           {month}
-        </motion.p>
+        </p>
 
         <div className="relative h-44 overflow-hidden">
           <Days days={days} articleDateInViewport={articleDateInViewport} />
@@ -120,7 +120,7 @@ const Day = memo(function Day({
       transition={{ type: "spring", mass: 0.5 }}
       className={clsx(
         "my-4",
-        isActiveDate ? "font-semibold text-black" : "text-slate-300"
+        isActiveDate ? "font-semibold text-gray-900" : "text-slate-300"
       )}
     >
       {dayjs(date).format("D MMMM")}
