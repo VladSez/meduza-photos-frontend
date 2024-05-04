@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 import React, { memo } from "react";
 import { Virtuoso } from "react-virtuoso";
 
-import { useArticleInViewportContext } from "@/hooks/use-article-in-viewport-context";
+import { useArticleDateInViewportAtom } from "@/hooks/use-article-in-viewport-context";
 import { useCalculateArticleInViewport } from "@/hooks/use-calculate-article-in-viewport";
 import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 import { filterOutDuplicateIds } from "@/lib/utils";
 
-import { NextPageLoadingSpinner } from "../../../ui/next-page-loading-spinner";
+import { LoadingSpinner } from "../../../ui/loading-spinner";
 import { Article } from "../../components/article";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -20,8 +20,8 @@ export interface FeedProps {
 }
 
 export const FeedClient = ({ initialPosts }: FeedProps) => {
-  const { articleInViewport, setArticleInViewport, setArticleDateInViewport } =
-    useArticleInViewportContext();
+  const [articleDateInViewport, setArticleDateInViewport] =
+    useArticleDateInViewportAtom();
 
   const {
     data: feedData,
@@ -51,27 +51,23 @@ export const FeedClient = ({ initialPosts }: FeedProps) => {
         data={posts}
         itemsRendered={(range) => {
           // the range has to be exactly 1, to be able to use to calculate the active section
-          // (not super elegant solution unfortunately...)
+          // (pretty hacky solution unfortunately...)
           if (range?.length === 1) {
-            // take last id from range
-            const articleId = String(range?.[0]?.data?.id) ?? "";
+            // take last element from range
             const articleDate =
               String(dayjs(range?.[0]?.data?.date).toISOString()) ?? "";
 
-            if (articleInViewport !== articleId) {
-              setArticleInViewport(articleId);
+            // update the timeline (header in mobile nav) if the article in viewport has changed
+            if (articleDateInViewport !== articleDate) {
               setArticleDateInViewport(articleDate);
             }
           }
         }}
         itemContent={(_, post) => {
-          return (
-            <div key={post.id}>
-              <ArticleContainerItem post={post} />
-            </div>
-          );
+          return <ArticleContainerItem post={post} key={post.id} />;
         }}
       />
+
       {hasNextPage && isFetching ? (
         <motion.div
           className="mt-12 flex flex-col justify-center space-y-5"
@@ -79,7 +75,9 @@ export const FeedClient = ({ initialPosts }: FeedProps) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <NextPageLoadingSpinner />
+          <div className="flex items-center justify-center space-x-1.5">
+            <LoadingSpinner />
+          </div>
         </motion.div>
       ) : null}
     </>
@@ -91,6 +89,7 @@ const ArticleContainerItem = memo(function ArticleContainerItem({
 }: {
   post: PostsSchemaType[0];
 }) {
+  // update the timeline (header in mobile nav) if the article in viewport has changed
   const { ref } = useCalculateArticleInViewport();
 
   return (
@@ -99,9 +98,7 @@ const ArticleContainerItem = memo(function ArticleContainerItem({
       data-article-date={dayjs(post.date).toISOString()}
       ref={ref}
     >
-      <div>
-        <Article article={post} />
-      </div>
+      <Article article={post} />
       <hr className="my-12 h-px w-full bg-gray-200"></hr>
     </div>
   );

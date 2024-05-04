@@ -1,9 +1,8 @@
 "use client";
 
-import { useContext } from "react";
+import { atom, useAtom } from "jotai";
 
-import { GlobalErrorContext } from "@/app/providers";
-
-export const useGlobalErrorContext = () => {
-  return useContext(GlobalErrorContext);
+const globalError = atom<Error | null>(null);
+export const useGlobalErrorAtom = () => {
+  return useAtom(globalError);
 };

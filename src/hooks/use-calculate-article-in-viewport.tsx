@@ -3,30 +3,25 @@
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { useRef } from "react";
 
-import { useArticleInViewportContext } from "./use-article-in-viewport-context";
+import { useArticleDateInViewportAtom } from "./use-article-in-viewport-context";
 
 /**
- * A hook that calculates the article (articleId), that is currently in viewport.
+ * A hook that calculates the article date, that is currently in viewport.
  */
 export const useCalculateArticleInViewport = () => {
   const { scrollY } = useScroll();
 
   const ref = useRef<HTMLDivElement & { "data-article-date": string }>(null);
 
-  const {
-    articleInViewport,
-    setArticleInViewport,
-    articleDateInViewport,
-    setArticleDateInViewport,
-  } = useArticleInViewportContext();
+  const [articleDateInViewport, setArticleDateInViewport] =
+    useArticleDateInViewportAtom();
 
   if (!scrollY) {
     throw new Error("scrollY is not defined");
   }
 
-  // calculate the article (articleId), that is currently in viewport
+  // calculate the article date, that is currently in viewport
   useMotionValueEvent(scrollY, "change", (windowY) => {
-    let newAriticleInViewportId: string | null = null;
     let newArticleDateInViewport: string | null = null;
 
     if (
@@ -43,28 +38,19 @@ export const useCalculateArticleInViewport = () => {
       windowY >= sectionOffsetTop &&
       windowY < sectionOffsetTop + sectionHeight
     ) {
-      // get the article (id) that is currently in viewport
-      newAriticleInViewportId = ref?.current?.id ?? "";
-
       // get the article (date) that is currently in viewport
       newArticleDateInViewport =
         ref?.current?.getAttribute("data-article-date") ?? "";
     }
 
     if (
-      newAriticleInViewportId &&
-      newAriticleInViewportId !== articleInViewport
-    ) {
-      setArticleInViewport(newAriticleInViewportId);
-    }
-
-    if (
       newArticleDateInViewport &&
       newArticleDateInViewport !== articleDateInViewport
     ) {
+      // update the timeline (or header nav on mobile) if the article in viewport has changed
       setArticleDateInViewport(newArticleDateInViewport);
     }
   });
 
-  return { ref, articleInViewport, setArticleInViewport };
+  return { ref, articleDateInViewport, setArticleDateInViewport };
 };

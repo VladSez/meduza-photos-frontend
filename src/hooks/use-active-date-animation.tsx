@@ -17,23 +17,26 @@ const ZERO = 0;
  * @returns an object containing the y offset of the 'active date' element
  */
 export const useActiveDateAnimation = ({
-  articleInViewportId,
+  articleDateInViewport,
   timeline,
 }: {
-  articleInViewportId: number;
+  articleDateInViewport: string | null;
   timeline: TimelineType;
 }) => {
   const [y, setY] = useState(-ZERO);
 
   useEffect(() => {
-    if (!articleInViewportId) {
+    if (!articleDateInViewport) {
       return;
     }
 
     const datesByMonth = separateDatesByMonth(timeline);
 
     const currentActiveDate = timeline.find((entry) => {
-      return entry.id === articleInViewportId;
+      const isActiveDate =
+        dayjs(entry.date).toISOString() === articleDateInViewport;
+
+      return isActiveDate;
     })?.date;
 
     const currentActiveMonth = dayjs(currentActiveDate).format("MMMM YYYY");
@@ -41,13 +44,16 @@ export const useActiveDateAnimation = ({
     // find index of the current active date in 'active' month
     const index =
       datesByMonth?.[currentActiveMonth]?.findIndex((entry) => {
-        return entry.id === articleInViewportId;
+        const isActiveDate =
+          dayjs(entry.date).toISOString() === articleDateInViewport;
+
+        return isActiveDate;
       }) ?? 0;
 
     const scrollOffset = index * OFFSET;
 
     setY(-scrollOffset);
-  }, [articleInViewportId, timeline, y]);
+  }, [articleDateInViewport, timeline, y]);
 
   return { y };
 };

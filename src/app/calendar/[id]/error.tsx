@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
 import { AlertGenericError } from "@/app/components/alert-generic-error";
-import { useGlobalErrorContext } from "@/hooks/use-global-error-context";
+import { useGlobalErrorAtom } from "@/hooks/use-global-error-context";
 
 export default function Error({
   error,
@@ -14,7 +14,7 @@ export default function Error({
   error: Error & { digest?: string };
   // reset: () => void;
 }) {
-  const { setError } = useGlobalErrorContext();
+  const [, setError] = useGlobalErrorAtom();
 
   useEffect(() => {
     setError(error);

@@ -1,9 +1,8 @@
 "use client";
 
-import { useContext } from "react";
+import { atom, useAtom } from "jotai";
 
-import { ArticleInViewportContext } from "@/app/providers";
-
-export const useArticleInViewportContext = () => {
-  return useContext(ArticleInViewportContext);
+const articleDateInViewport = atom<string | null>(null);
+export const useArticleDateInViewportAtom = () => {
+  return useAtom(articleDateInViewport);
 };

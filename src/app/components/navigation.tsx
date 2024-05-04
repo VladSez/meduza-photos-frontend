@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 
 import { Search } from "@/ui/search";
 
-import { useGlobalErrorContext } from "@/hooks/use-global-error-context";
+import { useGlobalErrorAtom } from "@/hooks/use-global-error-context";
 import { cn } from "@/lib/utils";
 
 import { ArticleDateNav } from "./article-date-nav";
@@ -37,7 +37,7 @@ export function Navigation() {
   const pathname = usePathname();
   const isFeedPage = pathname === PATHS.feed;
 
-  const { globalError } = useGlobalErrorContext();
+  const [globalError] = useGlobalErrorAtom();
 
   return (
     <>

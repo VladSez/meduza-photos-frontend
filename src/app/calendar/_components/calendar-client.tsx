@@ -8,7 +8,7 @@ import { useMeduzaPosts } from "@/hooks/use-meduza-posts";
 import { filterOutDuplicateIds } from "@/lib/utils";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
-import { NextPageLoadingSpinner } from "../../../ui/next-page-loading-spinner";
+import { LoadingSpinner } from "../../../ui/loading-spinner";
 import { DatePicker } from "./calendar-date-picker";
 import { CalendarDayCard } from "./calendar-day-card";
 
@@ -30,7 +30,7 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      // wrap in debounce
+      // TODO: wrap in debounce?
       void fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
@@ -84,7 +84,9 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <NextPageLoadingSpinner />
+          <div className="flex items-center justify-center space-x-1.5">
+            <LoadingSpinner />
+          </div>
         </motion.div>
       ) : null}
     </>
