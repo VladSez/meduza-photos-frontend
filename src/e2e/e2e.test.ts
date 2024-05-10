@@ -333,7 +333,7 @@ test("search works", async ({ page }) => {
 
   const searchSpinner = page
     .getByTestId("search-screen-loading")
-    .and(page.getByText("Загрузка..."));
+    .filter({ hasText: "Загрузка..." });
 
   await expect(searchSpinner).toBeVisible();
 

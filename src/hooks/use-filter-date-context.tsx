@@ -1,9 +1,8 @@
 "use client";
 
-import { useContext } from "react";
+import { atom, useAtom } from "jotai";
 
-import { FilterDateContext } from "@/app/providers";
-
-export const useFilterDateContext = () => {
-  return useContext(FilterDateContext);
+const selectedCalendarDate = atom<Date | undefined>(undefined);
+export const useSelectedCalendarDateAtom = () => {
+  return useAtom(selectedCalendarDate);
 };

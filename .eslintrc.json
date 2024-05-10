@@ -33,6 +33,7 @@
     "unicorn/no-unused-properties": "error",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/no-null": "off",
-    "unicorn/prefer-at": "off"
+    "unicorn/prefer-at": "off",
+    "unicorn/no-useless-undefined": "off"
   }
 }

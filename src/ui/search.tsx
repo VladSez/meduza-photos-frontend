@@ -3,7 +3,7 @@
 import { useDebouncedCallback, useLocalStorage } from "@mantine/hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { decode } from "html-entities";
-import { X as DeleteIcon, Lightbulb, Loader } from "lucide-react";
+import { X as DeleteIcon, Lightbulb } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import Highlighter from "react-highlight-words";
@@ -27,6 +27,7 @@ import { toastGenericError } from "@/utils/toast-generic-error";
 
 import { ArticleDate } from "./article-date";
 import { Button } from "./button";
+import { LoadingSpinner } from "./loading-spinner";
 import { Popover } from "./popover";
 import { ScrollArea } from "./scroll-area";
 import { Separator } from "./separator";
@@ -246,11 +247,10 @@ const SearchContent = ({ close }: SearchContentProps) => {
     [SEARCH_SCREENS.LOADING]: (
       <CommandEmpty className="flex min-h-[100px] items-center justify-center">
         <div
-          className="inline-flex items-center text-sm"
+          className="inline-flex items-center space-x-1.5 text-sm"
           data-testid="search-screen-loading"
         >
-          <Loader className="mr-1.5 animate-spin" size={16} />
-          Загрузка...
+          <LoadingSpinner />
         </div>
       </CommandEmpty>
     ),

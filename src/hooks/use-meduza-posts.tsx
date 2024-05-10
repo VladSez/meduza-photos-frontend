@@ -23,7 +23,7 @@ export const useMeduzaPosts = ({
   const { toast } = useToast();
 
   if (!key) {
-    throw new Error("key is required");
+    throw new Error("key is required for useInfiniteQuery");
   }
 
   return useInfiniteQuery({

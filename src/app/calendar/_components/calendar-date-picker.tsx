@@ -16,8 +16,8 @@ import { Tooltip, TooltipProvider } from "@/ui/tooltip";
 
 import { fetchLastAvailablePost } from "@/app/actions/fetch-last-available-post";
 import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
-import { useFilterDateContext } from "@/hooks/use-filter-date-context";
-import { useLastAvailablePostDateContext } from "@/hooks/use-last-available-date-context";
+import { useSelectedCalendarDateAtom } from "@/hooks/use-filter-date-context";
+import { useLastAvailablePostDateAtom } from "@/hooks/use-last-available-date-context";
 import { cn } from "@/lib/utils";
 import { toastGenericError } from "@/utils/toast-generic-error";
 
@@ -32,10 +32,12 @@ const endDate = dayjs("2022-02-24").toDate();
 
 export function DatePicker() {
   const { toast } = useToast();
-  const { lastAvailablePostDate, setLastAvailablePostDate } =
-    useLastAvailablePostDateContext();
 
-  const { filterDate, setFilterDate } = useFilterDateContext();
+  const [lastAvailablePostDate, setLastAvailablePostDate] =
+    useLastAvailablePostDateAtom();
+
+  const [selectedCalendarDate, setSelectedCalendarDate] =
+    useSelectedCalendarDateAtom();
   const [open, setOpen] = React.useState(false);
   const [isPending, setPending] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -71,7 +73,7 @@ export function DatePicker() {
             variant={"outline"}
             className={cn(
               "w-[280px] justify-start text-left font-normal",
-              !filterDate && "text-muted-foreground"
+              !selectedCalendarDate && "text-muted-foreground"
             )}
             onClick={() => {
               setOpen((open) => {
@@ -80,8 +82,8 @@ export function DatePicker() {
             }}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {filterDate ? (
-              dayjs(filterDate).format(articleDateFormat)
+            {selectedCalendarDate ? (
+              dayjs(selectedCalendarDate).format(articleDateFormat)
             ) : (
               <span>Выберите дату</span>
             )}
@@ -98,17 +100,17 @@ export function DatePicker() {
                       <DateTime
                         {...props}
                         isPending={isPending}
-                        filterDate={filterDate}
+                        selectedCalendarDate={selectedCalendarDate}
                         lastAvailableDate={lastAvailablePostDate}
                       />
                     );
                   },
                 }}
                 mode="single"
-                selected={filterDate}
-                defaultMonth={filterDate ?? lastAvailablePostDate}
+                selected={selectedCalendarDate}
+                defaultMonth={selectedCalendarDate ?? lastAvailablePostDate}
                 onDayClick={async (date) => {
-                  setFilterDate(date);
+                  setSelectedCalendarDate(date);
 
                   if (date) {
                     try {
@@ -159,13 +161,16 @@ export function DatePicker() {
 function DateTime(
   props: DayContentProps & {
     isPending: boolean;
-    filterDate: Date | undefined;
+    selectedCalendarDate: Date | undefined;
     lastAvailableDate: Date;
   }
 ) {
   const dateTime = format(props.date, "yyyy-MM-dd");
 
-  const isSelectedDay = dayjs(props.date).isSame(props.filterDate, "day");
+  const isSelectedDay = dayjs(props.date).isSame(
+    props.selectedCalendarDate,
+    "day"
+  );
 
   // show loader only for selected day (when user clicks on it)
   if (props.isPending && isSelectedDay) {
@@ -179,15 +184,6 @@ function DateTime(
     props.lastAvailableDate,
     "day"
   );
-
-  // https://console.cron-job.org/jobs/4416660/history
-  const timeWhenWeFetchNewDataInUTC = dayjs()
-    .utc()
-    .set("hour", 14)
-    .set("minute", 0);
-
-  const localTimeFormat = timeWhenWeFetchNewDataInUTC.local().format("HH:mm");
-  const utcTimeFormat = timeWhenWeFetchNewDataInUTC.format("HH:mm");
 
   // show tooltip, when data for today is not available yet
   if (calendarTodayDate && !lastEnabledDayIsToday) {
@@ -204,13 +200,7 @@ function DateTime(
               </div>
             </time>
           }
-          content={
-            <p>
-              Новые фото должны быть доступны сегодня после{" "}
-              {/* We show times in both local and utc format for better ux */}
-              {localTimeFormat} ({utcTimeFormat} UTC)
-            </p>
-          }
+          content={<p>Фото за сегодня пока не доступны, попробуй позже</p>}
         />
       </TooltipProvider>
     );

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { memo } from "react";
 
 import { useActiveDateAnimation } from "@/hooks/use-active-date-animation";
-import { useArticleInViewportContext } from "@/hooks/use-article-in-viewport-context";
+import { useArticleDateInViewportAtom } from "@/hooks/use-article-in-viewport-context";
 import { separateDatesByMonth } from "@/utils/separate-dates-by-month";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
@@ -17,8 +17,7 @@ export const TimelineClient = memo(function Timeline({
 }: {
   timeline: TimelineType;
 }) {
-  const { articleInViewport } = useArticleInViewportContext();
-  const articleInViewportId = Number(articleInViewport);
+  const [articleDateInViewport] = useArticleDateInViewportAtom();
 
   const datesByMonth = Object.entries(separateDatesByMonth(timeline));
 
@@ -27,8 +26,10 @@ export const TimelineClient = memo(function Timeline({
       <div className="fixed top-20">
         {datesByMonth.map(([month, days]) => {
           // check if there are any 'active' dates in this month
-          const isActiveMonth = days.some(({ id }) => {
-            return id === Number(articleInViewportId);
+          const isActiveMonth = days.some(({ date }) => {
+            const isoDateString = dayjs(date).toISOString();
+
+            return isoDateString === articleDateInViewport;
           });
 
           // show only months with 'active' dates
@@ -41,7 +42,7 @@ export const TimelineClient = memo(function Timeline({
               key={month}
               month={month}
               days={days}
-              articleInViewportId={articleInViewportId}
+              articleDateInViewport={articleDateInViewport}
             />
           );
         })}
@@ -53,10 +54,10 @@ export const TimelineClient = memo(function Timeline({
 const MonthWithDays = ({
   month,
   days,
-  articleInViewportId,
+  articleDateInViewport,
 }: {
   days: TimelineType;
-  articleInViewportId: number;
+  articleDateInViewport: string | null;
   month: string;
 }) => {
   return (
@@ -68,12 +69,12 @@ const MonthWithDays = ({
       data-testid="timeline-month-with-days"
     >
       <div className="mx-8 md:my-10">
-        <motion.p className="text-lg font-semibold capitalize text-gray-600">
+        <p className="text-lg font-semibold capitalize text-gray-900">
           {month}
-        </motion.p>
+        </p>
 
         <div className="relative h-44 overflow-hidden">
-          <Days days={days} articleInViewportId={articleInViewportId} />
+          <Days days={days} articleDateInViewport={articleDateInViewport} />
         </div>
       </div>
     </motion.div>
@@ -82,20 +83,21 @@ const MonthWithDays = ({
 
 const Days = memo(function Days({
   days,
-  articleInViewportId,
+  articleDateInViewport,
 }: {
   days: TimelineType;
-  articleInViewportId: number;
+  articleDateInViewport: string | null;
 }) {
   const { y } = useActiveDateAnimation({
-    articleInViewportId,
+    articleDateInViewport,
     timeline: days,
   });
 
   return (
     <>
       {days.map(({ id, date }) => {
-        const isActiveDate = id === Number(articleInViewportId);
+        const isActiveDate =
+          dayjs(date).toISOString() === articleDateInViewport;
 
         return <Day key={id} date={date} isActiveDate={isActiveDate} y={y} />;
       })}
@@ -118,7 +120,7 @@ const Day = memo(function Day({
       transition={{ type: "spring", mass: 0.5 }}
       className={clsx(
         "my-4",
-        isActiveDate ? "font-semibold text-black" : "text-slate-300"
+        isActiveDate ? "font-semibold text-gray-900" : "text-slate-300"
       )}
     >
       {dayjs(date).format("D MMMM")}

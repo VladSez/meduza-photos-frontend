@@ -1,9 +1,8 @@
 "use client";
 
-import { useContext } from "react";
+import { atom, useAtom } from "jotai";
 
-import { LastAvailablePostDateContext } from "@/app/providers";
-
-export const useLastAvailablePostDateContext = () => {
-  return useContext(LastAvailablePostDateContext);
+const lastAvailabledPostDate = atom<Date | null>(null);
+export const useLastAvailablePostDateAtom = () => {
+  return useAtom(lastAvailabledPostDate);
 };
