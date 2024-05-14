@@ -67,13 +67,20 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
           </p>
         </Banner>
 
-        {photos?.map((photo) => {
-          if (!photo?.img) {
-            return <p key={photo?.img}>Изображение не найдено</p>;
+        {photos?.map((photo, index) => {
+          // we have some images with "bad" urls, so we need to fix them
+          const photoURL = photo?.img?.replace("//impro", "/impro");
+
+          if (!photoURL) {
+            return (
+              <p key={index} className="px-3 py-4">
+                Изображение не найдено
+              </p>
+            );
           }
 
           return (
-            <div key={photo?.img}>
+            <div key={photoURL}>
               {photo?.title?.map((title) => {
                 return (
                   <div key={title} className="flex justify-center">
@@ -104,13 +111,13 @@ export function Article({ article }: { article: PostsSchemaType[0] }) {
 
               <div className="relative mb-4 mt-10 h-[500px] w-full bg-gray-200 md:h-[900px]">
                 <a
-                  href={photo?.img}
+                  href={photoURL}
                   target="_blank"
                   rel="noopener"
                   title="Нажмите, чтобы посмотреть оригинальное изображение"
                 >
                   <Image
-                    src={photo?.img}
+                    src={photoURL}
                     fill
                     alt={photo?.captionText ?? ""}
                     style={{ objectFit: "cover", objectPosition: "center" }}
