@@ -16,6 +16,9 @@ export const CalendarDayCard = ({
   // we extract the date from the header html
   const headerDateContent = post?.header?.match(/<span>(.*?)<\/span>/)?.[0];
 
+  // we have some images with "bad" urls, so we need to fix them
+  const photoURL = banner?.img?.replace("//impro", "/impro");
+
   return (
     <Link
       href={`/calendar/${post.id}`}
@@ -28,7 +31,7 @@ export const CalendarDayCard = ({
       >
         <div className="relative h-[280px] w-full rounded-lg bg-gray-200">
           <Image
-            src={banner?.img}
+            src={photoURL}
             alt={banner?.captionText ?? ""}
             fill
             style={{
