@@ -53,6 +53,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
 
+      - name: DEBUGGING
+        run: /
+          echo "Cache hit - ${{ steps.playwright-cache.outputs.cache-hit }}"
+          ls -la ~/.cache
+
       # Install browser binaries & OS dependencies if cache missed
       - name: 📦 Install Playwright browser binaries & OS dependencies (Cache missed)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
