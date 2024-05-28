@@ -96,7 +96,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         <Banner>
           <p>
             Главные фотографии предыдущего дня войны можно посмотреть по этой{" "}
-            <Link href={`/calendar/${nextArticleId?.id}`} className="underline">
+            <Link href={`/calendar/${nextArticleId.id}`} className="underline">
               ссылке
             </Link>
           </p>
