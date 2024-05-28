@@ -1,7 +1,10 @@
 name: 🎭 Playwright E2E tests
 on:
   deployment_status:
-  pull_request:
+
+permissions:
+  actions: write
+  contents: read
 
 jobs:
   e2e:
