@@ -34,7 +34,7 @@ jobs:
       - name: 📦 Prepare Playwright env
         shell: bash
         run: |
-          PLAYWRIGHT_VERSION=$(pnpm ls --json @playwright/test | jq --raw-output '.devDependencies["@playwright/test"].version')
+          PLAYWRIGHT_VERSION=$(pnpm ls --json @playwright/test | jq --raw-output '.[].devDependencies["@playwright/test"].version')
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
       # Cache browser binaries, cache key is based on Playwright version and OS
