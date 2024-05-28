@@ -6,11 +6,11 @@ import { fetchPosts } from "@/app/actions/fetch-posts";
 
 import type { FeedProps } from "@/app/feed/_components/feed-client";
 
-interface useMeduzaPostsProps {
+type useMeduzaPostsProps = {
   initialPosts: FeedProps["initialPosts"];
   take: number;
   key: string;
-}
+};
 
 export const useMeduzaPosts = ({
   initialPosts,

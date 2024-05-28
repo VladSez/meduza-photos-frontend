@@ -1,11 +1,16 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "@tanstack/query", "playwright"],
+  "plugins": [
+    "@typescript-eslint",
+    "@tanstack/query",
+    "playwright",
+    "eslint-plugin-react-compiler"
+  ],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:@typescript-eslint/stylistic",
     "plugin:unicorn/recommended",
     "plugin:playwright/recommended",
     "plugin:@tanstack/eslint-plugin-query/recommended",
@@ -27,6 +32,15 @@
     ],
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-import-type-side-effects": "error",
+    "@typescript-eslint/restrict-template-expressions": [
+      "error",
+      { "allowNumber": true }
+    ],
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "@typescript-eslint/consistent-indexed-object-style": [
+      "error",
+      "index-signature"
+    ],
     "curly": "error",
     "array-callback-return": ["error", { "allowImplicit": true }],
     "arrow-body-style": ["error", "always"],
@@ -34,6 +48,7 @@
     "unicorn/prevent-abbreviations": "off",
     "unicorn/no-null": "off",
     "unicorn/prefer-at": "off",
-    "unicorn/no-useless-undefined": "off"
+    "unicorn/no-useless-undefined": "off",
+    "react-compiler/react-compiler": "error"
   }
 }

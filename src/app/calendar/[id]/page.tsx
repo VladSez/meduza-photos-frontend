@@ -11,11 +11,11 @@ import { PostSchema } from "@/utils/zod-schema";
 
 import type { Metadata } from "next";
 
-interface PageProps {
+type PageProps = {
   params: {
     id: string;
   };
-}
+};
 
 export async function generateMetadata({
   params,

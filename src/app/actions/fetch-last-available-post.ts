@@ -28,7 +28,7 @@ export async function fetchLastAvailablePost() {
     );
 
     return {
-      mostRecentPostDate: mostRecentPostDate?.dateString,
+      mostRecentPostDate: mostRecentPostDate.dateString,
     };
   } catch (error) {
     console.error(error);

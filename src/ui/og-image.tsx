@@ -9,11 +9,11 @@ import "dayjs/locale/ru";
 
 dayjs.locale("ru");
 
-interface OgImageProps {
+type OgImageProps = {
   title: OpenGraphSchemaType["header"] | undefined;
   heroBanner: OpenGraphSchemaType["photosWithMeta"][0] | undefined;
   date?: OpenGraphSchemaType["dateString"] | undefined;
-}
+};
 
 export function OpenGraphImage({ heroBanner, date, title = "" }: OgImageProps) {
   return (
