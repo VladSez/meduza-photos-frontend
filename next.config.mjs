@@ -4,10 +4,8 @@ import { withSentryConfig } from "@sentry/nextjs";
 import createJiti from "jiti";
 import { withAxiom } from "next-axiom";
 
-const jiti = createJiti(fileURLToPath(import.meta.url));
-
-// Import env here to validate during build. Using jiti we can import .ts files :)
-jiti("./src/env.ts");
+// Import env files to validate at build time. Use jiti so we can load .ts files in here.
+createJiti(fileURLToPath(import.meta.url))("./src/env");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withAxiom({
