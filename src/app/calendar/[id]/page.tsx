@@ -11,11 +11,11 @@ import { PostSchema } from "@/utils/zod-schema";
 
 import type { Metadata } from "next";
 
-interface PageProps {
+type PageProps = {
   params: {
     id: string;
   };
-}
+};
 
 export async function generateMetadata({
   params,
@@ -96,7 +96,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         <Banner>
           <p>
             Главные фотографии предыдущего дня войны можно посмотреть по этой{" "}
-            <Link href={`/calendar/${nextArticleId?.id}`} className="underline">
+            <Link href={`/calendar/${nextArticleId.id}`} className="underline">
               ссылке
             </Link>
           </p>

@@ -20,7 +20,7 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
     rootMargin: "400px",
   });
 
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, error } =
     useMeduzaPosts({ initialPosts, take: 10, key: "calendar" });
 
   // scroll to the top of the page when the page is loaded
@@ -29,11 +29,11 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
   }, []);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
+    if (inView && hasNextPage && !isFetchingNextPage && !error) {
       // TODO: wrap in debounce?
       void fetchNextPage();
     }
-  }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
+  }, [error, fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
 
   const posts = filterOutDuplicateIds(
     data?.pages.flatMap((page) => {
@@ -48,7 +48,7 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
       <div className="flex justify-center">
         <DatePicker />
       </div>
-      <div className="mb-10">
+      <div className="pb-10">
         {Object.entries(postsByMonth).map(([monthAndYear, posts]) => {
           return (
             <div key={monthAndYear} className="mx-5 md:my-10">
@@ -77,9 +77,9 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
           );
         })}
       </div>
-      {hasNextPage ? (
+      {hasNextPage && !error ? (
         <motion.div
-          className="flex justify-center pb-10 pt-5"
+          className="flex justify-center pb-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

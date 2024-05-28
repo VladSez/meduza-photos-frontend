@@ -17,13 +17,13 @@ import {
   CommandItem,
   CommandList,
 } from "@/ui/command";
+import { genericErrorToastSonner } from "@/ui/toast";
 import { Tooltip, TooltipProvider } from "@/ui/tooltip";
 
 import { searchPosts } from "@/app/actions/search-posts";
 import useMediaQuery from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { stripHtmlTags } from "@/utils/strip-html-tags";
-import { toastGenericError } from "@/utils/toast-generic-error";
 
 import { ArticleDate } from "./article-date";
 import { Button } from "./button";
@@ -31,9 +31,8 @@ import { LoadingSpinner } from "./loading-spinner";
 import { Popover } from "./popover";
 import { ScrollArea } from "./scroll-area";
 import { Separator } from "./separator";
-import { useToast } from "./use-toast";
 
-import type { MeduzaArticles } from "@prisma/client";
+import type { SearchResultsPostsSupabase } from "@/app/actions/search-posts";
 
 export function Search() {
   const [open, setOpen] = React.useState(false);
@@ -133,7 +132,9 @@ type SearchContentProps = {
 
 const SearchContent = ({ close }: SearchContentProps) => {
   const [search, setSearch] = React.useState("");
-  const [results, setResults] = React.useState<MeduzaArticles[]>([]);
+  const [results, setResults] = React.useState<SearchResultsPostsSupabase[]>(
+    []
+  );
   const [isPopoverOpen, setPopoverOpen] = React.useState(false);
 
   const [step, setStep] = React.useState<SEARCH_SCREEN_KEYS>(
@@ -143,51 +144,52 @@ const SearchContent = ({ close }: SearchContentProps) => {
   const [localStorageValue, setLocalStorageValue] =
     useSearchHistoryLocalStorage();
 
-  const { toast } = useToast();
-
   const router = useRouter();
 
   const { isMobile } = useMediaQuery();
 
   const handleSearch = (searchQuery: string) => {
-    searchPosts({ search: searchQuery })
-      .then((res) => {
-        const hasResults = res?.results?.length > 0;
+    if (searchQuery) {
+      searchPosts({ search: searchQuery })
+        .then((res) => {
+          const hasResults = res.results.length > 0;
 
-        if (hasResults) {
-          // Add search query to localStorage
-          setLocalStorageValue((prevSearchQueries) => {
-            const isDuplicate = prevSearchQueries.some((item) => {
-              return item.text.toLowerCase() === searchQuery.toLowerCase();
+          if (hasResults) {
+            // Add search query to localStorage
+            setLocalStorageValue((prevSearchQueries) => {
+              const isDuplicate = prevSearchQueries.some((item) => {
+                return item.text.toLowerCase() === searchQuery.toLowerCase();
+              });
+
+              if (!isDuplicate && searchQuery.length > 0) {
+                return [
+                  ...prevSearchQueries,
+                  { text: searchQuery, id: Date.now().toString() },
+                ];
+              }
+              return prevSearchQueries;
             });
+          }
 
-            if (!isDuplicate && searchQuery.length > 0) {
-              return [
-                ...prevSearchQueries,
-                { text: searchQuery, id: Date.now().toString() },
-              ];
-            }
-            return prevSearchQueries;
-          });
-        }
+          setResults(res?.results);
 
-        setResults(res?.results);
+          if (hasResults) {
+            setStep(SEARCH_SCREENS.SEARCH_RESULTS);
+          } else if (searchQuery) {
+            setStep(SEARCH_SCREENS.NOT_FOUND);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
 
-        if (hasResults) {
-          setStep(SEARCH_SCREENS.SEARCH_RESULTS);
-        } else if (searchQuery) {
-          setStep(SEARCH_SCREENS.NOT_FOUND);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-
-        if (searchQuery && error) {
-          setStep(SEARCH_SCREENS.ERROR);
-
-          toast(toastGenericError);
-        }
-      });
+          if (searchQuery && error) {
+            setStep(SEARCH_SCREENS.ERROR);
+            genericErrorToastSonner();
+          }
+        });
+    } else {
+      setResults([]);
+    }
   };
 
   // https://mantine.dev/hooks/use-debounced-callback/
@@ -197,13 +199,14 @@ const SearchContent = ({ close }: SearchContentProps) => {
 
   // fetch search results on search query change
   React.useEffect(() => {
-    const trimmedSearch = search.trim();
+    const trimmedSearchQuery = search.trim();
 
-    if (trimmedSearch) {
+    if (trimmedSearchQuery) {
       setStep(SEARCH_SCREENS.LOADING);
     }
+
     // fetch search results
-    debouncedHandleSearch(trimmedSearch);
+    debouncedHandleSearch(trimmedSearchQuery);
   }, [debouncedHandleSearch, search]);
 
   const handleChange = (searchQuery: string) => {
@@ -460,10 +463,12 @@ const SearchHistory = ({
                   key={item.id}
                   layout
                   initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1, color: "black" }}
+                  exit={{ scale: 0.8, opacity: 0, color: "initial" }}
                   transition={{
-                    opacity: { duration: 0.2 },
+                    // duration: 0.3,
+                    // delay: 0.1,
+                    opacity: { duration: 0.3 },
                   }}
                   className="flex w-full flex-row flex-nowrap items-center"
                 >

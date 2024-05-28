@@ -27,7 +27,9 @@ const Command = React.forwardRef<
 });
 Command.displayName = CommandPrimitive.displayName;
 
-interface CommandDialogProps extends DialogProps {}
+// (this is coming from shadcn ui repo, so not sure if we should change smth here)
+// eslint-disable-next-line @typescript-eslint/ban-types
+type CommandDialogProps = {} & DialogProps;
 
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (

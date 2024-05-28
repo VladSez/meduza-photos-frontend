@@ -2,26 +2,21 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import { useToast } from "@/ui/use-toast";
-
 import { fetchPosts } from "@/app/actions/fetch-posts";
-import { toastGenericError } from "@/utils/toast-generic-error";
 
 import type { FeedProps } from "@/app/feed/_components/feed-client";
 
-interface useMeduzaPostsProps {
+type useMeduzaPostsProps = {
   initialPosts: FeedProps["initialPosts"];
   take: number;
   key: string;
-}
+};
 
 export const useMeduzaPosts = ({
   initialPosts,
   take = 5,
   key = "",
 }: useMeduzaPostsProps) => {
-  const { toast } = useToast();
-
   if (!key) {
     throw new Error("key is required for useInfiniteQuery");
   }
@@ -44,9 +39,7 @@ export const useMeduzaPosts = ({
       } catch (error) {
         console.error(error);
 
-        toast(toastGenericError);
-
-        throw new Error("smth went wrong");
+        throw new Error("Failed to fetch posts");
       }
     },
     getNextPageParam: (lastPage) => {

@@ -7,7 +7,7 @@ import type { PostsSchemaType } from "./zod-schema";
  * Separates an array of dates by month and returns an object with each month as a key and an array of dates as a value.
  */
 export const separateDatesByMonth = <T extends TimelineType | PostsSchemaType>(
-  dates: T
+  dates: T | undefined
 ) => {
   if (!dates) {
     throw new TypeError("Dates are not defined");
@@ -18,7 +18,7 @@ export const separateDatesByMonth = <T extends TimelineType | PostsSchemaType>(
   }
 
   const datesByMonth: {
-    [key: string]: (T extends Array<infer U> ? U : never)[];
+    [key: string]: (T extends (infer U)[] ? U : never)[];
   } = {};
 
   /**
@@ -37,9 +37,7 @@ export const separateDatesByMonth = <T extends TimelineType | PostsSchemaType>(
       datesByMonth[month] = [];
     }
 
-    datesByMonth?.[month]?.push(
-      dateEntry as T extends Array<infer U> ? U : never
-    );
+    datesByMonth?.[month]?.push(dateEntry as T extends (infer U)[] ? U : never);
   }
 
   return datesByMonth;

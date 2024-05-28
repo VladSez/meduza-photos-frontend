@@ -15,9 +15,9 @@ import { Article } from "../../components/article";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
 
-export interface FeedProps {
+export type FeedProps = {
   initialPosts: PostsSchemaType;
-}
+};
 
 export const FeedClient = ({ initialPosts }: FeedProps) => {
   const [articleDateInViewport, setArticleDateInViewport] =
@@ -26,8 +26,9 @@ export const FeedClient = ({ initialPosts }: FeedProps) => {
   const {
     data: feedData,
     fetchNextPage,
-    isFetching,
+    isFetchingNextPage,
     hasNextPage,
+    error,
   } = useMeduzaPosts({ initialPosts, take: 2, key: "feed" });
 
   const posts = filterOutDuplicateIds(
@@ -44,7 +45,7 @@ export const FeedClient = ({ initialPosts }: FeedProps) => {
         overscan={1000}
         useWindowScroll
         endReached={() => {
-          if (!isFetching && hasNextPage) {
+          if (!isFetchingNextPage && hasNextPage && !error) {
             void fetchNextPage();
           }
         }}
@@ -68,7 +69,7 @@ export const FeedClient = ({ initialPosts }: FeedProps) => {
         }}
       />
 
-      {hasNextPage && isFetching ? (
+      {hasNextPage && !error ? (
         <motion.div
           className="mt-12 flex flex-col justify-center space-y-5"
           initial={{ opacity: 0 }}

@@ -27,7 +27,7 @@ export function GET(request: Request) {
         console.info("/feed was not ok", res.status);
       }
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
       console.error(error);
     });
 
@@ -39,7 +39,7 @@ export function GET(request: Request) {
         console.info("/calendar was not ok", res.status);
       }
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
       console.error(error);
     });
 

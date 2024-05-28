@@ -1,19 +1,19 @@
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import dayjs from "dayjs";
 import { AxiomWebVitals } from "next-axiom";
 import localFont from "next/font/local";
 
-import { Toaster } from "@/ui/toaster";
+import { Toaster } from "@/ui/toast";
 
 import { cn } from "@/lib/utils";
 
+import { Navigation } from "./components/navigation";
 import Providers from "./providers";
 
 import type { Metadata } from "next";
 
 import "dayjs/locale/ru";
-
-import { Navigation } from "./components/navigation";
-
 import "./globals.css";
 
 dayjs.locale("ru");
@@ -79,6 +79,8 @@ export default function RootLayout({
           <AxiomWebVitals />
           <Navigation />
           {children}
+          <Analytics />
+          <SpeedInsights />
           <Toaster />
         </Providers>
       </body>

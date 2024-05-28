@@ -8,40 +8,66 @@ import {
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import dayjs from "dayjs";
 import { Provider } from "jotai";
-import { useState } from "react";
-
-import { useToast } from "@/ui/use-toast";
-
-import { toastGenericError } from "@/utils/toast-generic-error";
 
 import type { ReactNode } from "react";
 
 import "dayjs/locale/ru";
 
+import { genericErrorToastSonner } from "@/ui/toast";
+
 dayjs.locale("ru");
 
-export default function Providers({ children }: { children: ReactNode }) {
-  const { toast } = useToast();
-
-  const [queryClient] = useState(() => {
-    return new QueryClient({
-      defaultOptions: {
-        queries: {
-          // With SSR, we usually want to set some default staleTime
-          // above 0 to avoid refetching immediately on the client
-          // https://tanstack.com/query/v5/docs/react/guides/ssr
-          staleTime: 60 * 1000,
+const makeQueryClient = () => {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        // With SSR, we usually want to set some default staleTime
+        // above 0 to avoid refetching immediately on the client
+        staleTime: 60 * 1000,
+        retryDelay: (attemptIndex) => {
+          return Math.min(1000 * 2 ** attemptIndex, 30_000);
+        },
+        retry(failureCount) {
+          return failureCount < 3;
         },
       },
-      queryCache: new QueryCache({
-        onError: (error) => {
-          if (error instanceof Error) {
-            toast(toastGenericError);
-          }
-        },
-      }),
-    });
+    },
+    queryCache: new QueryCache({
+      onError: (error) => {
+        if (error instanceof Error) {
+          genericErrorToastSonner();
+        }
+      },
+    }),
   });
+};
+
+let browserQueryClient: QueryClient | undefined = undefined;
+
+// https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr
+const getQueryClient = () => {
+  // eslint-disable-next-line unicorn/prefer-ternary
+  if (typeof window === "undefined") {
+    // Server: always make a new query client
+    return makeQueryClient();
+  } else {
+    // Browser: make a new query client if we don't already have one
+    // This is very important so we don't re-make a new client if React
+    // suspends during the initial render. This may not be needed if we
+    // have a suspense boundary BELOW the creation of the query client
+    if (!browserQueryClient) {
+      browserQueryClient = makeQueryClient();
+    }
+    return browserQueryClient;
+  }
+};
+
+export default function Providers({ children }: { children: ReactNode }) {
+  // NOTE: Avoid useState when initializing the query client if you don't
+  //       have a suspense boundary between this and the code that may
+  //       suspend because React will throw away the client on the initial
+  //       render if it suspends and there is no boundary
+  const queryClient = getQueryClient();
 
   return (
     <Provider>

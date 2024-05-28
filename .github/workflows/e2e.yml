@@ -16,25 +16,39 @@ jobs:
       - uses: actions/checkout@v4
         name: 🛎️ Checkout repository
 
-      - uses: pnpm/action-setup@v3
-        name: 📦 Setup pnpm
+      # Run npm ci and get Playwright version
+      - name: 📦 Prepare Playwright env
+        shell: bash
+        run: |
+          PLAYWRIGHT_VERSION=$(npm ls --json @playwright/test | jq --raw-output '.dependencies["@playwright/test"].version')
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+
+      # Cache browser binaries, cache key is based on Playwright version and OS
+      - name: 🧰 Cache Playwright browser binaries
+        uses: actions/cache@v4
+        id: playwright-cache
         with:
-          version: 8
+          path: "~/.cache/ms-playwright"
+          key: "${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}"
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
-      - uses: actions/setup-node@v4
-        name: 📚 Setup Node.js
-        with:
-          node-version: lts/*
-          cache: "pnpm"
+      # Install browser binaries & OS dependencies if cache missed
+      - name: 📦 Install Playwright browser binaries & OS dependencies
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          npm exec -- playwright install --with-deps chromium
 
-      - name: 🚚 Install dependencies
-        run: pnpm install
-
-      - name: 🌐 Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
+      # Install only the OS dependencies if cache hit
+      - name: 📦 Install Playwright OS dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        shell: bash
+        run: |
+          npm exec -- playwright install-deps chromium
 
       - name: 🎭 Run Playwright tests
-        run: pnpm exec playwright test
+        run: npm exec -- playwright test
         env:
           BASE_URL: ${{ github.event.deployment_status.environment_url }}
 
