@@ -31,14 +31,14 @@ jobs:
         run: pnpm install
 
       # Run npm ci and get Playwright version
-      - name: 📦 Prepare Playwright env
+      - name: 🚚 Prepare Playwright env
         shell: bash
         run: |
           PLAYWRIGHT_VERSION=$(pnpm ls --json @playwright/test | jq --raw-output '.[].devDependencies["@playwright/test"].version')
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
       # Cache browser binaries, cache key is based on Playwright version and OS
-      - name: 🧰 Cache Playwright browser binaries
+      - name: 📦 Cache Playwright browser binaries
         uses: actions/cache@v4
         id: playwright-cache
         with:
