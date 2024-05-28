@@ -23,7 +23,6 @@ import { searchPosts } from "@/app/actions/search-posts";
 import useMediaQuery from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { stripHtmlTags } from "@/utils/strip-html-tags";
-import { toastGenericError } from "@/utils/toast-generic-error";
 
 import { ArticleDate } from "./article-date";
 import { Button } from "./button";
@@ -31,7 +30,7 @@ import { LoadingSpinner } from "./loading-spinner";
 import { Popover } from "./popover";
 import { ScrollArea } from "./scroll-area";
 import { Separator } from "./separator";
-import { useToast } from "./use-toast";
+import { genericErrorToastSonner } from "./toast";
 
 import type { MeduzaArticles } from "@prisma/client";
 
@@ -143,51 +142,52 @@ const SearchContent = ({ close }: SearchContentProps) => {
   const [localStorageValue, setLocalStorageValue] =
     useSearchHistoryLocalStorage();
 
-  const { toast } = useToast();
-
   const router = useRouter();
 
   const { isMobile } = useMediaQuery();
 
   const handleSearch = (searchQuery: string) => {
-    searchPosts({ search: searchQuery })
-      .then((res) => {
-        const hasResults = res?.results?.length > 0;
+    if (searchQuery) {
+      searchPosts({ search: searchQuery })
+        .then((res) => {
+          const hasResults = res.results.length > 0;
 
-        if (hasResults) {
-          // Add search query to localStorage
-          setLocalStorageValue((prevSearchQueries) => {
-            const isDuplicate = prevSearchQueries.some((item) => {
-              return item.text.toLowerCase() === searchQuery.toLowerCase();
+          if (hasResults) {
+            // Add search query to localStorage
+            setLocalStorageValue((prevSearchQueries) => {
+              const isDuplicate = prevSearchQueries.some((item) => {
+                return item.text.toLowerCase() === searchQuery.toLowerCase();
+              });
+
+              if (!isDuplicate && searchQuery.length > 0) {
+                return [
+                  ...prevSearchQueries,
+                  { text: searchQuery, id: Date.now().toString() },
+                ];
+              }
+              return prevSearchQueries;
             });
+          }
 
-            if (!isDuplicate && searchQuery.length > 0) {
-              return [
-                ...prevSearchQueries,
-                { text: searchQuery, id: Date.now().toString() },
-              ];
-            }
-            return prevSearchQueries;
-          });
-        }
+          setResults(res?.results);
 
-        setResults(res?.results);
+          if (hasResults) {
+            setStep(SEARCH_SCREENS.SEARCH_RESULTS);
+          } else if (searchQuery) {
+            setStep(SEARCH_SCREENS.NOT_FOUND);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
 
-        if (hasResults) {
-          setStep(SEARCH_SCREENS.SEARCH_RESULTS);
-        } else if (searchQuery) {
-          setStep(SEARCH_SCREENS.NOT_FOUND);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-
-        if (searchQuery && error) {
-          setStep(SEARCH_SCREENS.ERROR);
-
-          toast(toastGenericError);
-        }
-      });
+          if (searchQuery && error) {
+            setStep(SEARCH_SCREENS.ERROR);
+            genericErrorToastSonner();
+          }
+        });
+    } else {
+      setResults([]);
+    }
   };
 
   // https://mantine.dev/hooks/use-debounced-callback/
@@ -197,13 +197,13 @@ const SearchContent = ({ close }: SearchContentProps) => {
 
   // fetch search results on search query change
   React.useEffect(() => {
-    const trimmedSearch = search.trim();
+    const trimmedSearchQuery = search.trim();
 
-    if (trimmedSearch) {
+    if (trimmedSearchQuery) {
       setStep(SEARCH_SCREENS.LOADING);
     }
     // fetch search results
-    debouncedHandleSearch(trimmedSearch);
+    debouncedHandleSearch(trimmedSearchQuery);
   }, [debouncedHandleSearch, search]);
 
   const handleChange = (searchQuery: string) => {

@@ -43,6 +43,13 @@ const nextConfig = withAxiom({
     // main concern is cost
     unoptimized: true,
   },
+  eslint: {
+    // we check this in CI
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 });
 
 export default withSentryConfig(
