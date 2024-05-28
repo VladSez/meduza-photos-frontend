@@ -32,15 +32,14 @@ jobs:
       - name: 🚚 Install dependencies
         run: pnpm install
 
+      # https://argos-ci.com/blog/speed-up-playwright
       # Run npm ci and get Playwright version
       - name: 🚚 Prepare Playwright env
         shell: bash
         run: |
           PLAYWRIGHT_VERSION=$(pnpm ls --json @playwright/test | jq --raw-output '.[].devDependencies["@playwright/test"].version')
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
-          ls ~/.cache/ms-playwright
 
-      # https://argos-ci.com/blog/speed-up-playwright
       # Cache browser binaries, cache key is based on Playwright version and OS
       - name: 📦 Cache Playwright browser binaries
         uses: actions/cache@v4
