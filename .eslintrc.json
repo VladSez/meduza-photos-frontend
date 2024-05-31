@@ -49,6 +49,7 @@
     "unicorn/no-null": "off",
     "unicorn/prefer-at": "off",
     "unicorn/no-useless-undefined": "off",
-    "react-compiler/react-compiler": "error"
+    "react-compiler/react-compiler": "error",
+    "playwright/prefer-web-first-assertions": "off"
   }
 }
