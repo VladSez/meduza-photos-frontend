@@ -13,5 +13,6 @@ Sentry.init({
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,
-  enabled: process.env.NODE_ENV !== "development",
+  // enabled: process.env.NODE_ENV !== "development",
+  enabled: false, // Disable Sentry for now, try to fix edge runtime error
 });
