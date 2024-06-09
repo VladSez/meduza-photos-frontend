@@ -51,6 +51,11 @@ const interLocal = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.VERCEL_ENV === "production"
+      ? "https://meduza-photos-frontend.vercel.app"
+      : "http://localhost:3000"
+  ),
   title: {
     template: "Фотографии войны в Украине | %s",
     default: "Фотографии войны в Украине.",
