@@ -12,6 +12,7 @@ import { articleDateFormat } from "@/ui/article-date";
 import { Button } from "@/ui/button";
 import { Calendar } from "@/ui/calendar";
 import { Popover } from "@/ui/popover";
+import { genericErrorToastSonner, toast } from "@/ui/toast";
 import { Tooltip, TooltipProvider } from "@/ui/tooltip";
 
 import { fetchLastAvailablePost } from "@/app/actions/fetch-last-available-post";
@@ -19,9 +20,6 @@ import { fetchPostByDate } from "@/app/actions/fetch-post-by-date";
 import { useSelectedCalendarDateAtom } from "@/hooks/use-filter-date-context";
 import { useLastAvailablePostDateAtom } from "@/hooks/use-last-available-date-context";
 import { cn } from "@/lib/utils";
-import { toastGenericError } from "@/utils/toast-generic-error";
-
-import { useToast } from "../../../ui/use-toast";
 
 import type { DayContentProps } from "react-day-picker";
 
@@ -31,8 +29,6 @@ dayjs.extend(utc);
 const endDate = dayjs("2022-02-24").toDate();
 
 export function DatePicker() {
-  const { toast } = useToast();
-
   const [lastAvailablePostDate, setLastAvailablePostDate] =
     useLastAvailablePostDateAtom();
 
@@ -57,11 +53,11 @@ export function DatePicker() {
           if (error instanceof Error) {
             setError(error?.message);
 
-            toast(toastGenericError);
+            genericErrorToastSonner();
           }
         });
     }
-  }, [lastAvailablePostDate, open, setLastAvailablePostDate, toast]);
+  }, [lastAvailablePostDate, open, setLastAvailablePostDate]);
 
   return (
     <>
@@ -119,17 +115,17 @@ export function DatePicker() {
                       await fetchPostByDate({
                         date: dayjs(date).format("YYYY/MM/DD"),
                       });
+                      setOpen(false);
                     } catch (error) {
                       if (error instanceof Error) {
-                        toast({
-                          variant: "destructive",
-                          title: "Ошибка",
-                          description: `Пост от ${dayjs(date).format(articleDateFormat)} не найден`,
-                        });
+                        toast.error(
+                          `Пост от ${dayjs(date).format(
+                            articleDateFormat
+                          )} не найден`
+                        );
                       }
                     } finally {
                       setPending(false);
-                      setOpen(false);
                     }
                   }
                 }}

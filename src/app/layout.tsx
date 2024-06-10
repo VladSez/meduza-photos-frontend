@@ -2,8 +2,6 @@ import dayjs from "dayjs";
 import { AxiomWebVitals } from "next-axiom";
 import localFont from "next/font/local";
 
-import { Toaster } from "@/ui/toaster";
-
 import { cn } from "@/lib/utils";
 
 import Providers from "./providers";
@@ -15,6 +13,8 @@ import "dayjs/locale/ru";
 import { Navigation } from "./components/navigation";
 
 import "./globals.css";
+
+import { Toaster } from "@/ui/toast";
 
 dayjs.locale("ru");
 
@@ -51,6 +51,11 @@ const interLocal = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.VERCEL_ENV === "production"
+      ? "https://meduza-photos-frontend.vercel.app"
+      : "http://localhost:3000"
+  ),
   title: {
     template: "Фотографии войны в Украине | %s",
     default: "Фотографии войны в Украине.",

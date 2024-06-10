@@ -4,6 +4,8 @@
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
+import { genericErrorToastSonner } from "@/ui/toast";
+
 import { AlertGenericError } from "@/app/components/alert-generic-error";
 import { useGlobalErrorAtom } from "@/hooks/use-global-error-context";
 
@@ -18,9 +20,10 @@ export default function Error({
 
   useEffect(() => {
     setError(error);
+    genericErrorToastSonner();
 
     // Log the error to an error reporting service
-    console.error("calendar article page error", error);
+    console.error("calendar[id] page error", error);
 
     Sentry.captureException(error);
   }, [error, setError]);
