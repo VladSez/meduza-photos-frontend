@@ -39,13 +39,6 @@ export const FeedClient = ({ initialPosts }: FeedProps) => {
 
   return (
     <>
-      <button
-        onClick={() => {
-          throw new Error("Sentry test client");
-        }}
-      >
-        Sentry test
-      </button>
       <Virtuoso
         initialItemCount={posts.length}
         increaseViewportBy={1000}
