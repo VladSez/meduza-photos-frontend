@@ -3,6 +3,8 @@
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
+import { genericErrorToastSonner } from "@/ui/toast";
+
 import { AlertGenericError } from "./components/alert-generic-error";
 
 // https://nextjs.org/docs/app/building-your-application/routing/error-handling#handling-errors-in-root-layouts
@@ -12,6 +14,9 @@ export default function GlobalError({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
+    genericErrorToastSonner();
+    console.error("global page error", error);
+
     Sentry.captureException(error);
   }, [error]);
 
