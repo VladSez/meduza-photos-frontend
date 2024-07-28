@@ -23,11 +23,6 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, error } =
     useMeduzaPosts({ initialPosts, take: 10, key: "calendar" });
 
-  // scroll to the top of the page when the page is loaded
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage && !error) {
       // TODO: wrap in debounce?

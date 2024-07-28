@@ -11,8 +11,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-      - name: Environment URL
-        run: echo "Vercel preview URL - ${{github.event.deployment_status.environment_url}}"
+      - run: echo "Vercel preview URL - ${{github.event.deployment_status.environment_url}}"
 
       - uses: actions/checkout@v4
         name: 🛎️ Checkout repository
