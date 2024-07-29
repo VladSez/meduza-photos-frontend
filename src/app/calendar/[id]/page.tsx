@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { decode } from "html-entities";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -62,7 +63,7 @@ export async function generateMetadata({
     );
 
     const title = post?.header ? stripHtmlTags(decode(post.header)) : "Пост";
-    const description = post?.subtitle ?? "";
+    const description = post?.subtitle ?? "Война в Украине";
 
     return {
       title: {
@@ -85,6 +86,7 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
+  // TODO: use supabase to improve performance
   const ids = await prisma.meduzaArticles.findMany({
     select: {
       id: true,
@@ -105,30 +107,36 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
   });
 
-  const nextArticleId = await prisma.meduzaArticles.findFirst({
+  if (!article) {
+    notFound();
+  }
+
+  const previousDayDate = dayjs(article.dateString)
+    .subtract(1, "day")
+    .format("YYYY/MM/DD");
+
+  // take previous day article from db
+  const linkToPreviousArticle = await prisma.meduzaArticles.findFirst({
     where: {
-      currentLink: article?.nextLink ?? "",
+      dateString: previousDayDate,
     },
     select: {
       id: true,
     },
   });
 
-  if (!article) {
-    notFound();
-  }
-
-  const _article = PostSchema.parse(article);
+  const previousArticleId = linkToPreviousArticle?.id;
+  const parsedArticle = PostSchema.parse(article);
 
   return (
     <div className={`py-16 md:py-[100px] md:pb-[50px]`}>
-      <Article article={_article} />
+      <Article article={parsedArticle} />
 
-      {nextArticleId?.id ? (
+      {previousArticleId ? (
         <Banner>
           <p>
             Главные фотографии предыдущего дня войны можно посмотреть по этой{" "}
-            <Link href={`/calendar/${nextArticleId.id}`} className="underline">
+            <Link href={`/calendar/${previousArticleId}`} className="underline">
               ссылке
             </Link>
           </p>
