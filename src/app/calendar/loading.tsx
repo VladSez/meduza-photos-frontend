@@ -2,7 +2,7 @@ export default function Loading() {
   return (
     <div className="animate-pulse">
       <div className="mt-28 flex flex-col items-center justify-start gap-10 animate-in fade-in">
-        <div className="mx-auto mb-8 w-full max-w-xl p-4">
+        <div className="mx-auto w-full max-w-xl p-4">
           {/* Title placeholder */}
           <div className="flex space-x-4">
             <div className="flex-1 space-y-6 py-1">
@@ -16,14 +16,18 @@ export default function Loading() {
             </div>
           </div>
           {/* Date placeholder */}
-          <div className="mx-auto my-5 h-3 w-72 rounded bg-slate-200"></div>
+          <div className="relative top-[40px] mx-auto my-1 h-8 w-72 rounded bg-slate-200"></div>
         </div>
       </div>
-      <div className="mx-5 mt-24">
+      <div className="mx-5 mb-10 mt-[138px]">
         {/* Month placeholder */}
         <div className="mb-[57px] mt-4 h-5 w-72 rounded bg-slate-200"></div>
 
-        <div className="flex flex-row flex-wrap gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+          <CardPlaceholder />
+          <CardPlaceholder />
+          <CardPlaceholder />
+          <CardPlaceholder />
           <CardPlaceholder />
           <CardPlaceholder />
           <CardPlaceholder />
@@ -36,7 +40,7 @@ export default function Loading() {
 
 const CardPlaceholder = () => {
   return (
-    <div className="h-[300px] w-full max-w-xl rounded-md shadow md:w-[350px]">
+    <div className="h-[300px] w-full max-w-xl rounded-md shadow">
       {/* Card image placeholder */}
       <div className="h-48 w-full rounded-md rounded-b-none bg-slate-200"></div>
 

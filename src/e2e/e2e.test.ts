@@ -17,13 +17,13 @@ test("can navigate the app", async ({ page }) => {
   await expect(page).toHaveURL("/feed");
   await expect(page).toHaveTitle("Фотографии войны в Украине | Лента");
 
+  // meta data tags
   const metaDescription = page.locator('meta[name="description"]');
   await expect(metaDescription).toHaveAttribute(
     "content",
     "Лента событий войны в Украине."
   );
 
-  // open graph meta tags
   const ogTitle = page.locator('meta[property="og:title"]');
   await expect(ogTitle).toHaveAttribute(
     "content",

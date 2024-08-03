@@ -14,6 +14,11 @@ import { PostSchema } from "@/utils/zod-schema";
 
 import type { Metadata } from "next";
 
+const MetaDataSchema = PostSchema.pick({
+  header: true,
+  subtitle: true,
+}).strict();
+
 type PageProps = {
   params: {
     id: string;
@@ -24,43 +29,14 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata | undefined> {
   try {
-    const t3 = performance.now();
-    // TODO: use supabase for better perf
     const { data } = await supabase
       .from("MeduzaArticles")
       .select("header, subtitle")
       .eq("id", params.id);
 
-    z.array(
-      PostSchema.pick({
-        header: true,
-        subtitle: true,
-      })
-    ).parse(data);
+    const posts = z.array(MetaDataSchema).nonempty().parse(data);
 
-    const t4 = performance.now();
-
-    // console.log(
-    //   `⏱️ generateMetadata for id:${params.id} with Supabase took: ${t4 - t3}ms`
-    // );
-    // console.log({ error, postSupabase: postSupabase?.[0]?.header });
-
-    const t1 = performance.now();
-
-    // TODO: remove prisma cause it's slower
-    const article = await prisma.meduzaArticles.findUnique({
-      where: {
-        id: Number(params.id),
-      },
-    });
-
-    const post = PostSchema.parse(article);
-
-    const t2 = performance.now();
-
-    console.log(
-      `⏱️ generateMetadata for id:${params.id} with Prisma took: ${t2 - t1}ms and with Supabase it took: ${t4 - t3}ms`
-    );
+    const post = posts?.[0];
 
     const title = post?.header ? stripHtmlTags(decode(post.header)) : "Пост";
     const description = post?.subtitle ?? "Война в Украине";

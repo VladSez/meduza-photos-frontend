@@ -14,7 +14,7 @@ export default async function Calendar() {
   const { posts } = await fetchPosts({ take: 20 });
 
   return (
-    <article className="">
+    <div className="">
       <h1 className="mx-auto mb-10 mt-24 max-w-4xl text-center text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:mt-32 lg:text-6xl">
         Хроники войны в Украине
       </h1>
@@ -32,6 +32,6 @@ export default async function Calendar() {
       <main className="md:justify-items-center">
         <CalendarListClient initialPosts={posts} />
       </main>
-    </article>
+    </div>
   );
 }

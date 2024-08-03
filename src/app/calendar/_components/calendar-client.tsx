@@ -39,7 +39,7 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
   const postsByMonth = separateDatesByMonth(posts);
 
   return (
-    <>
+    <div className="">
       <div className="flex justify-center">
         <DatePicker />
       </div>
@@ -50,7 +50,7 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
               <h3 className="my-6 mb-10 text-3xl font-medium capitalize text-gray-900 sm:text-4xl">
                 {monthAndYear}
               </h3>
-              <div className="flex flex-row flex-wrap gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                 {posts.map((post, index) => {
                   const isLastPost = index === posts.length - 1;
 
@@ -84,6 +84,6 @@ export function CalendarListClient({ initialPosts }: FeedProps) {
           </div>
         </motion.div>
       ) : null}
-    </>
+    </div>
   );
 }
