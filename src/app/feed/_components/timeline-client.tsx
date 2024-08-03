@@ -120,7 +120,7 @@ const Day = memo(function Day({
       transition={{ type: "spring", mass: 0.5 }}
       className={clsx(
         "my-4",
-        isActiveDate ? "font-semibold text-gray-900" : "text-slate-300"
+        isActiveDate ? "font-semibold text-slate-800" : "text-slate-300"
       )}
     >
       {dayjs(date).format("D MMMM")}

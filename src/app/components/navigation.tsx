@@ -31,7 +31,7 @@ const NAV_LINKS = [
     href: PATHS.calendar,
     label: "Календарь",
   },
-] as const satisfies Readonly<Navigation[]>;
+] as const satisfies readonly Navigation[];
 
 export function Navigation() {
   const pathname = usePathname();

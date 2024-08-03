@@ -1,6 +1,10 @@
 import dayjs from "dayjs";
+import { decode } from "html-entities";
 import Image from "next/image";
 import Link from "next/link";
+
+import { cn } from "@/lib/utils";
+import { stripHtmlTags } from "@/utils/strip-html-tags";
 
 import type { PostsSchemaType } from "@/utils/zod-schema";
 
@@ -14,7 +18,7 @@ export const CalendarDayCard = ({
   const banner = post?.photosWithMeta[0];
 
   // we extract the date from the header html
-  const headerDateContent = post?.header?.match(/<span>(.*?)<\/span>/)?.[0];
+  const subtitle = post?.header?.match(/<span>(.*?)<\/span>/)?.[0];
 
   // we have some images with "bad" urls, so we need to fix them
   const photoURL = banner?.img?.replace("//impro", "/impro");
@@ -27,7 +31,7 @@ export const CalendarDayCard = ({
       data-testid={`calenday-day-card-link-${index}`}
     >
       <div
-        className={`h-[530px] max-h-[530px] w-full max-w-full rounded-lg border text-xl text-gray-900 transition-all hover:bg-slate-100 md:w-[350px]`}
+        className={`h-[530px] max-h-[530px] w-full max-w-full rounded-lg border text-xl text-gray-900 transition-all hover:bg-slate-100`}
       >
         <div className="relative h-[280px] w-full rounded-lg bg-gray-200">
           <Image
@@ -43,22 +47,27 @@ export const CalendarDayCard = ({
         </div>
         <div className="mx-5 my-3">
           <div
-            className={`line-clamp-4 font-semibold`}
+            className={cn(`line-clamp-6 font-semibold text-gray-900`, {
+              // we use 'line-clamp-4' when there is a subtitle
+              "line-clamp-4": subtitle,
+            })}
             dangerouslySetInnerHTML={{
               __html: post?.header,
             }}
+            title={stripHtmlTags(decode(post?.header))}
           />
 
-          {headerDateContent ? (
+          {subtitle ? (
             <div
               className="line-clamp-3 font-light"
               dangerouslySetInnerHTML={{
-                __html: headerDateContent,
+                __html: subtitle,
               }}
+              title={stripHtmlTags(decode(subtitle))}
             />
           ) : null}
 
-          <p className="absolute bottom-3 text-base">
+          <p className="absolute bottom-3 text-base text-gray-800">
             {dayjs(post?.date).format("DD MMMM YYYY")}
           </p>
         </div>
